@@ -25,6 +25,7 @@ rabbit-job.secret-key=hello
 
 # 规划
 
+- 执行器注册时，优先使用 address，而不是ip
 - 接口验签
 - 调度中心分布式部署
 - 接入页面，增加账号体系，接入 SA-TOKEN 框架
