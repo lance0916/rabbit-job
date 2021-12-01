@@ -1,5 +1,6 @@
 package com.snail.job.admin.service.trigger;
 
+import com.snail.job.admin.biz.RouteStrategyBiz;
 import com.snail.job.admin.entity.Application;
 import com.snail.job.admin.entity.JobInfo;
 import com.snail.job.admin.entity.JobLog;
@@ -7,8 +8,8 @@ import com.snail.job.admin.biz.JobExecutorBiz;
 import com.snail.job.admin.repository.ApplicationRepository;
 import com.snail.job.admin.repository.JobInfoRepository;
 import com.snail.job.admin.repository.JobLogRepository;
-import com.snail.job.admin.route.ExecRouteStrategyEnum;
-import com.snail.job.admin.route.ExecRouter;
+import com.snail.job.admin.route.RouteStrategyEnum;
+import com.snail.job.admin.route.ClientRouter;
 import com.snail.job.common.enums.AlarmStatus;
 import com.snail.job.common.enums.TriggerType;
 import com.snail.job.common.model.ResultT;
@@ -38,7 +39,7 @@ public class JobTriggerService {
     @Resource
     private JobExecutorBiz jobExecutorBiz;
     @Resource
-    private RouteStrategyService routeStrategyService;
+    private RouteStrategyBiz routeStrategyBiz;
 
     /**
      * 触发 Job
@@ -72,7 +73,7 @@ public class JobTriggerService {
         String[] addressArray = addresses.split(",");
 
         // 执行调度
-        if (ExecRouteStrategyEnum.BROADCAST.getName().equals(jobInfo.getExecRouteStrategy())) {
+        if (RouteStrategyEnum.BROADCAST.getName().equals(jobInfo.getExecRouteStrategy())) {
             // 广播执行
             int shardTotal = addressArray.length;
             for (int i = 0; i < addressArray.length; i++) {
@@ -83,7 +84,7 @@ public class JobTriggerService {
             }
         } else {
             // 非广播执行，选择一个执行器执行
-            ExecRouter router = routeStrategyService.match(jobInfo.getExecRouteStrategy());
+            ClientRouter router = routeStrategyBiz.match(jobInfo.getExecRouteStrategy());
             String executorAddress = router.route(jobId, addressArray);
 
             // 进行调度

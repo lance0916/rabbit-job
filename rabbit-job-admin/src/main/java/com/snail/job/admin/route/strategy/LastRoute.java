@@ -1,6 +1,6 @@
 package com.snail.job.admin.route.strategy;
 
-import com.snail.job.admin.route.ExecRouter;
+import com.snail.job.admin.route.ClientRouter;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @date 2020/6/17 10:11 上午
  */
 @Component
-public class ExecRouteLast extends ExecRouter {
+public class LastRoute extends ClientRouter {
 
     @Override
     public String route(Long jobId, String[] addresses) {

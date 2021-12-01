@@ -5,7 +5,7 @@ package com.snail.job.admin.route;
  * @author 吴庆龙
  * @date 2020/6/4 11:23 上午
  */
-public enum ExecRouteStrategyEnum {
+public enum RouteStrategyEnum {
 
     /**
      * 第一个
@@ -17,11 +17,10 @@ public enum ExecRouteStrategyEnum {
      */
     LAST("last", "最后一个"),
 
-//    ROUND("round", (byte) 3, "轮询", new ExecutorRouteRound()),
-//    RANDOM("random", (byte) 4, "随机", new ExecutorRouteRandom()),
-//    CONSISTENT_HASH("consistent_hash", (byte) 5, "一致性HASH", new ExecutorRouteConsistentHash()),
-//    LEAST_FREQUENTLY_USED("least_frequently_used", (byte) 6, "最不经常使用", new ExecutorRouteLFU()),
-//    LEAST_RECENTLY_USED("least_recently_used", (byte) 7, "最近最久未使用", new ExecutorRouteLRU()),
+    /**
+     * 一致性hash
+     */
+    CONSISTENT_HASH("consistent_hash", "一致性HASH"),
 
     /**
      * 故障转移
@@ -42,7 +41,7 @@ public enum ExecRouteStrategyEnum {
     private final String name;
     private final String desc;
 
-    ExecRouteStrategyEnum(String name, String desc) {
+    RouteStrategyEnum(String name, String desc) {
         this.name = name;
         this.desc = desc;
     }

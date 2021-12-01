@@ -3,7 +3,7 @@ package com.snail.job.admin.controller;
 import com.snail.job.admin.controller.vo.RouteVO;
 import com.snail.job.admin.entity.JobInfo;
 import com.snail.job.admin.service.trigger.TriggerPoolService;
-import com.snail.job.admin.route.ExecRouteStrategyEnum;
+import com.snail.job.admin.route.RouteStrategyEnum;
 import com.snail.job.admin.service.JobInfoService;
 import com.snail.job.common.enums.TriggerType;
 import com.snail.job.common.model.ResultT;
@@ -101,8 +101,8 @@ public class JobInfoController {
     @GetMapping("/route")
     public ResultT<?> route() {
         List<RouteVO> list = new ArrayList<>();
-        ExecRouteStrategyEnum[] routeStrategyEnums = ExecRouteStrategyEnum.values();
-        for (ExecRouteStrategyEnum strategyEnum : routeStrategyEnums) {
+        RouteStrategyEnum[] routeStrategyEnums = RouteStrategyEnum.values();
+        for (RouteStrategyEnum strategyEnum : routeStrategyEnums) {
             list.add(new RouteVO(strategyEnum.getName(), strategyEnum.getDesc()));
         }
         return new ResultT<>(list);

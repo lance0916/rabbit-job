@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
  * @author 吴庆龙
  * @date 2020/6/4 11:23 上午
  */
-public abstract class ExecRouter {
-    protected final Logger log = LoggerFactory.getLogger(ExecRouter.class);
+public abstract class ClientRouter {
+    protected final Logger log = LoggerFactory.getLogger(ClientRouter.class);
 
     /**
      * route address
