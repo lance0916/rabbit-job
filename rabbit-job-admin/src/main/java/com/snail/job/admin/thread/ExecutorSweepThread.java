@@ -1,9 +1,9 @@
 package com.snail.job.admin.thread;
 
-import com.snail.job.admin.entity.Application;
-import com.snail.job.admin.entity.Executor;
-import com.snail.job.admin.repository.ApplicationRepository;
-import com.snail.job.admin.repository.ExecutorRepository;
+import com.snail.job.admin.model.App;
+import com.snail.job.admin.model.Executor;
+import com.snail.job.admin.service.IAppService;
+import com.snail.job.admin.service.IExecutorService;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +17,7 @@ import static com.snail.job.common.constant.CommonConstants.BEAT_TIME_OUT;
 
 /**
  * 清理无效的执行器
+ *
  * @author 吴庆龙
  * @date 2020/6/4 11:23 上午
  */
@@ -24,16 +25,16 @@ import static com.snail.job.common.constant.CommonConstants.BEAT_TIME_OUT;
 public class ExecutorSweepThread extends RabbitJobAbstractThread {
 
     @Resource
-    private ExecutorRepository executorRepository;
+    private IExecutorService executorService;
     @Resource
-    private ApplicationRepository applicationRepository;
+    private IAppService appService;
 
     @Override
     public void doRun() throws InterruptedException {
         long startMillis = System.currentTimeMillis();
 
         // 获取所有的执行器
-        List<Executor> executors = executorRepository.findAll();
+        List<Executor> executors = executorService.list();
 
         // 判断执行器的更新时间，是否超过了三个注册间隔时间
         LocalDateTime timeOutDateTime = LocalDateTime.now().minusSeconds(BEAT_TIME_OUT);
@@ -45,7 +46,7 @@ public class ExecutorSweepThread extends RabbitJobAbstractThread {
             LocalDateTime updateTime = executor.getUpdateTime();
             if (timeOutDateTime.isAfter(updateTime)) {
                 // 软删除
-                executor.setDeleted((byte) 1);
+                executor.setDeleted(1);
                 invalidExecutors.add(executor);
 
                 // 清空不需要更新的属性
@@ -59,7 +60,7 @@ public class ExecutorSweepThread extends RabbitJobAbstractThread {
         }
 
         // 批量更新，执行软删
-        executorRepository.saveAllAndFlush(invalidExecutors);
+        executorService.saveOrUpdateBatch(invalidExecutors);
 
         // 加入更新本地缓存
         Map<String, Set<String>> appNameAddressMap = new HashMap<>();
@@ -71,11 +72,11 @@ public class ExecutorSweepThread extends RabbitJobAbstractThread {
         }
 
         // 查询所有应用集合
-        List<Application> applications = applicationRepository.findAll();
+        List<App> applications = appService.list();
 
         // 整理执行器地址
         LocalDateTime updateLocalTime = LocalDateTime.now();
-        List<Application> updateApplicationList = applications.stream()
+        List<App> updateApplicationList = applications.stream()
                 .filter(app -> appNameAddressMap.containsKey(app.getName()))
                 .peek(app -> {
                     Set<String> addresses = appNameAddressMap.get(app.getName());
@@ -88,7 +89,7 @@ public class ExecutorSweepThread extends RabbitJobAbstractThread {
                     app.setCreateTime(null);
                 }).collect(Collectors.toList());
         // 更新执行器地址
-        applicationRepository.saveAllAndFlush(updateApplicationList);
+        appService.saveOrUpdateBatch(updateApplicationList);
 
         // 休眠
         long costMillis = System.currentTimeMillis() - startMillis;

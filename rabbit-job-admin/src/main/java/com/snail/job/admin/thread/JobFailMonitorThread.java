@@ -1,9 +1,12 @@
 package com.snail.job.admin.thread;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.snail.job.admin.alarm.JobAlarm;
 import com.snail.job.admin.entity.AlarmLog;
-import com.snail.job.admin.entity.JobInfo;
-import com.snail.job.admin.entity.JobLog;
+import com.snail.job.admin.mapper.JobInfoMapper;
+import com.snail.job.admin.mapper.JobLogMapper;
+import com.snail.job.admin.model.JobLog;
+import com.snail.job.admin.service.IJobLogService;
 import com.snail.job.admin.service.trigger.TriggerPoolService;
 import com.snail.job.admin.repository.AlarmLogRepository;
 import com.snail.job.admin.repository.JobInfoRepository;
@@ -39,6 +42,12 @@ public class JobFailMonitorThread extends RabbitJobAbstractThread {
     @Resource
     private TriggerPoolService triggerPoolService;
 
+    @Resource
+    private JobInfoMapper jobInfoMapper;
+    @Resource
+    private IJobLogService jobLogService;
+
+
     /**
      * 报警方式集合
      */
@@ -57,7 +66,7 @@ public class JobFailMonitorThread extends RabbitJobAbstractThread {
          */
 
         // 查询所有需要告警的任务日志
-        List<JobLog> failJobLogList = jobLogRepository.findAllFailJobLog();
+        List<JobLog> failJobLog = jobLogService.findAllFailJobLog();
 
         // 批量持久化告警日志
         List<AlarmLog> alarmLogList = new ArrayList<>();
