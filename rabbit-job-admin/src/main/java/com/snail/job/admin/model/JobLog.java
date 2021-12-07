@@ -28,7 +28,7 @@ public class JobLog {
     /**
      * 任务，主键ID
      */
-    private Integer jobId;
+    private Long jobId;
 
     /**
      * 任务组名

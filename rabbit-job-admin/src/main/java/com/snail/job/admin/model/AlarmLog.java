@@ -18,27 +18,32 @@ import lombok.experimental.Accessors;
  */
 @Getter
 @Setter
-@Accessors(chain = true)
+@Accessors(fluent = true)
 @TableName("alarm_log")
 public class AlarmLog {
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 日志id
      */
-    private Integer logId;
+    private Long logId;
 
     /**
      * 任务id
      */
-    private Integer jobId;
+    private Long jobId;
 
     /**
      * 告警方式
      */
     private String method;
+
+    /**
+     * 告警结果
+     */
+    private Integer ret;
 
     /**
      * 告警信息

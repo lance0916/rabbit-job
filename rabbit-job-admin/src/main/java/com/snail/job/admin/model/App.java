@@ -21,7 +21,7 @@ import lombok.experimental.Accessors;
 public class App {
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 应用名称

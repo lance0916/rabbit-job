@@ -23,7 +23,7 @@ import lombok.experimental.Accessors;
 public class JobLogReport {
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 调度日期

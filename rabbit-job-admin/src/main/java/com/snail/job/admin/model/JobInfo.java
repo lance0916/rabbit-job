@@ -23,7 +23,7 @@ import lombok.experimental.Accessors;
 public class JobInfo {
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 任务名称

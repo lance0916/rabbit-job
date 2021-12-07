@@ -1,31 +1,26 @@
 package com.snail.job.admin.thread;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.snail.job.admin.alarm.JobAlarm;
-import com.snail.job.admin.entity.AlarmLog;
-import com.snail.job.admin.mapper.JobInfoMapper;
-import com.snail.job.admin.mapper.JobLogMapper;
+import com.snail.job.admin.model.JobInfo;
 import com.snail.job.admin.model.JobLog;
+import com.snail.job.admin.service.IJobInfoService;
 import com.snail.job.admin.service.IJobLogService;
 import com.snail.job.admin.service.trigger.TriggerPoolService;
-import com.snail.job.admin.repository.AlarmLogRepository;
-import com.snail.job.admin.repository.JobInfoRepository;
-import com.snail.job.admin.repository.JobLogRepository;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.snail.job.admin.constant.AdminConstants.FAIL_MONITOR_INTERVAL;
-import static com.snail.job.common.enums.TriggerType.RETRY;
 import static com.snail.job.common.enums.AlarmStatus.ALARM_FINISH;
+import static com.snail.job.common.enums.TriggerType.RETRY;
 
 /**
  * 扫描调度失败的任务，进行重新调度或报警
  * 每秒钟执行一次
+ *
  * @author 吴庆龙
  * @date 2020/7/20 10:40 上午
  */
@@ -33,19 +28,12 @@ import static com.snail.job.common.enums.AlarmStatus.ALARM_FINISH;
 public class JobFailMonitorThread extends RabbitJobAbstractThread {
 
     @Resource
-    private JobInfoRepository jobInfoRepository;
-    @Resource
-    private JobLogRepository jobLogRepository;
-    @Resource
-    private AlarmLogRepository alarmLogRepository;
-
-    @Resource
     private TriggerPoolService triggerPoolService;
 
     @Resource
-    private JobInfoMapper jobInfoMapper;
-    @Resource
     private IJobLogService jobLogService;
+    @Resource
+    private IJobInfoService jobInfoService;
 
 
     /**
@@ -66,22 +54,17 @@ public class JobFailMonitorThread extends RabbitJobAbstractThread {
          */
 
         // 查询所有需要告警的任务日志
-        List<JobLog> failJobLog = jobLogService.findAllFailJobLog();
-
-        // 批量持久化告警日志
-        List<AlarmLog> alarmLogList = new ArrayList<>();
-
+        List<JobLog> failJobLogList = jobLogService.findAllFailJobLog();
         for (JobLog jobLog : failJobLogList) {
-            Optional<JobInfo> jobInfoOptional = jobInfoRepository.findById(jobLog.getJobId());
-            if (!jobInfoOptional.isPresent()) {
+            JobInfo jobInfo = jobInfoService.getById(jobLog.getJobId());
+            if (jobInfo == null) {
                 // 将任务设置为失败
                 log.error("任务日志中的jobId没有对应的记录。jobLogId:{}", jobLog.getId());
                 continue;
             }
-            JobInfo jobInfo = jobInfoOptional.get();
 
             // 重新调度
-            Byte failRetryCount = jobLog.getFailRetryCount();
+            Integer failRetryCount = jobLog.getFailRetryCount();
             if (failRetryCount > 0) {
                 // 下次任务的重试次数
                 int finalFailRetryCount = failRetryCount - 1;
@@ -92,30 +75,20 @@ public class JobFailMonitorThread extends RabbitJobAbstractThread {
 
             // 告警
             for (JobAlarm jobAlarm : jobAlarmList) {
-                boolean result = jobAlarm.doAlarm(jobInfo, jobLog);
-
-                // 持久化告警记录
-                AlarmLog alarmLog = AlarmLog.builder()
-                        .jobId(jobInfo.getId())
-                        .jobLogId(jobLog.getId())
-                        .ret((byte) (result ? 1 : 0))
-                        .build();
-                alarmLogList.add(alarmLog);
+                jobAlarm.doAlarm(jobInfo, jobLog);
             }
         }
-
-        alarmLogRepository.saveAllAndFlush(alarmLogList);
 
         // 批量更新告警状态
         List<JobLog> updateJobLogList = new ArrayList<>(failJobLogList.size());
         for (JobLog jobLog : failJobLogList) {
-            JobLog updateJobLog = JobLog.builder()
-                    .id(jobLog.getId())
-                    .alarmStatus(ALARM_FINISH.getValue())
-                    .build();
+            JobLog updateJobLog = new JobLog()
+                    .setId(jobLog.getId())
+                    .setAlarmStatus(ALARM_FINISH.getValue());
             updateJobLogList.add(updateJobLog);
         }
-        jobLogRepository.saveAllAndFlush(updateJobLogList);
+        // TODO 测试是否会更新其它字段
+        jobLogService.updateBatchById(updateJobLogList);
 
         // 休眠
         long costMillis = System.currentTimeMillis() - startMillis;

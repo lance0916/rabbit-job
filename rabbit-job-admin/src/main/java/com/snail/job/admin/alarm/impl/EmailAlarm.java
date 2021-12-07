@@ -1,8 +1,8 @@
 package com.snail.job.admin.alarm.impl;
 
-import com.snail.job.admin.entity.JobInfo;
-import com.snail.job.admin.entity.JobLog;
 import com.snail.job.admin.alarm.JobAlarm;
+import com.snail.job.admin.model.JobInfo;
+import com.snail.job.admin.model.JobLog;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,8 +14,7 @@ import org.springframework.stereotype.Component;
 public class EmailAlarm implements JobAlarm {
 
     @Override
-    public boolean doAlarm(JobInfo info, JobLog log) {
-        return true;
+    public void doAlarm(JobInfo info, JobLog log) {
     }
 
 }

@@ -1,9 +1,10 @@
 package com.snail.job.admin.thread;
 
-import com.snail.job.admin.entity.JobLog;
-import com.snail.job.admin.entity.JobLogReport;
-import com.snail.job.admin.repository.JobLogReportRepository;
-import com.snail.job.admin.repository.JobLogRepository;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.snail.job.admin.model.JobLog;
+import com.snail.job.admin.model.JobLogReport;
+import com.snail.job.admin.service.IJobLogReportService;
+import com.snail.job.admin.service.IJobLogService;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +24,9 @@ import static com.snail.job.admin.constant.AdminConstants.JOB_REPORT_INTERVAL;
 public class JobLogReportThread extends RabbitJobAbstractThread {
 
     @Resource
-    private JobLogRepository jobLogRepository;
+    private IJobLogService jobLogService;
     @Resource
-    private JobLogReportRepository jobLogReportRepository;
+    private IJobLogReportService jobLogReportService;
 
     @Override
     protected void doRun() throws InterruptedException {
@@ -37,7 +38,10 @@ public class JobLogReportThread extends RabbitJobAbstractThread {
         LocalDateTime endTime = beginTime.plusDays(1);
 
         // 统计当天的任务执行情况
-        List<JobLog> todayJobLogs = jobLogRepository.findAllTodayJobLog(beginTime, endTime);
+        QueryWrapper<JobLog> logQueryWrapper = new QueryWrapper<>();
+        logQueryWrapper.between("trigger_time", beginTime, endTime);
+        List<JobLog> todayJobLogs = jobLogService.list(logQueryWrapper);
+
         int successCount = 0, failCount = 0, runningCount = 0;
         for (JobLog log : todayJobLogs) {
             Integer triggerCode = log.getTriggerCode();
@@ -52,7 +56,9 @@ public class JobLogReportThread extends RabbitJobAbstractThread {
         }
 
         // 更新 job_log_report
-        JobLogReport jobLogReport = jobLogReportRepository.findAllByTriggerDateEquals(todayDate);
+        QueryWrapper<JobLogReport> reportQueryWrapper = new QueryWrapper<>();
+        reportQueryWrapper.eq("trigger_date", todayDate);
+        JobLogReport jobLogReport = jobLogReportService.getOne(reportQueryWrapper);
         if (jobLogReport == null) {
             jobLogReport = new JobLogReport();
         }
@@ -60,7 +66,7 @@ public class JobLogReportThread extends RabbitJobAbstractThread {
         jobLogReport.setRunningCount(runningCount);
         jobLogReport.setSuccessCount(successCount);
         jobLogReport.setFailCount(failCount);
-        jobLogReportRepository.saveAndFlush(jobLogReport);
+        jobLogReportService.saveOrUpdate(jobLogReport);
 
         // 每分钟执行一次
         long costMillis = System.currentTimeMillis() - startMillis;

@@ -33,26 +33,8 @@ public class JobScheduleThread extends RabbitJobAbstractThread {
     @Resource
     private JobInfoRepository jobInfoRepository;
 
-    /**
-     * TODO 获取分布式锁
-     * @return true:成功；false:失败
-     */
-    public boolean tryLock() {
-        return false;
-    }
-
-    /**
-     * TODO 释放分布式锁
-     */
-    public void unlock() {
-    }
-
     @Override
     protected void doRun() throws InterruptedException {
-        if (!tryLock()) {
-            return;
-        }
-
         long startMillis = System.currentTimeMillis();
         long curTimeInSecond = startMillis / 1000;
 
@@ -123,8 +105,7 @@ public class JobScheduleThread extends RabbitJobAbstractThread {
     }
 
     @Override
-    protected void finallyWithRun() {
-        unlock();
+    protected void afterDoRun() {
     }
 
     @Override

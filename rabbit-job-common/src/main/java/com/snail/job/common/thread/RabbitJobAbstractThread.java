@@ -70,7 +70,7 @@ public abstract class RabbitJobAbstractThread {
      * 每次 run 之后执行
      * 在 finally 中执行，不受异常影响
      */
-    protected void finallyWithRun() {
+    protected void afterDoRun() {
     }
 
     /**
@@ -109,7 +109,7 @@ public abstract class RabbitJobAbstractThread {
                 } catch (Exception e) {
                     log.error("执行异常！{}", StrTool.stringifyException(e));
                 } finally {
-                    finallyWithRun();
+                    afterDoRun();
                 }
             }
 

@@ -89,7 +89,7 @@ public class ExecutorSweepThread extends RabbitJobAbstractThread {
                     app.setCreateTime(null);
                 }).collect(Collectors.toList());
         // 更新执行器地址
-        appService.saveOrUpdateBatch(updateApplicationList);
+        appService.updateBatchById(updateApplicationList);
 
         // 休眠
         long costMillis = System.currentTimeMillis() - startMillis;
