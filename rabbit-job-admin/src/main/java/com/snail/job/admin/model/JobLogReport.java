@@ -3,16 +3,16 @@ package com.snail.job.admin.model;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDate;
+
 /**
  * <p>
- * 
- * </p>
  *
+ * </p>
  * @author WuQinglong
  * @since 2021-12-06
  */

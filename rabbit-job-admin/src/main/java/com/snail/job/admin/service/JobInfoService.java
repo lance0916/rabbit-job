@@ -1,76 +1,68 @@
 package com.snail.job.admin.service;
 
-import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
-import com.snail.job.admin.entity.JobInfo;
-import com.snail.job.admin.repository.JobInfoRepository;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.snail.job.admin.bean.request.JobInfoQueryRequest;
+import com.snail.job.admin.mapper.JobInfoMapper;
+import com.snail.job.admin.model.JobInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.support.CronExpression;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
 import java.time.Clock;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 
 import static com.snail.job.admin.constant.AdminConstants.SCAN_JOB_SLEEP_MS;
 import static com.snail.job.common.enums.TriggerStatus.RUNNING;
 import static com.snail.job.common.enums.TriggerStatus.STOPPED;
 
 /**
- * @author 吴庆龙
- * @date 2020/7/27 10:37 上午
+ * <p>
+ * 服务实现类
+ * </p>
+ * @author WuQinglong
+ * @since 2021-12-06
  */
 @Slf4j
 @Service
-public class JobInfoService {
-
-    @Resource
-    private JobInfoRepository jobInfoRepository;
+public class JobInfoService extends ServiceImpl<JobInfoMapper, JobInfo> {
 
     /**
      * 分页查询
      */
-    public Page<JobInfo> list(String name, String appName, String authorName, Byte triggerStatus,
-                              Integer pageNum, Integer pageSize) {
-        PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
-        return jobInfoRepository.findAll((Specification<JobInfo>) (root, query, builder) -> {
-            Predicate predicate = builder.conjunction();
-            List<Expression<Boolean>> expressions = predicate.getExpressions();
-            if (StrUtil.isNotEmpty(name)) {
-                expressions.add(builder.like(root.get("name"), "%" + name + "%"));
-            }
-            if (StrUtil.isNotEmpty(appName)) {
-                expressions.add(builder.like(root.get("appName"), "%" + appName + "%"));
-            }
-            if (StrUtil.isNotEmpty(authorName)) {
-                expressions.add(builder.like(root.get("authorName"), "%" + authorName + "%"));
-            }
-            if (triggerStatus != null) {
-                expressions.add(builder.equal(root.get("triggerStatus"), triggerStatus));
-            }
-            return predicate;
-        }, pageRequest);
+    public IPage<JobInfo> listByPage(JobInfoQueryRequest request) {
+        QueryWrapper<JobInfo> queryWrapper = new QueryWrapper<>();
+        if (StrUtil.isNotEmpty(request.getName())) {
+            queryWrapper.like("name", request.getName());
+        }
+        if (StrUtil.isNotEmpty(request.getAppName())) {
+            queryWrapper.like("appName", request.getAppName());
+        }
+        if (StrUtil.isNotEmpty(request.getAuthorName())) {
+            queryWrapper.like("authorName", request.getAuthorName());
+        }
+        if (request.getTriggerStatus() != null) {
+            queryWrapper.eq("triggerStatus", request.getTriggerStatus());
+        }
+
+        IPage<JobInfo> page = new Page<>(request.getPageNum(), request.getPageSize());
+        return super.page(page, queryWrapper);
     }
 
     /**
      * 开始运行任务
      */
     public void start(Long id) {
-        Optional<JobInfo> jobInfoOptional = jobInfoRepository.findById(id);
-        if (!jobInfoOptional.isPresent()) {
+        JobInfo jobInfo = super.getById(id);
+        if (jobInfo == null) {
             log.warn("任务不存在。id={}", id);
             return;
         }
-        JobInfo jobInfo = jobInfoOptional.get();
 
         // 计算任务的下次执行时间
         CronExpression cronExpression = CronExpression.parse(jobInfo.getCron());
@@ -84,48 +76,32 @@ public class JobInfoService {
         JobInfo updateJobInfo = new JobInfo();
         updateJobInfo.setId(jobInfo.getId());
         if (nextTriggerTime != null) {
-            updateJobInfo.setNextTriggerTime(nextTriggerTime.getEpochSecond());
+            updateJobInfo.setTriggerNextTime(nextTriggerTime.getEpochSecond());
             updateJobInfo.setTriggerStatus(RUNNING.getValue());
         } else {
-            updateJobInfo.setPrevTriggerTime(0L);
-            updateJobInfo.setNextTriggerTime(0L);
+            updateJobInfo.setTriggerPrevTime(0L);
+            updateJobInfo.setTriggerNextTime(0L);
             updateJobInfo.setTriggerStatus(STOPPED.getValue());
         }
-        jobInfoRepository.saveAndFlush(updateJobInfo);
+        super.updateById(updateJobInfo);
     }
 
     /**
      * 停止任务
      */
     public void stop(Long id) {
-        Optional<JobInfo> jobInfoOptional = jobInfoRepository.findById(id);
-        if (!jobInfoOptional.isPresent()) {
+        JobInfo jobInfo = super.getById(id);
+        if (jobInfo == null) {
             log.warn("任务不存在。id={}", id);
             return;
         }
-        JobInfo jobInfo = jobInfoOptional.get();
 
         // 更新
         JobInfo updateJobInfo = new JobInfo();
         updateJobInfo.setId(jobInfo.getId());
-        updateJobInfo.setNextTriggerTime(0L);
+        updateJobInfo.setTriggerNextTime(0L);
         updateJobInfo.setTriggerStatus(STOPPED.getValue());
-        jobInfoRepository.saveAndFlush(updateJobInfo);
-    }
-
-    /**
-     * 保存 或 更新
-     */
-    public void saveOrUpdate(JobInfo info) {
-        // Cron 表达式是否正确
-        Assert.isTrue(CronExpression.isValidExpression(info.getCron()), "Cron表达式不正确");
-
-        if (info.getId() == null) {
-            info.setCreateTime(LocalDateTime.now());
-        } else {
-            info.setUpdateTime(LocalDateTime.now());
-        }
-        jobInfoRepository.saveAndFlush(info);
+        super.updateById(updateJobInfo);
     }
 
     /**
@@ -133,13 +109,16 @@ public class JobInfoService {
      * TODO 执行软删
      */
     public void delete(Long id) {
-        jobInfoRepository.deleteById(id);
+        super.removeById(id);
     }
 
     /**
      * 列出分组下的所有任务
      */
     public List<JobInfo> listByAppName(String appName) {
-        return jobInfoRepository.findAllByAppName(appName);
+        QueryWrapper<JobInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id", "name").eq("app_name", appName);
+        return super.list(queryWrapper);
     }
+
 }

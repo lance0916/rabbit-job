@@ -1,13 +1,15 @@
 package com.snail.job.admin.service.trigger;
 
 import cn.hutool.core.util.StrUtil;
-import com.snail.job.admin.entity.Executor;
-import com.snail.job.admin.entity.JobLog;
-import com.snail.job.admin.repository.ExecutorRepository;
-import com.snail.job.admin.repository.JobLogRepository;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.snail.job.admin.model.Executor;
+import com.snail.job.admin.model.JobLog;
+import com.snail.job.admin.service.ExecutorService;
+import com.snail.job.admin.service.JobLogService;
 import com.snail.job.common.model.CallbackParam;
 import com.snail.job.common.model.RegistryParam;
 import com.snail.job.common.model.ResultT;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -20,15 +22,16 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author 吴庆龙
  * @date 2020/6/3 11:34 上午
  */
+@Slf4j
 @Component
 public class JobAdminService {
 
     @Resource(name = "apiThreadPool")
     private ThreadPoolExecutor apiThreadPool;
     @Resource
-    private ExecutorRepository executorRepository;
+    private ExecutorService executorService;
     @Resource
-    private JobLogRepository jobLogRepository;
+    private JobLogService jobLogService;
 
     /**
      * 心跳监测
@@ -48,27 +51,25 @@ public class JobAdminService {
         }
 
         // 查询是否存在
-        Executor dbExecutor = executorRepository.findFirstByAppNameEqualsAndAddressEquals(appName, address);
-        Executor updateExecutor;
+        QueryWrapper<Executor> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("app_name", appName).eq("address", address);
+        Executor dbExecutor = executorService.getOne(queryWrapper);
+        Executor executor;
         if (dbExecutor == null) {
             // 新增
-            updateExecutor = Executor.builder()
-                    .appName(appName)
-                    .address(address)
-                    .deleted((byte) 0)
-                    .createTime(LocalDateTime.now())
-                    .updateTime(LocalDateTime.now())
-                    .build();
+            executor = new Executor()
+                    .setAppName(appName)
+                    .setAddress(address)
+                    .setCreateTime(LocalDateTime.now());
         } else {
             // 更新
-            updateExecutor = Executor.builder()
-                    .id(dbExecutor.getId())
-                    .deleted((byte) 0)
-                    .updateTime(LocalDateTime.now())
-                    .build();
+            executor = new Executor()
+                    .setId(dbExecutor.getId());
         }
-        executorRepository.saveAndFlush(updateExecutor);
+        executor.setDeleted(0)
+                .setUpdateTime(LocalDateTime.now());
 
+        executorService.saveOrUpdate(executor);
         return ResultT.SUCCESS;
     }
 
@@ -83,18 +84,19 @@ public class JobAdminService {
         }
 
         // 查询是否存在
-        Executor dbExecutor = executorRepository.findFirstByAppNameEqualsAndAddressEquals(appName, address);
+        QueryWrapper<Executor> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("app_name", appName).eq("address", address);
+        Executor dbExecutor = executorService.getOne(queryWrapper);
         if (dbExecutor == null) {
             return new ResultT<>(ResultT.FAIL_CODE, "执行器不存在");
         }
 
         // 从 executor 表中移除，并从执行地址中移除
-        Executor executor = Executor.builder()
-                .id(dbExecutor.getId())
-                .deleted((byte) 1)
-                .build();
-        executorRepository.saveAndFlush(executor);
-
+        Executor executor = new Executor()
+                .setId(dbExecutor.getId())
+                .setDeleted(1)
+                .setUpdateTime(LocalDateTime.now());
+        executorService.updateById(executor);
         return ResultT.SUCCESS;
     }
 
@@ -114,9 +116,13 @@ public class JobAdminService {
                 Long logId = param.getLogId();
 
                 // 查询任务日志
-                Integer dbExecCode = jobLogRepository.findExecCodeById(logId);
-                // 非 null，说明此任务已经回调过了
-                if (dbExecCode != null) {
+                JobLog jobLog = jobLogService.getById(logId);
+                if (jobLog == null) {
+                    log.error("任务不存在，logId:{}", logId);
+                    continue;
+                }
+                if (jobLog.getExecCode() != 0) {
+                    log.error("任务已回调，logId:{}", logId);
                     continue;
                 }
 
@@ -124,18 +130,17 @@ public class JobAdminService {
                 LocalDateTime endExecTime = param.getEndExecTime();
 
                 // 更新 JobLog 执行结果
-                JobLog updateLog = JobLog.builder()
-                        .id(logId)
-                        .execCode(param.getExecCode())
-                        .execMsg(param.getExecMsg())
-                        .execBeginTime(param.getBeginExecTime())
-                        .execEndTime(param.getEndExecTime())
-                        .build();
+                JobLog updateLog = new JobLog()
+                        .setId(logId)
+                        .setExecCostTime(param.getExecCode())
+                        .setExecMsg(param.getExecMsg())
+                        .setExecBeginTime(param.getBeginExecTime())
+                        .setExecEndTime(param.getEndExecTime());
                 if (beginExecTime != null && endExecTime != null) {
                     Duration duration = Duration.between(beginExecTime, endExecTime);
                     updateLog.setExecCostTime((int) duration.toMillis());
                 }
-                jobLogRepository.saveAndFlush(updateLog);
+                jobLogService.updateById(updateLog);
             }
         });
         return ResultT.SUCCESS;

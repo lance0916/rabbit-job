@@ -3,8 +3,8 @@ package com.snail.job.admin.thread;
 import com.snail.job.admin.alarm.JobAlarm;
 import com.snail.job.admin.model.JobInfo;
 import com.snail.job.admin.model.JobLog;
-import com.snail.job.admin.service.IJobInfoService;
-import com.snail.job.admin.service.IJobLogService;
+import com.snail.job.admin.service.JobInfoService;
+import com.snail.job.admin.service.JobLogService;
 import com.snail.job.admin.service.trigger.TriggerPoolService;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,6 @@ import static com.snail.job.common.enums.TriggerType.RETRY;
 /**
  * 扫描调度失败的任务，进行重新调度或报警
  * 每秒钟执行一次
- *
  * @author 吴庆龙
  * @date 2020/7/20 10:40 上午
  */
@@ -31,10 +30,9 @@ public class JobFailMonitorThread extends RabbitJobAbstractThread {
     private TriggerPoolService triggerPoolService;
 
     @Resource
-    private IJobLogService jobLogService;
+    private JobLogService jobLogService;
     @Resource
-    private IJobInfoService jobInfoService;
-
+    private JobInfoService jobInfoService;
 
     /**
      * 报警方式集合

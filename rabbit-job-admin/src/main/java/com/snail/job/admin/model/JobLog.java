@@ -3,16 +3,16 @@ package com.snail.job.admin.model;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
+
 /**
  * <p>
- * 
- * </p>
  *
+ * </p>
  * @author WuQinglong
  * @since 2021-12-06
  */
@@ -64,6 +64,11 @@ public class JobLog {
      * 调度-时间
      */
     private LocalDateTime triggerTime;
+
+    /**
+     * 调度-类型
+     */
+    private String triggerType;
 
     /**
      * 调度-结果码

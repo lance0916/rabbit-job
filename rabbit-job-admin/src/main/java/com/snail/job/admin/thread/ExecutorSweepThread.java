@@ -2,8 +2,8 @@ package com.snail.job.admin.thread;
 
 import com.snail.job.admin.model.App;
 import com.snail.job.admin.model.Executor;
-import com.snail.job.admin.service.IAppService;
-import com.snail.job.admin.service.IExecutorService;
+import com.snail.job.admin.service.AppService;
+import com.snail.job.admin.service.ExecutorService;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,6 @@ import static com.snail.job.common.constant.CommonConstants.BEAT_TIME_OUT;
 
 /**
  * 清理无效的执行器
- *
  * @author 吴庆龙
  * @date 2020/6/4 11:23 上午
  */
@@ -25,9 +24,9 @@ import static com.snail.job.common.constant.CommonConstants.BEAT_TIME_OUT;
 public class ExecutorSweepThread extends RabbitJobAbstractThread {
 
     @Resource
-    private IExecutorService executorService;
+    private ExecutorService executorService;
     @Resource
-    private IAppService appService;
+    private AppService appService;
 
     @Override
     public void doRun() throws InterruptedException {

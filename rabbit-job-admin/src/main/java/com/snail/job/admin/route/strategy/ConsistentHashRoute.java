@@ -1,7 +1,7 @@
 package com.snail.job.admin.route.strategy;
 
 import cn.hutool.core.util.HashUtil;
-import com.snail.job.admin.route.ClientRouter;
+import com.snail.job.admin.route.RouterStrategy;
 
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -11,7 +11,7 @@ import java.util.TreeMap;
  * @author 吴庆龙
  * @date 2020/6/17 10:11 上午
  */
-public class ConsistentHashRoute extends ClientRouter {
+public class ConsistentHashRoute extends RouterStrategy {
 
     /**
      * 每个真实节点对应虚拟节点的数量

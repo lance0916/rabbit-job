@@ -1,15 +1,15 @@
 package com.snail.job.admin.service.trigger;
 
-import com.snail.job.admin.biz.RouteStrategyBiz;
-import com.snail.job.admin.entity.Application;
-import com.snail.job.admin.entity.JobInfo;
-import com.snail.job.admin.entity.JobLog;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.snail.job.admin.biz.JobExecutorBiz;
-import com.snail.job.admin.repository.ApplicationRepository;
-import com.snail.job.admin.repository.JobInfoRepository;
-import com.snail.job.admin.repository.JobLogRepository;
+import com.snail.job.admin.model.App;
+import com.snail.job.admin.model.JobInfo;
+import com.snail.job.admin.model.JobLog;
+import com.snail.job.admin.route.RouterStrategy;
 import com.snail.job.admin.route.RouteStrategyEnum;
-import com.snail.job.admin.route.ClientRouter;
+import com.snail.job.admin.service.AppService;
+import com.snail.job.admin.service.JobInfoService;
+import com.snail.job.admin.service.JobLogService;
 import com.snail.job.common.enums.AlarmStatus;
 import com.snail.job.common.enums.TriggerType;
 import com.snail.job.common.model.ResultT;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * 进行任务的调度
@@ -31,15 +30,13 @@ import java.util.Optional;
 public class JobTriggerService {
 
     @Resource
-    private JobInfoRepository jobInfoRepository;
-    @Resource
-    private JobLogRepository jobLogRepository;
-    @Resource
-    private ApplicationRepository applicationRepository;
-    @Resource
     private JobExecutorBiz jobExecutorBiz;
     @Resource
-    private RouteStrategyBiz routeStrategyBiz;
+    private JobInfoService jobInfoService;
+    @Resource
+    private AppService appService;
+    @Resource
+    private JobLogService jobLogService;
 
     /**
      * 触发 Job
@@ -50,12 +47,11 @@ public class JobTriggerService {
      */
     public void trigger(Long jobId, Integer overrideFailRetryCount, String overrideExecParam, TriggerType triggerType) {
         // 查询任务信息
-        Optional<JobInfo> jobInfoOptional = jobInfoRepository.findById(jobId);
-        if (!jobInfoOptional.isPresent()) {
+        JobInfo jobInfo = jobInfoService.getById(jobId);
+        if (jobInfo == null) {
             log.error("任务不存在，jobId={}", jobId);
             return;
         }
-        JobInfo jobInfo = jobInfoOptional.get();
 
         // 优先使用传入的调度参数
         if (overrideExecParam != null) {
@@ -64,11 +60,13 @@ public class JobTriggerService {
 
         // 优先使用参数的值
         if (overrideFailRetryCount != null && overrideFailRetryCount >= 0) {
-            jobInfo.setExecFailRetryCount(overrideFailRetryCount.byteValue());
+            jobInfo.setExecFailRetryCount(overrideFailRetryCount);
         }
 
         // 获取执行器地址列表
-        Application application = applicationRepository.findFirstByNameEquals(jobInfo.getAppName());
+        QueryWrapper<App> appQueryWrapper = new QueryWrapper<>();
+        appQueryWrapper.eq("name", jobInfo.getAppName());
+        App application = appService.getOne(appQueryWrapper);
         String addresses = application.getAddresses();
         String[] addressArray = addresses.split(",");
 
@@ -84,7 +82,7 @@ public class JobTriggerService {
             }
         } else {
             // 非广播执行，选择一个执行器执行
-            ClientRouter router = routeStrategyBiz.match(jobInfo.getExecRouteStrategy());
+            RouterStrategy router = RouteStrategyEnum.match(jobInfo.getExecRouteStrategy());
             String executorAddress = router.route(jobId, addressArray);
 
             // 进行调度
@@ -98,12 +96,11 @@ public class JobTriggerService {
     private void doTrigger(JobInfo jobInfo, String executorAddress, TriggerType triggerType,
                            Integer shareIndex, Integer shareTotal) {
         // 预先插入日志，获取日志id
-        JobLog jobLog = JobLog.builder()
-                .jobId(jobInfo.getId())
-                .appName(jobInfo.getAppName())
-                .triggerType(triggerType.name())
-                .build();
-        jobLogRepository.saveAndFlush(jobLog);
+        JobLog jobLog = new JobLog()
+                .setJobId(jobInfo.getId())
+                .setAppName(jobInfo.getAppName())
+                .setTriggerType(triggerType.name());
+        jobLogService.save(jobLog);
 
         // 初始化触发参数
         TriggerParam tp = new TriggerParam();
@@ -124,22 +121,21 @@ public class JobTriggerService {
         }
 
         // 更新日志的调度信息
-        JobLog updateLog = JobLog.builder()
-                .id(jobLog.getId())
+        JobLog updateLog = new JobLog()
+                .setId(jobLog.getId())
                 // 执行参数
-                .execAddress(executorAddress)
-                .execHandler(jobInfo.getExecHandler())
-                .execParam(jobInfo.getExecParam())
-                .failRetryCount(jobInfo.getExecFailRetryCount())
+                .setExecAddress(executorAddress)
+                .setExecHandler(jobInfo.getExecHandler())
+                .setExecParam(jobInfo.getExecParam())
+                .setFailRetryCount(jobInfo.getExecFailRetryCount())
                 // 调度信息
-                .triggerCode(triggerResult.getCode())
-                .triggerMsg(triggerResult.getMsg())
-                .triggerTime(LocalDateTime.now())
+                .setTriggerTime(LocalDateTime.now())
+                .setTriggerCode(triggerResult.getCode())
+                .setTriggerMsg(triggerResult.getMsg())
                 // 告警状态
-                .alarmStatus(AlarmStatus.WAIT_ALARM.getValue())
-                .build();
+                .setAlarmStatus(AlarmStatus.WAIT_ALARM.getValue());
         // execTime、execCode和execMsg 在回调中填充
-        jobLogRepository.saveAndFlush(updateLog);
+        jobLogService.updateById(updateLog);
     }
 
 }

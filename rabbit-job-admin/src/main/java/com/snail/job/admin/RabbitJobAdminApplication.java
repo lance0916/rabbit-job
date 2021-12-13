@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date 2021/9/5 6:19 下午
  */
 @SpringBootApplication
-@MapperScan(basePackages = "com.snail.job.admin.mapper")
 public class RabbitJobAdminApplication {
 
     public static void main(String[] args) {

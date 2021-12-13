@@ -1,6 +1,6 @@
-package com.snail.job.admin.controller.vo;
+package com.snail.job.admin.bean.vo;
 
-import com.snail.job.admin.entity.JobLog;
+import com.snail.job.admin.model.JobLog;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

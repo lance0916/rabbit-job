@@ -1,4 +1,4 @@
-package com.snail.job.admin.controller.vo;
+package com.snail.job.admin.bean.vo;
 
 import lombok.*;
 

@@ -1,8 +1,9 @@
 package com.snail.job.admin.thread;
 
-import com.snail.job.admin.entity.JobInfo;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.snail.job.admin.model.JobInfo;
+import com.snail.job.admin.service.JobInfoService;
 import com.snail.job.admin.service.trigger.TriggerPoolService;
-import com.snail.job.admin.repository.JobInfoRepository;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
 import org.springframework.scheduling.support.CronExpression;
 import org.springframework.stereotype.Component;
@@ -16,9 +17,9 @@ import java.util.List;
 
 import static com.snail.job.admin.constant.AdminConstants.JOB_PRE_SCAN_TIME;
 import static com.snail.job.admin.constant.AdminConstants.JOB_SCHEDULE_INTERVAL;
-import static com.snail.job.common.enums.TriggerType.CRON;
 import static com.snail.job.common.enums.TriggerStatus.RUNNING;
 import static com.snail.job.common.enums.TriggerStatus.STOPPED;
+import static com.snail.job.common.enums.TriggerType.CRON;
 
 /**
  * 定时任务调度类
@@ -31,7 +32,7 @@ public class JobScheduleThread extends RabbitJobAbstractThread {
     @Resource
     private TriggerPoolService triggerPoolService;
     @Resource
-    private JobInfoRepository jobInfoRepository;
+    private JobInfoService jobInfoService;
 
     @Override
     protected void doRun() throws InterruptedException {
@@ -42,12 +43,16 @@ public class JobScheduleThread extends RabbitJobAbstractThread {
         long lastTriggerTime = curTimeInSecond + JOB_PRE_SCAN_TIME;
 
         // 扫描将要待执行的任务，根据任务的执行时间从近到远排序
-        List<JobInfo> waitTriggerJobs = jobInfoRepository.findAllWaitTriggerJob(RUNNING.getValue(), lastTriggerTime);
+        QueryWrapper<JobInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("trigger_status", RUNNING.getValue())
+                .le("trigger_next_time", lastTriggerTime)
+                .orderByDesc("trigger_next_time");
+        List<JobInfo> waitTriggerJobs = jobInfoService.list(queryWrapper);
 
         // 遍历待执行的任务
         for (JobInfo info : waitTriggerJobs) {
             // 任务的下次执行时间
-            Long nextTriggerTime = info.getNextTriggerTime();
+            Long nextTriggerTime = info.getTriggerNextTime();
 
             // 1、过时的任务，忽略调度并更新下次的执行时间
             if (nextTriggerTime < curTimeInSecond) {
@@ -66,7 +71,7 @@ public class JobScheduleThread extends RabbitJobAbstractThread {
             }
 
             // 重新获取任务的下次执行时间
-            nextTriggerTime = info.getNextTriggerTime();
+            nextTriggerTime = info.getTriggerNextTime();
 
             // 3、在 [当前秒+1秒，当前时间 + 10秒] 时间内要调度？
             while (nextTriggerTime <= lastTriggerTime && nextTriggerTime != 0) {
@@ -78,7 +83,7 @@ public class JobScheduleThread extends RabbitJobAbstractThread {
 
                 // 刷新下次调度时间
                 refreshNextValidTime(info, nextTriggerTime);
-                nextTriggerTime = info.getNextTriggerTime();
+                nextTriggerTime = info.getTriggerNextTime();
             }
         }
 
@@ -86,16 +91,15 @@ public class JobScheduleThread extends RabbitJobAbstractThread {
         List<JobInfo> updateJobInfoList = new ArrayList<>(waitTriggerJobs.size());
         LocalDateTime localDateTime = LocalDateTime.now();
         for (JobInfo jobInfo : waitTriggerJobs) {
-            JobInfo updateJobInfo = JobInfo.builder()
-                    .id(jobInfo.getId())
-                    .triggerStatus(jobInfo.getTriggerStatus())
-                    .prevTriggerTime(jobInfo.getPrevTriggerTime())
-                    .nextTriggerTime(jobInfo.getNextTriggerTime())
-                    .updateTime(localDateTime)
-                    .build();
+            JobInfo updateJobInfo = new JobInfo()
+                    .setId(jobInfo.getId())
+                    .setTriggerStatus(jobInfo.getTriggerStatus())
+                    .setTriggerPrevTime(jobInfo.getTriggerPrevTime())
+                    .setTriggerNextTime(jobInfo.getTriggerNextTime())
+                    .setUpdateTime(localDateTime);
             updateJobInfoList.add(updateJobInfo);
         }
-        jobInfoRepository.saveAllAndFlush(updateJobInfoList);
+        jobInfoService.updateBatchById(updateJobInfoList);
 
         // 休眠
         long costMillis = System.currentTimeMillis() - startMillis;
@@ -122,12 +126,12 @@ public class JobScheduleThread extends RabbitJobAbstractThread {
         Instant nextTriggerTime = cronExpression.next(instant);
         if (nextTriggerTime == null) {
             // 使任务停止
-            info.setPrevTriggerTime(0L);
-            info.setNextTriggerTime(0L);
+            info.setTriggerPrevTime(0L);
+            info.setTriggerNextTime(0L);
             info.setTriggerStatus(STOPPED.getValue());
         } else {
-            info.setPrevTriggerTime(info.getNextTriggerTime());
-            info.setNextTriggerTime(nextTriggerTime.getEpochSecond());
+            info.setTriggerPrevTime(info.getTriggerNextTime());
+            info.setTriggerNextTime(nextTriggerTime.getEpochSecond());
             info.setTriggerStatus(RUNNING.getValue());
         }
     }

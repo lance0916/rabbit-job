@@ -3,8 +3,8 @@ package com.snail.job.admin.thread;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.snail.job.admin.model.JobLog;
 import com.snail.job.admin.model.JobLogReport;
-import com.snail.job.admin.service.IJobLogReportService;
-import com.snail.job.admin.service.IJobLogService;
+import com.snail.job.admin.service.JobLogReportService;
+import com.snail.job.admin.service.JobLogService;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
 import org.springframework.stereotype.Component;
 
@@ -24,9 +24,9 @@ import static com.snail.job.admin.constant.AdminConstants.JOB_REPORT_INTERVAL;
 public class JobLogReportThread extends RabbitJobAbstractThread {
 
     @Resource
-    private IJobLogService jobLogService;
+    private JobLogService jobLogService;
     @Resource
-    private IJobLogReportService jobLogReportService;
+    private JobLogReportService jobLogReportService;
 
     @Override
     protected void doRun() throws InterruptedException {

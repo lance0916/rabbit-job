@@ -1,9 +1,10 @@
 package com.snail.job.admin.controller;
 
-import com.snail.job.admin.entity.Application;
-import com.snail.job.admin.service.ApplicationService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.snail.job.admin.model.App;
+import com.snail.job.admin.service.AppService;
 import com.snail.job.common.model.ResultT;
-import org.springframework.data.domain.Page;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -15,17 +16,17 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/app")
-public class ApplicationController {
+public class AppController {
 
     @Resource
-    private ApplicationService applicationService;
+    private AppService appService;
 
     /**
      * 分页列表
      */
     @GetMapping
     public ResultT<?> list(String name, @RequestParam Integer pageNum, @RequestParam Integer pageSize) {
-        Page<Application> page = applicationService.page(name, pageNum, pageSize);
+        IPage<App> page = appService.page(name, pageNum, pageSize);
         return new ResultT<>(page);
     }
 
@@ -33,8 +34,13 @@ public class ApplicationController {
      * 新增
      */
     @PostMapping
-    public ResultT<?> save(@RequestBody Application jobApp) {
-        applicationService.saveOrUpdate(jobApp);
+    public ResultT<?> save(@RequestBody App jobApp) {
+        App app = appService.selectByName(jobApp.getName());
+
+        // 校验 name 是否有相同的
+        Assert.isTrue(app == null, "name已经存在");
+
+        appService.save(jobApp);
         return ResultT.SUCCESS;
     }
 
@@ -42,8 +48,13 @@ public class ApplicationController {
      * 更新
      */
     @PutMapping
-    public ResultT<?> update(@RequestBody Application jobApp) {
-        applicationService.saveOrUpdate(jobApp);
+    public ResultT<?> update(@RequestBody App app) {
+        App appDB = appService.getById(app.getId());
+
+        // 校验 name 是否有相同的
+        Assert.isTrue(appDB != null && !appDB.getId().equals(appDB.getId()), "name已经存在");
+
+        appService.updateById(app);
         return ResultT.SUCCESS;
     }
 
@@ -52,7 +63,7 @@ public class ApplicationController {
      */
     @DeleteMapping("/{id}")
     public ResultT<?> delete(@PathVariable("id") Long id) {
-        applicationService.delete(id);
+        appService.delete(id);
         return ResultT.SUCCESS;
     }
 
@@ -61,7 +72,7 @@ public class ApplicationController {
      */
     @GetMapping("/listNameTitle")
     public ResultT<?> listNameTitle() {
-        List<Application> list = applicationService.findAllNameAndTitle();
+        List<App> list = appService.findAllNameAndTitle();
         return new ResultT<>(list);
     }
 

@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS `job_log`
     `fail_retry_count` TINYINT       NOT NULL DEFAULT 0 COMMENT '执行-失败重试次数',
 
     `trigger_time`     TIMESTAMP     NULL COMMENT '调度-时间',
+    `trigger_type`     TIMESTAMP     NULL COMMENT '调度-时间',
     `trigger_code`     INT           NOT NULL DEFAULT 0 COMMENT '调度-结果码',
     `trigger_msg`      VARCHAR(1024) NULL COMMENT '调度-结果信息',
 
@@ -93,20 +94,6 @@ CREATE TABLE IF NOT EXISTS `job_log_report`
     `success_count` INT  NOT NULL DEFAULT 0 COMMENT '执行成功-日志数量',
     `fail_count`    INT  NOT NULL DEFAULT 0 COMMENT '执行失败-日志数量',
     UNIQUE KEY `uk_td` (`trigger_date`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
-
--- secret_key
-DROP TABLE IF EXISTS `secret_key`;
-CREATE TABLE IF NOT EXISTS `secret_key`
-(
-    `id`          INT         NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `app_key`     VARCHAR(50) NOT NULL COMMENT 'appKey',
-    `app_secret`  VARCHAR(50) NOT NULL COMMENT 'appSecret',
-    `enable`      TINYINT     NOT NULL DEFAULT 0 COMMENT '是否启用',
-    `deleted`     TINYINT     NOT NULL COMMENT '是否删除',
-    `create_time` TIMESTAMP   NOT NULL COMMENT '创建时间',
-    `update_time` TIMESTAMP   NULL COMMENT '创建时间'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 

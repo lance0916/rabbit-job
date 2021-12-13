@@ -1,13 +1,15 @@
 package com.snail.job.admin.controller;
 
-import com.snail.job.admin.controller.vo.RouteVO;
-import com.snail.job.admin.entity.JobInfo;
-import com.snail.job.admin.service.trigger.TriggerPoolService;
+import cn.hutool.core.lang.Assert;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.snail.job.admin.bean.request.JobInfoQueryRequest;
+import com.snail.job.admin.bean.vo.RouteVO;
+import com.snail.job.admin.model.JobInfo;
 import com.snail.job.admin.route.RouteStrategyEnum;
 import com.snail.job.admin.service.JobInfoService;
+import com.snail.job.admin.service.trigger.TriggerPoolService;
 import com.snail.job.common.enums.TriggerType;
 import com.snail.job.common.model.ResultT;
-import org.springframework.data.domain.Page;
 import org.springframework.scheduling.support.CronExpression;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,10 +36,8 @@ public class JobInfoController {
      * 分页查询
      */
     @GetMapping
-    public ResultT<?> list(String name, String appName, String authorName, Byte triggerStatus,
-                           @RequestParam Integer pageNum,
-                           @RequestParam Integer pageSize) {
-        Page<JobInfo> page = jobInfoService.list(name, appName, authorName, triggerStatus, pageNum, pageSize);
+    public ResultT<?> list(JobInfoQueryRequest request) {
+        IPage<JobInfo> page = jobInfoService.listByPage(request);
         return new ResultT<>(page);
     }
 
@@ -46,7 +46,11 @@ public class JobInfoController {
      */
     @PostMapping
     public ResultT<?> save(@RequestBody JobInfo jobInfo) {
-        jobInfoService.saveOrUpdate(jobInfo);
+        // Cron 表达式是否正确
+        Assert.isTrue(CronExpression.isValidExpression(jobInfo.getCron()), "Cron表达式不正确");
+
+        jobInfo.setCreateTime(LocalDateTime.now());
+        jobInfoService.save(jobInfo);
         return ResultT.SUCCESS;
     }
 
@@ -55,7 +59,11 @@ public class JobInfoController {
      */
     @PutMapping
     public ResultT<String> update(@RequestBody JobInfo jobInfo) {
-        jobInfoService.saveOrUpdate(jobInfo);
+        // Cron 表达式是否正确
+        Assert.isTrue(CronExpression.isValidExpression(jobInfo.getCron()), "Cron表达式不正确");
+
+        jobInfo.setUpdateTime(LocalDateTime.now());
+        jobInfoService.updateById(jobInfo);
         return ResultT.SUCCESS;
     }
 
