@@ -55,7 +55,7 @@ public class JobFailMonitorThread extends RabbitJobAbstractThread {
 
         // 查询所有需要告警的任务日志
         QueryWrapper<JobLog> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", ", job_id, fail_retry_count")
+        queryWrapper.select("id", "job_id", "fail_retry_count")
                 .eq("alarm_status", 1)
                 .notIn("trigger_code", 0, 200)
                 .notIn("exec_code", 0, 200);
