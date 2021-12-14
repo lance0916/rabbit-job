@@ -9,6 +9,8 @@ import com.snail.job.admin.mapper.AppMapper;
 import com.snail.job.admin.model.App;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -47,10 +49,13 @@ public class AppService extends ServiceImpl<AppMapper, App> {
 
     /**
      * 删除
-     * TODO 修改为软删
      */
     public void delete(Long id) {
-        super.removeById(id);
+        App app = new App()
+                .setId(id)
+                .setDeleted(1)
+                .setUpdateTime(LocalDateTime.now());
+        super.updateById(app);
     }
 
     /**

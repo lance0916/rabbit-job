@@ -1,6 +1,7 @@
 package com.snail.job.admin.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.snail.job.admin.bean.request.JobLogQueryRequest;
 import com.snail.job.admin.bean.vo.JobLogVO;
 import com.snail.job.admin.service.JobLogService;
 import com.snail.job.common.model.ResultT;
@@ -27,11 +28,8 @@ public class JobLogController {
      * 分页查询
      */
     @GetMapping
-    public ResultT<?> list(String appName, Integer jobId, Integer triggerCode, Integer execCode,
-                           Date triggerBeginDate, Date triggerEndDate,
-                           @RequestParam Integer pageNum, @RequestParam Integer pageSize) {
-        IPage<JobLogVO> page = jobLogService.listByPage(appName, jobId, triggerCode, execCode,
-                triggerBeginDate, triggerEndDate, pageNum, pageSize);
+    public ResultT<?> list(JobLogQueryRequest request) {
+        IPage<JobLogVO> page = jobLogService.listByPage(request);
         return new ResultT<>(page);
     }
 

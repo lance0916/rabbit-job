@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @date 2020/11/26 下午5:58
  */
 @Controller
-public class PageController {
+public class StaticController {
 
     @RequestMapping({"/", "index"})
     public String index() {

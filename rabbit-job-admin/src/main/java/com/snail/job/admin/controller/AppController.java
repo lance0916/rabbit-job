@@ -52,7 +52,7 @@ public class AppController {
         App appDB = appService.getById(app.getId());
 
         // 校验 name 是否有相同的
-        Assert.isTrue(appDB != null && !appDB.getId().equals(appDB.getId()), "name已经存在");
+        Assert.isTrue(appDB != null && !appDB.getId().equals(app.getId()), "name已经存在");
 
         appService.updateById(app);
         return ResultT.SUCCESS;

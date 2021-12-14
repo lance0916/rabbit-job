@@ -1,15 +1,13 @@
 package com.snail.job.admin.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.snail.job.admin.bean.request.JobLogQueryRequest;
 import com.snail.job.admin.bean.vo.JobLogVO;
 import com.snail.job.admin.mapper.JobLogMapper;
 import com.snail.job.admin.model.JobLog;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
 
 /**
  * <p>
@@ -21,16 +19,12 @@ import java.util.List;
 @Service
 public class JobLogService extends ServiceImpl<JobLogMapper, JobLog> {
 
-    @Resource
-    private JobLogMapper jobLogMapper;
-
-    public List<JobLog> findAllFailJobLog() {
-        return jobLogMapper.findAllFailJobLog();
-    }
-
-    public IPage<JobLogVO> listByPage(String appName, Integer jobId, Integer triggerCode, Integer execCode,
-                                      Date triggerBeginDate, Date triggerEndDate, Integer pageNum, Integer pageSize) {
-        return null;
+    /**
+     * 分页查询
+     */
+    public IPage<JobLogVO> listByPage(JobLogQueryRequest request) {
+        IPage<JobLogVO> pageParam = new Page<>(request.getPageNum(), request.getPageSize());
+        return getBaseMapper().listByPage(pageParam, request);
     }
 
 }

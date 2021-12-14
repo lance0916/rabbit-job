@@ -1,11 +1,13 @@
 package com.snail.job.admin.thread;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.snail.job.admin.alarm.JobAlarm;
 import com.snail.job.admin.model.JobInfo;
 import com.snail.job.admin.model.JobLog;
 import com.snail.job.admin.service.JobInfoService;
 import com.snail.job.admin.service.JobLogService;
 import com.snail.job.admin.service.trigger.TriggerPoolService;
+import com.snail.job.common.enums.TriggerStatus;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
 import org.springframework.stereotype.Component;
 
@@ -52,7 +54,12 @@ public class JobFailMonitorThread extends RabbitJobAbstractThread {
          */
 
         // 查询所有需要告警的任务日志
-        List<JobLog> failJobLogList = jobLogService.findAllFailJobLog();
+        QueryWrapper<JobLog> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id", ", job_id, fail_retry_count")
+                .eq("alarm_status", 1)
+                .notIn("trigger_code", 0, 200)
+                .notIn("exec_code", 0, 200);
+        List<JobLog> failJobLogList = jobLogService.list(queryWrapper);
         for (JobLog jobLog : failJobLogList) {
             JobInfo jobInfo = jobInfoService.getById(jobLog.getJobId());
             if (jobInfo == null) {
