@@ -1,5 +1,7 @@
 package com.snail.job.client.annotation;
 
+import org.springframework.core.annotation.AliasFor;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -15,9 +17,16 @@ import java.lang.annotation.Target;
 public @interface RabbitJob {
 
     /**
+     * alias name
+     */
+    @AliasFor("name")
+    String value();
+
+    /**
      * 任务名
      */
-    String name();
+    @AliasFor("value")
+    String name() default "";
 
     /**
      * 任务的初始化方法

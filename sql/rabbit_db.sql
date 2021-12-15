@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS `executor`
     `deleted`     TINYINT     NOT NULL DEFAULT 0 COMMENT '是否删除',
     `create_time` TIMESTAMP   NOT NULL COMMENT '创建时间',
     `update_time` TIMESTAMP   NULL COMMENT '更新时间'
-    ) ENGINE = InnoDB
-    DEFAULT CHARSET = utf8mb4;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- 应用
 DROP TABLE IF EXISTS `app`;
@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS `app`
     `deleted`     TINYINT      NOT NULL DEFAULT 0 COMMENT '是否删除',
     `create_time` TIMESTAMP    NOT NULL COMMENT '创建时间',
     `update_time` TIMESTAMP    NULL COMMENT '更新时间'
-    ) ENGINE = InnoDB
-    DEFAULT CHARSET = utf8mb4;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- 任务信息
 DROP TABLE IF EXISTS `job_info`;
@@ -51,10 +51,10 @@ CREATE TABLE IF NOT EXISTS `job_info`
     `exec_fail_retry_count` TINYINT      NOT NULL DEFAULT 0 COMMENT '失败重试次数',
 
     `trigger_status`        TINYINT      NOT NULL DEFAULT 0 COMMENT '调度状态。0-停止，1-运行',
-    `trigger_prev_time`     BIGINT       NOT NULL DEFAULT 0 COMMENT '上次调度时间',
-    `trigger_next_time`     BIGINT       NOT NULL DEFAULT 0 COMMENT '下次调度时间'
-    ) ENGINE = InnoDB
-    DEFAULT CHARSET = utf8mb4;
+    `trigger_prev_time`     TIMESTAMP    NULL COMMENT '上次调度时间',
+    `trigger_next_time`     TIMESTAMP    NULL COMMENT '下次调度时间'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- 任务日志
 DROP TABLE IF EXISTS `job_log`;
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `job_log`
     `fail_retry_count` TINYINT       NOT NULL DEFAULT 0 COMMENT '执行-失败重试次数',
 
     `trigger_time`     TIMESTAMP     NULL COMMENT '调度-时间',
-    `trigger_type`     TIMESTAMP     NULL COMMENT '调度-时间',
+    `trigger_type`     VARCHAR(50)   NULL COMMENT '调度-类型',
     `trigger_code`     INT           NOT NULL DEFAULT 0 COMMENT '调度-结果码',
     `trigger_msg`      VARCHAR(1024) NULL COMMENT '调度-结果信息',
 
@@ -82,8 +82,8 @@ CREATE TABLE IF NOT EXISTS `job_log`
     `exec_cost_time`   INT           NULL COMMENT '执行-耗时',
 
     `alarm_status`     TINYINT       NOT NULL DEFAULT 0 COMMENT '告警状态：0-默认、1-无需告警、2-告警成功、3-告警失败'
-    ) ENGINE = InnoDB
-    DEFAULT CHARSET = utf8mb4;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- 首页任务执行报告
 DROP TABLE IF EXISTS `job_log_report`;
@@ -95,15 +95,15 @@ CREATE TABLE IF NOT EXISTS `job_log_report`
     `success_count` INT  NOT NULL DEFAULT 0 COMMENT '执行成功-日志数量',
     `fail_count`    INT  NOT NULL DEFAULT 0 COMMENT '执行失败-日志数量',
     UNIQUE KEY `uk_td` (`trigger_date`)
-    ) ENGINE = InnoDB
-    DEFAULT CHARSET = utf8mb4;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- lock
 DROP TABLE IF EXISTS `lock`;
 CREATE TABLE IF NOT EXISTS `lock`
 (
     `lock_key` VARCHAR(50) NOT NULL COMMENT 'lockKey'
-    ) ENGINE = InnoDB
-    DEFAULT CHARSET = utf8mb4;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 INSERT INTO `lock`(`lock_key`)
 VALUES ('schedule_lock')

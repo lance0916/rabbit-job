@@ -1,5 +1,6 @@
 package com.snail.job.admin.service.trigger;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.snail.job.admin.biz.JobExecutorBiz;
 import com.snail.job.admin.model.App;
@@ -112,11 +113,14 @@ public class JobTriggerService {
         tp.setShardIndex(shareIndex);
         tp.setShardIndex(shareTotal);
 
+        log.info("调度任务:{} {}", jobInfo.getId(), jobInfo.getExecHandler());
+
         // 触发远程执行器
         ResultT<String> triggerResult;
-        if (executorAddress == null) {
+        if (StrUtil.isEmpty(executorAddress)) {
             triggerResult = new ResultT<>(ResultT.FAIL_CODE, "未找到可用的执行器！");
         } else {
+            // 执行器那边的调度是异步的
             triggerResult = jobExecutorBiz.run(executorAddress, tp);
         }
 

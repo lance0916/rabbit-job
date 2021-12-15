@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -68,19 +69,17 @@ public class JobInfoService extends ServiceImpl<JobInfoMapper, JobInfo> {
         CronExpression cronExpression = CronExpression.parse(jobInfo.getCron());
 
         // 计算下次执行时间
-        Instant instant = Instant.now(Clock.systemDefaultZone());
-        instant.plus(SCAN_JOB_SLEEP_MS, ChronoUnit.MILLIS);
-        Instant nextTriggerTime = cronExpression.next(instant);
+        LocalDateTime nextTriggerTime = cronExpression.next(LocalDateTime.now());
 
         // 更新
         JobInfo updateJobInfo = new JobInfo();
         updateJobInfo.setId(jobInfo.getId());
         if (nextTriggerTime != null) {
-            updateJobInfo.setTriggerNextTime(nextTriggerTime.getEpochSecond());
+            updateJobInfo.setTriggerNextTime(nextTriggerTime);
             updateJobInfo.setTriggerStatus(RUNNING.getValue());
         } else {
-            updateJobInfo.setTriggerPrevTime(0L);
-            updateJobInfo.setTriggerNextTime(0L);
+            updateJobInfo.setTriggerPrevTime(null);
+            updateJobInfo.setTriggerNextTime(null);
             updateJobInfo.setTriggerStatus(STOPPED.getValue());
         }
         super.updateById(updateJobInfo);
@@ -99,7 +98,7 @@ public class JobInfoService extends ServiceImpl<JobInfoMapper, JobInfo> {
         // 更新
         JobInfo updateJobInfo = new JobInfo();
         updateJobInfo.setId(jobInfo.getId());
-        updateJobInfo.setTriggerNextTime(0L);
+        updateJobInfo.setTriggerNextTime(null);
         updateJobInfo.setTriggerStatus(STOPPED.getValue());
         super.updateById(updateJobInfo);
     }

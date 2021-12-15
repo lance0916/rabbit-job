@@ -98,12 +98,11 @@ public class JobInfo {
     /**
      * 上次调度时间
      */
-    private Long triggerPrevTime;
+    private LocalDateTime triggerPrevTime;
 
     /**
      * 下次调度时间
      */
-    private Long triggerNextTime;
-
+    private LocalDateTime triggerNextTime;
 
 }
