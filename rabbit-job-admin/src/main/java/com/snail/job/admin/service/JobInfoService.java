@@ -105,10 +105,13 @@ public class JobInfoService extends ServiceImpl<JobInfoMapper, JobInfo> {
 
     /**
      * 删除
-     * TODO 执行软删
      */
     public void delete(Long id) {
-        super.removeById(id);
+        JobInfo jobInfo = new JobInfo()
+                .setId(id)
+                .setDeleted(1)
+                .setUpdateTime(LocalDateTime.now());
+        super.updateById(jobInfo);
     }
 
     /**
