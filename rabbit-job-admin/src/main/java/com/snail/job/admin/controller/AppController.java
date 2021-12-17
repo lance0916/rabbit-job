@@ -25,8 +25,10 @@ public class AppController {
      * 分页列表
      */
     @GetMapping
-    public ResultT<?> list(String name, @RequestParam Integer pageNum, @RequestParam Integer pageSize) {
-        IPage<App> page = appService.page(name, pageNum, pageSize);
+    public ResultT<?> list(String name, String description,
+                           @RequestParam(name = "page") Integer pageNum,
+                           @RequestParam(name = "limit") Integer pageSize) {
+        IPage<App> page = appService.page(name, description, pageNum, pageSize);
         return new ResultT<>(page);
     }
 

@@ -26,11 +26,17 @@ public class AppService extends ServiceImpl<AppMapper, App> {
     /**
      * 分页列表
      */
-    public IPage<App> page(String name, Integer pageNum, Integer pageSize) {
+    public IPage<App> page(String name, String description, Integer pageNum, Integer pageSize) {
         IPage<App> page = new Page<>(pageNum, pageSize);
 
         QueryWrapper<App> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like("name", name);
+        if (StrUtil.isNotEmpty(name)) {
+            queryWrapper.like("name", name);
+        }
+        if (StrUtil.isNotEmpty(description)) {
+            queryWrapper.like("description", description);
+        }
+        queryWrapper.eq("deleted", 0);
         return super.page(page, queryWrapper);
     }
 

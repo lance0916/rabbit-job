@@ -17,17 +17,17 @@ public class StaticController {
 
     @RequestMapping("/app-page")
     public String appPage() {
-        return "app/index";
+        return "app-index";
     }
 
     @RequestMapping("/info-page")
     public String infoPage() {
-        return "info/index";
+        return "info-index";
     }
 
     @RequestMapping("/log-page")
     public String logPage() {
-        return "log/index";
+        return "log-index";
     }
 
 }

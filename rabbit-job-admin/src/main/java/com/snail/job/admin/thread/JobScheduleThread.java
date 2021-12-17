@@ -46,7 +46,6 @@ public class JobScheduleThread extends RabbitJobAbstractThread {
                 .and(wrapper -> wrapper.lt("trigger_next_time", endTime).or().isNull("trigger_next_time"))
                 .orderByDesc("trigger_next_time");
         List<JobInfo> waitTriggerJobs = jobInfoService.list(queryWrapper);
-        System.out.println("waitTriggerJobs: " + waitTriggerJobs.size());
 
         // 遍历待执行的任务
         for (JobInfo info : waitTriggerJobs) {

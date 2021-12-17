@@ -5,7 +5,7 @@
 <html lang="zh_CN">
 <head>
     <title>蜗牛任务调度中心</title>
-    <#import "../common/common.macro.ftl" as netCommon />
+    <#import "common.ftl" as netCommon />
     <@netCommon.commonHead />
     <@netCommon.commonStyle />
 </head>
@@ -32,15 +32,15 @@
                         <button id="addBtn" type="button" class="layui-btn layui-btn-normal">新增</button>
                     </div>
                     <div class="layui-inline">
-                        <label class="layui-form-label">名称</label>
+                        <label class="layui-form-label">唯一名称</label>
                         <div class="layui-input-block">
-                            <input type="text" name="title" class="layui-input" autocomplete="off"/>
+                            <input type="text" name="name" class="layui-input" autocomplete="off"/>
                         </div>
                     </div>
                     <div class="layui-inline">
-                        <label class="layui-form-label">唯一标识</label>
+                        <label class="layui-form-label">描述</label>
                         <div class="layui-input-block">
-                            <input type="text" name="name" class="layui-input" autocomplete="off"/>
+                            <input type="text" name="description" class="layui-input" autocomplete="off"/>
                         </div>
                     </div>
                     <div class="layui-inline">
@@ -69,16 +69,16 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">名称</label>
+                <label class="layui-form-label">唯一名称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="title" required lay-verify="required" class="layui-input"
+                    <input type="text" name="name" required lay-verify="required" class="layui-input"
                            autocomplete="off"/>
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">唯一标识</label>
+                <label class="layui-form-label">描述</label>
                 <div class="layui-input-block">
-                    <input type="text" name="name" required lay-verify="required" class="layui-input"
+                    <input type="text" name="description" required lay-verify="required" class="layui-input"
                            autocomplete="off"/>
                 </div>
             </div>
@@ -92,7 +92,7 @@
             <div class="layui-form-item layui-form-text">
                 <label class="layui-form-label">地址列表</label>
                 <div class="layui-input-block">
-                    <textarea name="address_list" placeholder="地址列表使用英文逗号分开" class="layui-textarea"></textarea>
+                    <textarea name="addresses" placeholder="地址列表使用英文逗号分开" class="layui-textarea"></textarea>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -108,7 +108,7 @@
 <@netCommon.commonScript />
 
 <#-- 查看执行器地址 -->
-<script type="text/html" id="showExecAddr">
+<script type="text/html" id="showExecAddress">
     <a class="layui-btn layui-btn-normal layui-btn-sm" lay-event="show">查看</a>
 </script>
 
@@ -142,10 +142,10 @@
             url: '${contextPath}/app',
             cols: [[
                 {field: 'id', title: 'ID', fixed: 'left', width: 100, unresize: true},
-                {field: 'title', title: '名称'},
-                {field: 'name', title: '唯一标识'},
+                {field: 'name', title: '唯一名称'},
+                {field: 'description', title: '描述'},
                 {field: 'type', title: '注册类型', templet: '#typeTpl'},
-                {title: '执行器地址', toolbar: '#showExecAddr'},
+                {title: '执行器地址', toolbar: '#showExecAddress'},
                 {fixed: 'right', title: '操作', toolbar: '#operateToolbar'},
             ]],
             page: true,
@@ -157,7 +157,7 @@
                     "code": res.code,
                     "msg": res.msg,
                     "count": res.content.total,
-                    "data": res.content.list
+                    "data": res.content.records
                 };
             }
         });
@@ -167,13 +167,13 @@
             if (eventName === 'show') {
                 // 查看地址
                 let htmlContent = '<div>';
-                let addrList = data.address_list;
-                if (addrList === undefined || addrList === '') {
+                let addressList = data.addresses;
+                if (addressList === undefined || addressList === '') {
                     htmlContent += '没有注册的机器';
                 } else {
-                    let addrArray = addrList.split(",");
-                    for (let i = 0; i < addrArray.length; i++) {
-                        htmlContent += (i + 1) + ': ' + addrArray[i];
+                    let addressArray = addressList.split(",");
+                    for (let i = 0; i < addressArray.length; i++) {
+                        htmlContent += (i + 1) + ': ' + addressArray[i];
                         htmlContent += '<br/>';
                     }
                 }

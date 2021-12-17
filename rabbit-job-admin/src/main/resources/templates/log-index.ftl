@@ -5,7 +5,7 @@
 <html lang="zh_CN">
 <head>
     <title>蜗牛任务调度中心</title>
-    <#import "../common/common.macro.ftl" as netCommon />
+    <#import "common.ftl" as netCommon />
     <@netCommon.commonHead />
     <@netCommon.commonStyle />
 </head>
