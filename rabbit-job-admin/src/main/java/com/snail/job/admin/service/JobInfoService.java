@@ -12,13 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.support.CronExpression;
 import org.springframework.stereotype.Service;
 
-import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static com.snail.job.admin.constant.AdminConstants.SCAN_JOB_SLEEP_MS;
 import static com.snail.job.common.enums.TriggerStatus.RUNNING;
 import static com.snail.job.common.enums.TriggerStatus.STOPPED;
 

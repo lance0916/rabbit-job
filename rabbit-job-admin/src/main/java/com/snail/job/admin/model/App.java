@@ -1,12 +1,14 @@
 package com.snail.job.admin.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * <p>
@@ -18,7 +20,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class App {
+@TableName("app")
+public class App extends Model<App> {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
@@ -26,37 +29,66 @@ public class App {
     /**
      * 应用名称
      */
+    @TableField("name")
     private String name;
 
     /**
      * 描述
      */
+    @TableField("description")
     private String description;
 
     /**
      * 注册类型。自动注册=0；手动注册=1
      */
+    @TableField("type")
     private Integer type;
 
     /**
      * 执行器地址
      */
+    @TableField("addresses")
     private String addresses;
 
     /**
      * 是否删除
      */
+    @TableField("deleted")
+    @TableLogic
     private Integer deleted;
 
     /**
      * 创建时间
      */
+    @TableField("create_time")
     private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
+    @TableField("update_time")
     private LocalDateTime updateTime;
 
+
+    public static final String ID = "id";
+
+    public static final String NAME = "name";
+
+    public static final String DESCRIPTION = "description";
+
+    public static final String TYPE = "type";
+
+    public static final String ADDRESSES = "addresses";
+
+    public static final String DELETED = "deleted";
+
+    public static final String CREATE_TIME = "create_time";
+
+    public static final String UPDATE_TIME = "update_time";
+
+    @Override
+    public Serializable pkVal() {
+        return this.id;
+    }
 
 }

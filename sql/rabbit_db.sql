@@ -5,7 +5,7 @@ USE `rabbit_job`;
 DROP TABLE IF EXISTS `executor`;
 CREATE TABLE IF NOT EXISTS `executor`
 (
-    `id`          INT         NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id`          BIGINT         NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `app_name`    VARCHAR(20) NOT NULL COMMENT '关联应用',
     `address`     VARCHAR(30) NOT NULL COMMENT '执行器地址',
     `deleted`     TINYINT     NOT NULL DEFAULT 0 COMMENT '是否删除',
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `executor`
 DROP TABLE IF EXISTS `app`;
 CREATE TABLE IF NOT EXISTS `app`
 (
-    `id`          INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id`          BIGINT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `name`        VARCHAR(20)  NOT NULL COMMENT '应用名称',
     `description` VARCHAR(50)  NOT NULL COMMENT '描述',
     `type`        TINYINT      NOT NULL COMMENT '注册类型。自动注册=0；手动注册=1',
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `app`
 DROP TABLE IF EXISTS `job_info`;
 CREATE TABLE IF NOT EXISTS `job_info`
 (
-    `id`                    INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id`                    BIGINT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `name`                  VARCHAR(100) NOT NULL COMMENT '任务名称',
     `app_name`              VARCHAR(20)  NOT NULL COMMENT '应用名称',
     `cron`                  VARCHAR(20)  NOT NULL COMMENT 'CRON表达式',
@@ -61,7 +61,7 @@ DROP TABLE IF EXISTS `job_log`;
 CREATE TABLE IF NOT EXISTS `job_log`
 (
     `id`               BIGINT        NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `job_id`           INT           NOT NULL COMMENT '任务，主键ID',
+    `job_id`           BIGINT           NOT NULL COMMENT '任务，主键ID',
     `app_name`         VARCHAR(20)   NOT NULL COMMENT '任务组名',
     `create_time`      TIMESTAMP     NOT NULL COMMENT '创建时间',
 
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `job_log`
 DROP TABLE IF EXISTS `job_log_report`;
 CREATE TABLE IF NOT EXISTS `job_log_report`
 (
-    `id`            INT  NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id`            BIGINT  NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `trigger_date`  DATE NOT NULL COMMENT '调度日期',
     `running_count` INT  NOT NULL DEFAULT 0 COMMENT '运行中-日志数量',
     `success_count` INT  NOT NULL DEFAULT 0 COMMENT '执行成功-日志数量',
