@@ -35,18 +35,18 @@ public class JobInfoService extends ServiceImpl<JobInfoMapper, JobInfo> {
     public IPage<JobInfo> listByPage(JobInfoQueryRequest request) {
         QueryWrapper<JobInfo> queryWrapper = new QueryWrapper<>();
         if (StrUtil.isNotEmpty(request.getName())) {
-            queryWrapper.like("name", request.getName());
+            queryWrapper.like(JobInfo.NAME, request.getName());
         }
         if (StrUtil.isNotEmpty(request.getAppName())) {
-            queryWrapper.like("appName", request.getAppName());
+            queryWrapper.like(JobInfo.APP_NAME, request.getAppName());
         }
         if (StrUtil.isNotEmpty(request.getAuthorName())) {
-            queryWrapper.like("authorName", request.getAuthorName());
+            queryWrapper.like(JobInfo.AUTHOR_NAME, request.getAuthorName());
         }
         if (request.getTriggerStatus() != null) {
-            queryWrapper.eq("triggerStatus", request.getTriggerStatus());
+            queryWrapper.eq(JobInfo.TRIGGER_STATUS, request.getTriggerStatus());
         }
-
+        queryWrapper.eq(JobInfo.DELETED, 0);
         IPage<JobInfo> page = new Page<>(request.getPageNum(), request.getPageSize());
         return super.page(page, queryWrapper);
     }
@@ -115,7 +115,9 @@ public class JobInfoService extends ServiceImpl<JobInfoMapper, JobInfo> {
      */
     public List<JobInfo> listByAppName(String appName) {
         QueryWrapper<JobInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "name").eq("app_name", appName);
+        queryWrapper.select(JobInfo.ID, JobInfo.NAME)
+                .eq(JobInfo.APP_NAME, appName)
+                .eq(JobInfo.DELETED, 0);
         return super.list(queryWrapper);
     }
 

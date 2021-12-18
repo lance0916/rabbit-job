@@ -19,8 +19,8 @@ DROP TABLE IF EXISTS `app`;
 CREATE TABLE IF NOT EXISTS `app`
 (
     `id`          BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `name`        VARCHAR(20)  NOT NULL COMMENT '应用名称',
-    `description` VARCHAR(50)  NOT NULL COMMENT '描述',
+    `name`        VARCHAR(20)  NOT NULL COMMENT '唯一名称',
+    `title`       VARCHAR(50)  NOT NULL COMMENT '标题',
     `type`        INT          NOT NULL COMMENT '注册类型。自动注册=0；手动注册=1',
     `addresses`   VARCHAR(100) NOT NULL DEFAULT '' COMMENT '执行器地址',
     `deleted`     INT          NOT NULL DEFAULT 0 COMMENT '是否删除',

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -16,7 +17,7 @@ import java.util.Date;
 public class JobLogQueryRequest extends BaseQueryRequest {
 
     /**
-     * 任务名
+     * 应用名
      */
     private String appName;
 
@@ -33,12 +34,12 @@ public class JobLogQueryRequest extends BaseQueryRequest {
     /**
      * 调度开始时间
      */
-    private Date triggerBeginDate;
+    private LocalDate triggerBeginDate;
 
     /**
      * 调度结束时间
      */
-    private Date triggerEndDate;
+    private LocalDate triggerEndDate;
 
     /**
      * 执行码

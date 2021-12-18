@@ -5,7 +5,7 @@
 <html lang="zh_CN">
 <head>
     <title>蜗牛任务调度中心</title>
-    <#import "common.ftl" as netCommon />
+    <#import "common/common.ftl" as netCommon />
     <@netCommon.commonHead />
     <@netCommon.commonStyle />
 </head>
@@ -213,6 +213,7 @@
                 {field: 'name', title: '任务名'},
                 {field: 'cron', title: 'CRON'},
                 {field: 'execHandler', title: '执行方法名'},
+                {field: 'execRouteStrategy', title: '路由策略'},
                 {field: 'authorName', title: '负责人'},
                 {field: 'triggerStatus', title: '状态', templet: '#triggerStatusTpl'},
                 {fixed: 'right', width: 160, title: '操作', templet: '#tableToolTpl'},

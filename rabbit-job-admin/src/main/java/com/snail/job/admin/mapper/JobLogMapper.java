@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.snail.job.admin.bean.request.JobLogQueryRequest;
 import com.snail.job.admin.bean.vo.JobLogVO;
 import com.snail.job.admin.model.JobLog;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -18,7 +19,26 @@ import java.util.List;
  */
 public interface JobLogMapper extends BaseMapper<JobLog> {
 
-    @Select("")
-    IPage<JobLogVO> listByPage(IPage<?> page, JobLogQueryRequest request);
+    @Select({
+            "<script>",
+            "SELECT jl.*, ji.name AS jobName FROM job_log jl",
+            "LEFT JOIN job_info ji ON jl.job_id=ji.id",
+            "<where>",
+            "   <if test=\"req.appName != null and req.appName != ''\">",
+            "       AND jl.app_name LIKE CONCAT('%', #{req.appName}, '%'))",
+            "   </if>",
+            "   <if test=\"req.jobId != null\">",
+            "       AND jl.job_id = #{req.jobId}",
+            "   </if>",
+            "   <if test=\"req.triggerCode != null\">",
+            "       AND jl.trigger_code = #{req.triggerCode}",
+            "   </if>",
+            "   <if test=\"req.triggerBeginDate != null and req.triggerEndDate != null\">",
+            "       AND jl.trigger_time BETWEEN #{req.triggerBeginDate} AND #{req.triggerEndDate}",
+            "   </if>",
+            "</where>",
+            "</script>",
+    })
+    IPage<JobLogVO> listByPage(IPage<?> page, @Param("req") JobLogQueryRequest request);
 
 }

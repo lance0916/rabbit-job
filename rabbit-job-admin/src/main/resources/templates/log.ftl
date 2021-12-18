@@ -5,7 +5,7 @@
 <html lang="zh_CN">
 <head>
     <title>蜗牛任务调度中心</title>
-    <#import "common.ftl" as netCommon />
+    <#import "common/common.ftl" as netCommon />
     <@netCommon.commonHead />
     <@netCommon.commonStyle />
 </head>
@@ -31,8 +31,8 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">分组</label>
                         <div class="layui-input-block">
-                            <select id="searchGroupNameID" name="groupName" autocomplete="off"
-                                    lay-filter="searchGroupNameFilter">
+                            <select id="searchAppNameID" name="groupName" autocomplete="off"
+                                    lay-filter="searchAppNameFilter">
                                 <option value="">请选择</option>
                             </select>
                         </div>
@@ -67,7 +67,7 @@
                     </div>
                     <div class="layui-inline">
                         <button lay-submit class="layui-btn" lay-filter="searchBtn">搜索</button>
-                        <button id="showDelLogLayerBtn" type="button" class="layui-btn layui-btn-normal">清理日志</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                     </div>
                 </div>
             </form>
@@ -89,54 +89,13 @@
             <div class="layui-form-item layui-form-text">
                 <label class="layui-form-label">执行地址</label>
                 <div class="layui-input-block">
-                    <input class="layui-text" name="executor_address" disabled/>
+                    <input class="layui-text" name="execAddress" disabled/>
                 </div>
             </div>
             <div class="layui-form-item layui-form-text">
                 <label class="layui-form-label">执行参数</label>
                 <div class="layui-input-block">
-                    <textarea class="layui-textarea" name="executor_param" disabled></textarea>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<#-- 清理日志弹窗 -->
-<div id="delLogLayer" class="layui-row" style="display:none;margin-right: 20px;">
-    <div class="layui-col-lg12">
-        <blockquote class="layui-elem-quote layui-bg-red">注意：如不选择分组和任务将清空所选时间段内的所有日志！！！</blockquote>
-        <form id="delLogFormID" class="layui-form" pane style="margin-top: 20px;" lay-filter="delLogForm">
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label">执行器</label>
-                    <div class="layui-input-inline">
-                        <select id="delGroupNameID" name="group_name" autocomplete="off"
-                                lay-filter="delGroupNameFilter">
-                            <option value="">请选择</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">任务</label>
-                    <div class="layui-input-inline">
-                        <select id="delJobID" name="job_id" autocomplete="off">
-                            <option value="">请选择</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">时间范围</label>
-                <div class="layui-input-block">
-                    <input type="text" id="timeRangeID" name="time_range" class="layui-input" required
-                           lay-verify="required"
-                           placeholder="请选择时间范围" autocomplete="off"/>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-input-block">
-                    <button lay-submit class="layui-btn layui-btn-fluid" lay-filter="delLogBtn">点击清理</button>
+                    <textarea class="layui-textarea" name="execParam" disabled></textarea>
                 </div>
             </div>
         </form>
@@ -147,8 +106,9 @@
 <@netCommon.commonScript />
 
 <#-- 单行操作按钮 -->
-<script type="text/html" id="operateToolbar">
-    <button type="button" class="layui-btn layui-btn-sm" lay-event="kill">终止执行</button>
+<script type="text/html" id="operateTool">
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="detail">详情</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="log">执行日志</button>
 </script>
 
 <#-- 转义表格字段 -->
@@ -174,9 +134,6 @@
     <span style="color: #009688;">未知</span>
     {{# } }}
 </script>
-<script type="text/html" id="showExecParam">
-    <a class="layui-btn layui-btn-normal layui-btn-sm" lay-event="show">查看</a>
-</script>
 
 <script>
     let element = layui.element;
@@ -193,15 +150,14 @@
             url: '${contextPath}/log',
             cols: [[
                 {type: 'numbers'},
-                {field: 'job_name', title: '任务名称'},
-                {field: 'executor_address', title: '执行地址'},
-                {field: 'executor_handler', title: 'JobHandler'},
-                {title: '执行参数', toolbar: '#showExecParam'},
-                {field: 'trigger_time', title: '调度时间', minWidth: 165},
-                {field: 'trigger_code', title: '调度结果', templet: '#triggerCodeTpl'},
-                {field: 'exec_time', title: '执行时间', minWidth: 165,},
-                {field: 'exec_code', title: '执行结果', templet: '#execCodeTpl'},
-                {fixed: 'right', title: '操作', minWidth: 145, toolbar: '#operateToolbar'},
+                {field: 'jobName', title: '任务名称'},
+                {field: 'execAddress', title: '执行地址'},
+                {field: 'execHandler', title: 'JobHandler'},
+                {field: 'triggerTime', title: '调度时间', minWidth: 165},
+                {field: 'triggerCode', title: '调度结果', templet: '#triggerCodeTpl'},
+                {field: 'execBeginTime', title: '执行时间', minWidth: 165},
+                {field: 'execCode', title: '执行结果', templet: '#execCodeTpl'},
+                {fixed: 'right', title: '操作', minWidth: 145, toolbar: '#operateTool'},
             ]],
             page: true,
             response: {
@@ -212,13 +168,13 @@
                     "code": res.code,
                     "msg": res.msg,
                     "count": res.content.total,
-                    "data": res.content.list
+                    "data": res.content.records
                 };
             }
         });
 
         // 渲染分组下拉框
-        $.get('${contextPath}/app/list_all', function (ret) {
+        $.get('${contextPath}/app/listAll', function (ret) {
             if (ret.code !== 200) {
                 layer.error('渲染任务分组异常');
                 return;
@@ -229,12 +185,12 @@
                 htmlContent += "<option value='" + item.name + "'>" + item.title + "</option>";
             })
             // 渲染查询条件的分组
-            $('#searchGroupNameID option').remove();
-            $('#searchGroupNameID').append(htmlContent);
+            $('#searchAppNameID option').remove();
+            $('#searchAppNameID').append(htmlContent);
 
             // 渲染清理日志的分组
-            $('#delGroupNameID option').remove();
-            $('#delGroupNameID').append(htmlContent);
+            $('#delAppNameID option').remove();
+            $('#delAppNameID').append(htmlContent);
             form.render();
         });
 
@@ -249,40 +205,31 @@
 
     table.on('tool(dataTable)', function (obj) {
         let data = obj.data;
-        let eventName = obj.event;
-        if (eventName === 'show') {
+        if (obj.event === 'detail') {
+            form.val('logDetailForm', data);
             layer.open({
+                type: 1,
+                title: '详情',
+                area: ['600px', '250px'],
+                offset: '50px',
                 resize: false,
-                content: data.executor_param
-            });
-        } else if (eventName === 'kill') {
-            // 终止
-            $.ajax({
-                url: '${contextPath}/log/kill/' + data.id,
-                type: 'POST',
-                success: function (ret) {
-                    if (ret.code === 200) {
-                        layer.alert('终止成功');
-                    } else {
-                        layer.alert(ret.msg);
-                    }
-                }
-            });
-        } else {
-            layer.alert('这是神马操作？？？');
+                content: $('#logDetailLayer')
+            })
+        } else if(obj.event === 'log') {
+            layer.msg('查看日志')
         }
     });
 
     // 监听执行器的变更
-    form.on('select(searchGroupNameFilter)', onGroupNameChange);
-    form.on('select(delGroupNameFilter)', onGroupNameChange);
+    form.on('select(searchAppNameFilter)', onAppNameChange);
+    form.on('select(delAppNameFilter)', onAppNameChange);
 
-    function onGroupNameChange(data) {
+    function onAppNameChange(data) {
         let $elem = $(data.elem);
         let $this = undefined;
-        if ($elem.attr("id") === 'searchGroupNameID') {
+        if ($elem.attr("id") === 'searchAppNameID') {
             $this = $('#searchJobID');
-        } else if ($elem.attr("id") === 'delGroupNameID') {
+        } else if ($elem.attr("id") === 'delAppNameID') {
             $this = $('#delJobID');
         } else {
             layer.alert('内部错误');
@@ -295,7 +242,7 @@
             return;
         }
         // 渲染路由策略
-        $.get('${contextPath}/info/list_all', {groupName: data.value}, function (ret) {
+        $.get('${contextPath}/job/listByAppName', {appName: data.value}, function (ret) {
             if (ret.code !== 200) {
                 layer.error('渲染路由策略异常');
                 return;
@@ -321,47 +268,6 @@
         });
         return false;
     });
-
-    // 监听清理日志按钮
-    $('#showDelLogLayerBtn').click(function () {
-        // 弹窗，选择要清理的时间段
-        layer.open({
-            type: 1,
-            title: '删除日志',
-            area: '700px',
-            resize: false,
-            offset: '100px',
-            content: $('#delLogLayer')
-        })
-    });
-    form.on('submit(delLogBtn)', function (data) {
-        let field = data.field;
-
-        // 拆分时间范围为两个时间字段
-        let tr = field.time_range;
-        let timeArray = tr.split(' - ');
-        delete field.time_range;
-        field.begin_date = timeArray[0];
-        field.end_date = timeArray[1];
-
-        // 请求删除
-        $.ajax({
-            url: '${contextPath}/log/batch_delete',
-            type: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify(field),
-            success: function (ret) {
-                if (ret.code === 200) {
-                    layer.closeAll('page');
-                    layer.alert('删除成功');
-                } else {
-                    layer.alert('服务器内部错误');
-                }
-            }
-        });
-        return false;
-    });
-
 
 </script>
 </body>

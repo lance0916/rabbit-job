@@ -71,6 +71,13 @@
             <version>5.7.16</version>
         </dependency>
 
+        <!-- oshi -->
+        <dependency>
+            <groupId>com.github.oshi</groupId>
+            <artifactId>oshi-core</artifactId>
+            <version>5.8.6</version>
+        </dependency>
+
     </dependencies>
 
     <build>
