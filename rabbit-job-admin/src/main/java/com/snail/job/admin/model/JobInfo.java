@@ -48,7 +48,6 @@ public class JobInfo extends Model<JobInfo> {
      * 是否删除
      */
     @TableField("deleted")
-    @TableLogic
     private Integer deleted;
 
     /**
@@ -122,7 +121,6 @@ public class JobInfo extends Model<JobInfo> {
      */
     @TableField("trigger_next_time")
     private LocalDateTime triggerNextTime;
-
 
     public static final String ID = "id";
 

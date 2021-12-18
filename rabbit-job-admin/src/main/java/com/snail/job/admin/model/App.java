@@ -1,6 +1,9 @@
 package com.snail.job.admin.model;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +11,6 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * <p>
@@ -54,7 +56,6 @@ public class App extends Model<App> {
      * 是否删除
      */
     @TableField("deleted")
-    @TableLogic
     private Integer deleted;
 
     /**
@@ -68,7 +69,6 @@ public class App extends Model<App> {
      */
     @TableField("update_time")
     private LocalDateTime updateTime;
-
 
     public static final String ID = "id";
 

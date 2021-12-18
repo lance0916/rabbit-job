@@ -28,7 +28,6 @@ public class Lock extends Model<Lock> {
     @TableField("lock_key")
     private String lockKey;
 
-
     public static final String LOCK_KEY = "lock_key";
 
     @Override

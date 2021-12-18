@@ -53,7 +53,6 @@ public class JobLogReport extends Model<JobLogReport> {
     @TableField("fail_count")
     private Integer failCount;
 
-
     public static final String ID = "id";
 
     public static final String TRIGGER_DATE = "trigger_date";

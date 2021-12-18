@@ -42,7 +42,6 @@ public class Executor extends Model<Executor> {
      * 是否删除
      */
     @TableField("deleted")
-    @TableLogic
     private Integer deleted;
 
     /**
@@ -56,7 +55,6 @@ public class Executor extends Model<Executor> {
      */
     @TableField("update_time")
     private LocalDateTime updateTime;
-
 
     public static final String ID = "id";
 

@@ -131,7 +131,6 @@ public class JobLog extends Model<JobLog> {
     @TableField("alarm_status")
     private Integer alarmStatus;
 
-
     public static final String ID = "id";
 
     public static final String JOB_ID = "job_id";
