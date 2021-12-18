@@ -25,7 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/job")
-public class JobInfoController {
+public class InfoController {
 
     @Resource
     private JobInfoService jobInfoService;
@@ -98,7 +98,7 @@ public class JobInfoController {
      * 执行一次
      */
     @PostMapping("/exec/{id}")
-    public ResultT<?> exec(@PathVariable("id") Long id, @RequestParam("exec_param") String execParam) {
+    public ResultT<?> exec(@PathVariable("id") Long id, String execParam) {
         triggerPoolService.trigger(id, -1, execParam, TriggerType.API);
         return ResultT.SUCCESS;
     }
@@ -119,7 +119,7 @@ public class JobInfoController {
     /**
      * 下次执行时间
      */
-    @GetMapping("/triggerNextTime")
+    @GetMapping("/nextTriggerTime")
     public ResultT<?> triggerNextTime(String cron) {
         List<String> list = new ArrayList<>();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

@@ -16,7 +16,7 @@
 
 <#-- 公共 JS -->
 <#macro commonScript>
-    <script src="${contextPath}/static/layui.all.js"></script>
+    <script src="${contextPath}/static/layui.js"></script>
 </#macro>
 
 <#-- Header -->

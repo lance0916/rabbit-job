@@ -53,6 +53,7 @@ public class JobTriggerService {
             log.error("任务不存在，jobId={}", jobId);
             return;
         }
+        System.out.println("执行任务：" + jobId);
 
         // 优先使用传入的调度参数
         if (overrideExecParam != null) {

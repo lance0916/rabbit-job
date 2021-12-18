@@ -38,9 +38,9 @@
                         </div>
                     </div>
                     <div class="layui-inline">
-                        <label class="layui-form-label">描述</label>
+                        <label class="layui-form-label">标题</label>
                         <div class="layui-input-block">
-                            <input type="text" name="description" class="layui-input" autocomplete="off"/>
+                            <input type="text" name="title" class="layui-input" autocomplete="off"/>
                         </div>
                     </div>
                     <div class="layui-inline">
@@ -76,9 +76,9 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">描述</label>
+                <label class="layui-form-label">标题</label>
                 <div class="layui-input-block">
-                    <input type="text" name="description" required lay-verify="required" class="layui-input"
+                    <input type="text" name="title" required lay-verify="required" class="layui-input"
                            autocomplete="off"/>
                 </div>
             </div>
@@ -97,7 +97,7 @@
             </div>
             <div class="layui-form-item">
                 <div class="layui-input-block">
-                    <button lay-submit class="layui-btn" lay-filter="saveBtn">保存</button>
+                    <button lay-submit class="layui-btn layui-btn-normal" lay-filter="saveBtn">保存</button>
                 </div>
             </div>
         </form>
@@ -143,7 +143,7 @@
             cols: [[
                 {field: 'id', title: 'ID', fixed: 'left', width: 100, unresize: true},
                 {field: 'name', title: '唯一名称'},
-                {field: 'description', title: '描述'},
+                {field: 'title', title: '标题'},
                 {field: 'type', title: '注册类型', templet: '#typeTpl'},
                 {title: '执行器地址', toolbar: '#showExecAddress'},
                 {fixed: 'right', title: '操作', toolbar: '#operateToolbar'},
@@ -190,9 +190,9 @@
                 // 回显
                 layer.open({
                     type: 1,
-                    title: '编辑执行器信息',
-                    area: '350px',
-                    resize: false,
+                    title: '编辑应用信息',
+                    area:  ['600px', '430px'],
+                    offset: '50px',
                     content: $('#editLayer')
                 })
             } else if (eventName === 'del') {
@@ -227,9 +227,9 @@
 
         layer.open({
             type: 1,
-            title: '添加执行器信息',
-            area: '350px',
-            resize: false,
+            title: '新增应用',
+            area:  ['600px', '430px'],
+            offset: '50px',
             content: $('#editLayer')
         })
     })

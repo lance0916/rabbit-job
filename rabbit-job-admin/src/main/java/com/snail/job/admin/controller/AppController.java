@@ -25,10 +25,10 @@ public class AppController {
      * 分页列表
      */
     @GetMapping
-    public ResultT<?> list(String name, String description,
+    public ResultT<?> list(String name, String title,
                            @RequestParam(name = "page") Integer pageNum,
                            @RequestParam(name = "limit") Integer pageSize) {
-        IPage<App> page = appService.page(name, description, pageNum, pageSize);
+        IPage<App> page = appService.page(name, title, pageNum, pageSize);
         return new ResultT<>(page);
     }
 
@@ -72,7 +72,7 @@ public class AppController {
     /**
      * 列出所有的应用名
      */
-    @GetMapping("/listNameTitle")
+    @GetMapping("/listAll")
     public ResultT<?> listNameTitle() {
         List<App> list = appService.findAllNameAndTitle();
         return new ResultT<>(list);

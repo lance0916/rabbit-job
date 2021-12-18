@@ -35,8 +35,8 @@ public class App extends Model<App> {
     /**
      * 描述
      */
-    @TableField("description")
-    private String description;
+    @TableField("title")
+    private String title;
 
     /**
      * 注册类型。自动注册=0；手动注册=1
@@ -74,7 +74,7 @@ public class App extends Model<App> {
 
     public static final String NAME = "name";
 
-    public static final String DESCRIPTION = "description";
+    public static final String TITLE = "title";
 
     public static final String TYPE = "type";
 
