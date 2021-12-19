@@ -59,7 +59,7 @@ public class RabbitJobController {
     /**
      * 运行任务
      */
-    @GetMapping("/run")
+    @PostMapping("/run")
     public ResponseEntity<?> run(@RequestBody String bodyJson) {
         TriggerParam triggerParam = GsonTool.fromJson(bodyJson, TriggerParam.class);
         ResultT<String> resultT = jobClientService.run(triggerParam);

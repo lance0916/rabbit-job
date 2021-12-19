@@ -70,13 +70,11 @@ public class ApiController {
                     .setCreateTime(LocalDateTime.now());
         } else {
             // 更新
-            executor = new Executor()
-                    .setId(dbExecutor.getId());
+            executor = new Executor().setId(dbExecutor.getId());
         }
-        executor.setDeleted(0)
-                .setUpdateTime(LocalDateTime.now());
-
+        executor.setDeleted(0).setUpdateTime(LocalDateTime.now());
         executorService.saveOrUpdate(executor);
+        log.info("执行器注册成功。{}", param);
         return ResultT.SUCCESS;
     }
 
@@ -105,6 +103,7 @@ public class ApiController {
                 .setDeleted(1)
                 .setUpdateTime(LocalDateTime.now());
         executorService.updateById(executor);
+        log.info("执行器注销成功。{}", param);
         return ResultT.SUCCESS;
     }
 

@@ -2,7 +2,9 @@ package com.snail.job.admin.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.snail.job.admin.bean.request.JobInfoQueryRequest;
@@ -68,17 +70,18 @@ public class JobInfoService extends ServiceImpl<JobInfoMapper, JobInfo> {
         LocalDateTime nextTriggerTime = cronExpression.next(LocalDateTime.now());
 
         // 更新
-        JobInfo updateJobInfo = new JobInfo();
-        updateJobInfo.setId(jobInfo.getId());
+        LambdaUpdateWrapper<JobInfo> wrapper = Wrappers.lambdaUpdate();
+        wrapper.eq(JobInfo::getId, id);
         if (nextTriggerTime != null) {
-            updateJobInfo.setTriggerNextTime(nextTriggerTime);
-            updateJobInfo.setTriggerStatus(RUNNING.getValue());
+            wrapper.set(JobInfo::getTriggerNextTime, nextTriggerTime)
+                    .set(JobInfo::getTriggerStatus, RUNNING.getValue());
         } else {
-            updateJobInfo.setTriggerPrevTime(null);
-            updateJobInfo.setTriggerNextTime(null);
-            updateJobInfo.setTriggerStatus(STOPPED.getValue());
+            wrapper.set(JobInfo::getTriggerPrevTime, null)
+                    .set(JobInfo::getTriggerNextTime, null)
+                    .set(JobInfo::getTriggerStatus, STOPPED.getValue());
         }
-        super.updateById(updateJobInfo);
+        wrapper.set(JobInfo::getUpdateTime, LocalDateTime.now());
+        super.update(wrapper);
     }
 
     /**
@@ -92,11 +95,11 @@ public class JobInfoService extends ServiceImpl<JobInfoMapper, JobInfo> {
         }
 
         // 更新
-        JobInfo updateJobInfo = new JobInfo();
-        updateJobInfo.setId(jobInfo.getId());
-        updateJobInfo.setTriggerNextTime(null);
-        updateJobInfo.setTriggerStatus(STOPPED.getValue());
-        super.updateById(updateJobInfo);
+        super.update(Wrappers.<JobInfo>lambdaUpdate()
+                .set(JobInfo::getTriggerNextTime, null)
+                .set(JobInfo::getTriggerStatus, STOPPED.getValue())
+                .set(JobInfo::getUpdateTime, LocalDateTime.now())
+                .eq(JobInfo::getId, id));
     }
 
     /**

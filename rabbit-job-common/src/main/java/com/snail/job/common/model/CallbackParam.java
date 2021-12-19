@@ -34,6 +34,9 @@ public class CallbackParam {
      */
     private LocalDateTime endExecTime;
 
+    public CallbackParam() {
+    }
+
     public CallbackParam(Long logId, Integer execCode, String execMsg, LocalDateTime beginExecTime, LocalDateTime endExecTime) {
         this.logId = logId;
         this.execCode = execCode;

@@ -33,14 +33,14 @@ public class ExecutorProxy {
     }
 
     public ResultT<String> beat() {
-        return HttpTool.post(address + "beat", null, secretKey);
+        return HttpTool.post(address + "rabbit-job/beat", null, secretKey);
     }
 
     public ResultT<String> idleBeat(IdleBeatParam idleBeatParam) {
-        return HttpTool.post(address + "ideaBeat", idleBeatParam, secretKey);
+        return HttpTool.post(address + "rabbit-job/ideaBeat", idleBeatParam, secretKey);
     }
 
     public ResultT<String> run(TriggerParam triggerParam) {
-        return HttpTool.post(address + "run", triggerParam, secretKey);
+        return HttpTool.post(address + "rabbit-job/run", triggerParam, secretKey);
     }
 }

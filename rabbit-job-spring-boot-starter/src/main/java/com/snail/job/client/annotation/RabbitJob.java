@@ -17,16 +17,9 @@ import java.lang.annotation.Target;
 public @interface RabbitJob {
 
     /**
-     * alias name
-     */
-    @AliasFor("name")
-    String value();
-
-    /**
      * 任务名
      */
-    @AliasFor("value")
-    String name() default "";
+    String name();
 
     /**
      * 任务的初始化方法

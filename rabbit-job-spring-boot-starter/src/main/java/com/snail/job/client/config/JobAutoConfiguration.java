@@ -16,7 +16,12 @@ import java.util.List;
  */
 @Configuration
 @ComponentScan(
-        basePackages = "com.snail.job.client"
+        basePackages = {
+                "com.snail.job.client.biz",
+                "com.snail.job.client.service",
+                "com.snail.job.client.thread",
+        },
+        basePackageClasses = JobAutoConfiguration.class
         , nameGenerator = JobBeanNameGenerator.class
 )
 @EnableConfigurationProperties(JobClientProperties.class)

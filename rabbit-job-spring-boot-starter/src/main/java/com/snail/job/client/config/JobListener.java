@@ -19,12 +19,18 @@ public class JobListener implements ApplicationRunner {
     private CallbackThread callbackThread;
     @Resource
     private RegisterThread registerThread;
+    @Resource
+    private JobScanner jobScanner;
 
     /**
      * 启动线程
      */
     @Override
     public void run(ApplicationArguments args) {
+        // 注册任务
+        jobScanner.scanAndRegister();
+
+        // 启动守护线程
         registerThread.start();
         callbackThread.start();
 

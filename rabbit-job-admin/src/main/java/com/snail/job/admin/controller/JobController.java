@@ -25,7 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/job")
-public class InfoController {
+public class JobController {
 
     @Resource
     private JobInfoService jobInfoService;

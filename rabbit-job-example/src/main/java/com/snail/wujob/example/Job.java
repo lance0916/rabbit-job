@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Job {
 
-    @RabbitJob("eachSecond")
+    @RabbitJob(name = "eachSecond")
     public void f() {
         log.info("每秒执行一次");
     }
