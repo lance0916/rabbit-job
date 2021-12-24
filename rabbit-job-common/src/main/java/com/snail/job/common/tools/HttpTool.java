@@ -17,6 +17,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
@@ -89,9 +90,12 @@ public class HttpTool {
             String respJson = EntityUtils.toString(httpEntity, UTF_8);
             return GsonTool.fromJson(respJson, new TypeToken<ResultT<String>>() {
             });
+        } catch (IOException e) {
+            log.error("Http请求异常。{}", StrTool.stringifyException(e));
+            return new ResultT<>(ResultT.NETWORK_ERROR, "未知异常" + e.getMessage());
         } catch (Exception e) {
             log.error("Http请求异常。{}", StrTool.stringifyException(e));
-            return new ResultT<>(ResultT.FAIL_CODE, "未知异常" + e.getMessage());
+            return new ResultT<>(ResultT.UNKONW_ERROR, "未知异常" + e.getMessage());
         }
     }
 }

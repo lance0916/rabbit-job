@@ -10,7 +10,7 @@ import java.util.Map;
  * @author 吴庆龙
  * @date 2020/6/4 11:23 上午
  */
-public enum RouteStrategyEnum {
+public enum RouteEnum {
 
     /**
      * 第一个
@@ -41,16 +41,21 @@ public enum RouteStrategyEnum {
      * 广播
      */
     BROADCAST("broadcast", "广播", null),
+
+    /**
+     * 轮训
+     */
+    RoundRobin("round_robin", "轮训", new RoundRobinRoute()),
     ;
 
     private final String name;
     private final String desc;
-    private final RouterStrategy routerStrategy;
+    private final AbstractRoute abstractRoute;
 
-    RouteStrategyEnum(String name, String desc, RouterStrategy routerStrategy) {
+    RouteEnum(String name, String desc, AbstractRoute abstractRoute) {
         this.name = name;
         this.desc = desc;
-        this.routerStrategy = routerStrategy;
+        this.abstractRoute = abstractRoute;
     }
 
     public String getName() {
@@ -61,19 +66,19 @@ public enum RouteStrategyEnum {
         return desc;
     }
 
-    public RouterStrategy getRouterStrategy() {
-        return routerStrategy;
+    public AbstractRoute getRouterStrategy() {
+        return abstractRoute;
     }
 
-    private static final Map<String, RouterStrategy> strategyMap = new HashMap<>();
+    private static final Map<String, AbstractRoute> strategyMap = new HashMap<>();
 
     static {
-        for (RouteStrategyEnum value : values()) {
-            strategyMap.put(value.name, value.routerStrategy);
+        for (RouteEnum value : values()) {
+            strategyMap.put(value.name, value.abstractRoute);
         }
     }
 
-    public static RouterStrategy match(String name) {
+    public static AbstractRoute match(String name) {
         return strategyMap.get(name);
     }
 

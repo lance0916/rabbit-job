@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.snail.job.admin.bean.request.JobInfoQueryRequest;
 import com.snail.job.admin.bean.vo.RouteVO;
 import com.snail.job.admin.model.JobInfo;
-import com.snail.job.admin.route.RouteStrategyEnum;
+import com.snail.job.admin.route.RouteEnum;
 import com.snail.job.admin.service.JobInfoService;
 import com.snail.job.admin.service.trigger.TriggerPoolService;
 import com.snail.job.common.enums.TriggerType;
@@ -109,8 +109,8 @@ public class JobInfoController {
     @GetMapping("/route")
     public ResultT<?> route() {
         List<RouteVO> list = new ArrayList<>();
-        RouteStrategyEnum[] routeStrategyEnums = RouteStrategyEnum.values();
-        for (RouteStrategyEnum strategyEnum : routeStrategyEnums) {
+        RouteEnum[] routeEnums = RouteEnum.values();
+        for (RouteEnum strategyEnum : routeEnums) {
             list.add(new RouteVO(strategyEnum.getName(), strategyEnum.getDesc()));
         }
         return new ResultT<>(list);

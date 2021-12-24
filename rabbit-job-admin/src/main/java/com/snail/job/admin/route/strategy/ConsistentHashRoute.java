@@ -1,7 +1,7 @@
 package com.snail.job.admin.route.strategy;
 
 import cn.hutool.core.util.HashUtil;
-import com.snail.job.admin.route.RouterStrategy;
+import com.snail.job.admin.route.AbstractRoute;
 
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -11,7 +11,7 @@ import java.util.TreeMap;
  * @author 吴庆龙
  * @date 2020/6/17 10:11 上午
  */
-public class ConsistentHashRoute extends RouterStrategy {
+public class ConsistentHashRoute extends AbstractRoute {
 
     /**
      * 每个真实节点对应虚拟节点的数量
@@ -19,7 +19,7 @@ public class ConsistentHashRoute extends RouterStrategy {
     private final static int V_NODE_NUM = 1000;
 
     @Override
-    public String route(Long jobId, String[] addresses) {
+    public String getExecutorAddress(Long appId, Long jobId, String[] addresses) {
         return hashJob(jobId, addresses);
     }
 

@@ -5,8 +5,8 @@ import com.snail.job.admin.biz.JobExecutorBiz;
 import com.snail.job.admin.model.App;
 import com.snail.job.admin.model.JobInfo;
 import com.snail.job.admin.model.JobLog;
-import com.snail.job.admin.route.RouterStrategy;
-import com.snail.job.admin.route.RouteStrategyEnum;
+import com.snail.job.admin.route.AbstractRoute;
+import com.snail.job.admin.route.RouteEnum;
 import com.snail.job.admin.service.AppService;
 import com.snail.job.admin.service.JobInfoService;
 import com.snail.job.admin.service.JobLogService;
@@ -66,12 +66,12 @@ public class JobTriggerService {
         // 获取执行器地址列表
         QueryWrapper<App> appQueryWrapper = new QueryWrapper<>();
         appQueryWrapper.eq("name", jobInfo.getAppName());
-        App application = appService.getOne(appQueryWrapper);
-        String addresses = application.getAddresses();
+        App app = appService.getOne(appQueryWrapper);
+        String addresses = app.getAddresses();
         String[] addressArray = addresses.split(",");
 
         // 执行调度
-        if (RouteStrategyEnum.BROADCAST.getName().equals(jobInfo.getExecRouteStrategy())) {
+        if (RouteEnum.BROADCAST.getName().equals(jobInfo.getExecRouteStrategy())) {
             // 广播执行
             int shardTotal = addressArray.length;
             for (int i = 0; i < addressArray.length; i++) {
@@ -82,8 +82,8 @@ public class JobTriggerService {
             }
         } else {
             // 非广播执行，选择一个执行器执行
-            RouterStrategy router = RouteStrategyEnum.match(jobInfo.getExecRouteStrategy());
-            String executorAddress = router.route(jobId, addressArray);
+            AbstractRoute route = RouteEnum.match(jobInfo.getExecRouteStrategy());
+            String executorAddress = route.getExecutorAddress(app.getId(), jobId, addressArray);
 
             // 进行调度
             doTrigger(jobInfo, executorAddress, triggerType, 1, 1);

@@ -43,6 +43,16 @@ public class ResultT<T> {
      */
     public static final int EXECUTOR_BUSY = 506;
 
+    /**
+     * 网络错误
+     */
+    public static final int NETWORK_ERROR = 507;
+
+    /**
+     * 未知错误
+     */
+    public static final int UNKONW_ERROR = 508;
+
     public static final ResultT<String> SUCCESS = new ResultT<>(null);
 
     public static final ResultT<String> FAIL = new ResultT<>(FAIL_CODE, null);
