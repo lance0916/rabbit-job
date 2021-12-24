@@ -1,5 +1,6 @@
 package com.snail.job.client.biz;
 
+import com.snail.job.common.exception.RabbitJobException;
 import com.snail.job.common.model.CallbackParam;
 import com.snail.job.common.model.RegistryParam;
 import com.snail.job.common.model.ResultT;
@@ -7,6 +8,7 @@ import com.snail.job.common.proxy.AdminProxy;
 import com.snail.job.client.config.JobClientProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -22,6 +24,12 @@ import java.util.List;
 @Component
 public class AdminBiz {
     private final Logger log = LoggerFactory.getLogger(AdminBiz.class);
+
+    /**
+     * 服务器端口
+     */
+    @Value("${server.port:8080}")
+    private int serverPort;
 
     /**
      * 配置文件
@@ -55,11 +63,19 @@ public class AdminBiz {
      * 注册
      */
     public void register() {
-        // FIXME 支持配置 ip
-        RegistryParam param = new RegistryParam(
-                jobClientProperties.getExecutor().getAppName(),
-                jobClientProperties.getExecutor().getAddress()
-        );
+        JobClientProperties.Executor executor = jobClientProperties.getExecutor();
+        String address = executor.getAddress();
+
+        // 优先使用配置的地址
+        if (address == null || address.isEmpty()) {
+            String ip = executor.getIp();
+            if (ip == null || ip.isEmpty()) {
+                throw new RabbitJobException("address和ip必须配置一个");
+            }
+            address = "http://" + ip + ":" + serverPort;
+        }
+
+        RegistryParam param = new RegistryParam(executor.getAppName(), address);
 
         AdminProxy proxy = getAdminProxy();
         ResultT<String> result = proxy.registry(param);
@@ -82,11 +98,18 @@ public class AdminBiz {
      * 移除
      */
     public void remove() {
-        // FIXME 支持配置 ip
-        RegistryParam param = new RegistryParam(
-                jobClientProperties.getExecutor().getAppName(),
-                jobClientProperties.getExecutor().getAddress()
-        );
+        JobClientProperties.Executor executor = jobClientProperties.getExecutor();
+        String address = executor.getAddress();
+
+        // 优先使用配置的地址
+        if (address == null || address.isEmpty()) {
+            String ip = executor.getIp();
+            if (ip == null || ip.isEmpty()) {
+                throw new RabbitJobException("address和ip必须配置一个");
+            }
+            address = "http://" + ip + ":" + serverPort;
+        }
+        RegistryParam param = new RegistryParam(executor.getAppName(), address);
 
         AdminProxy proxy = getAdminProxy();
         ResultT<String> result = proxy.remove(param);

@@ -1,6 +1,6 @@
 package com.snail.job.common.tools;
 
-import com.snail.job.common.exception.SnailJobException;
+import com.snail.job.common.exception.RabbitJobException;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -22,7 +22,7 @@ public class SignTool {
         try {
             return md5(source);
         } catch (NoSuchAlgorithmException e) {
-            throw new SnailJobException(e);
+            throw new RabbitJobException(e);
         }
     }
 
