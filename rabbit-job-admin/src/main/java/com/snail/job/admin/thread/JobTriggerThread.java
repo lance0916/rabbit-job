@@ -29,13 +29,13 @@ public class JobTriggerThread extends RabbitJobAbstractThread {
         long curSecond = (startMillis / 1000) % 60;
 
         // 上一秒要执行的任务。1、休眠异常，2、调度时间超过一秒
-        Set<Long> preJobIds = triggerPoolService.get(curSecond - 1);
+        Set<Long> preJobIds = triggerPoolService.get((int) (curSecond - 1));
         if (preJobIds != null) {
             preJobIds.forEach(jobId -> triggerPoolService.trigger(jobId, -1, null, CRON));
         }
 
         // 获取本秒要执行的任务
-        Set<Long> jobIds = triggerPoolService.get(curSecond);
+        Set<Long> jobIds = triggerPoolService.get((int) curSecond);
         if (jobIds != null) {
             jobIds.forEach(jobId -> triggerPoolService.trigger(jobId, -1, null, CRON));
         }

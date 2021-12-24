@@ -1,11 +1,10 @@
-<#-- 自定义变量 -->
 <#assign contextPath="${springMacroRequestContext.contextPath}" >
-
 <!DOCTYPE html>
 <html lang="zh_CN">
 <head>
     <title>蜗牛任务调度中心</title>
-    <#import "../common/common.ftl" as netCommon />
+    <#import "common.ftl" as netCommon />
+
     <@netCommon.commonHead />
     <@netCommon.commonStyle />
 </head>
@@ -15,15 +14,13 @@
     <@netCommon.commonHeader />
 
     <#-- 左侧菜单栏 -->
-    <@netCommon.commonLeft "log" />
+    <@netCommon.commonLeft "index" />
 
     <div class="layui-body">
         <!-- 内容主体区域 -->
         <div style="padding: 15px;">
 
-            <fieldset class="layui-elem-field layui-field-title">
-                <legend>用户管理</legend>
-            </fieldset>
+            <h1>500 服务器内部错误</h1>
 
         </div>
     </div>
@@ -32,14 +29,5 @@
     <@netCommon.commonFooter />
 </div>
 <@netCommon.commonScript />
-<script>
-    //JavaScript代码区域
-    layui.use('element', function () {
-        let element = layui.element;
-
-
-    });
-
-</script>
 </body>
 </html>

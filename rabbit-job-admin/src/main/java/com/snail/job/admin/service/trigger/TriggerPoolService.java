@@ -24,12 +24,12 @@ public class TriggerPoolService {
      * key: 秒
      * val: 任务ID集合
      */
-    private final Map<Long, Set<Long>> triggerJobMap = new ConcurrentHashMap<>();
+    private final Map<Integer, Set<Long>> triggerJobMap = new ConcurrentHashMap<>();
 
     /**
      * 添加调度到缓存中
      */
-    public void push(Long jobId, Long invokeSecond) {
+    public void push(Long jobId, Integer invokeSecond) {
         Set<Long> jobIdSet = triggerJobMap.computeIfAbsent(invokeSecond, k -> new HashSet<>());
         jobIdSet.add(jobId);
     }
@@ -37,7 +37,7 @@ public class TriggerPoolService {
     /**
      * 从缓存中移除
      */
-    public Set<Long> get(Long second) {
+    public Set<Long> get(Integer second) {
         return triggerJobMap.remove(second);
     }
 

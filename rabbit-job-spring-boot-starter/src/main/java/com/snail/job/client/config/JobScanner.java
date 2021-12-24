@@ -1,8 +1,8 @@
 package com.snail.job.client.config;
 
-import com.snail.job.common.exception.RegisterJobException;
 import com.snail.job.client.annotation.RabbitJob;
 import com.snail.job.client.handler.impl.MethodJobHandler;
+import com.snail.job.common.exception.RegisterJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -75,7 +75,7 @@ public class JobScanner implements ApplicationContextAware {
                 // 校验任务名
                 String jobName = jobInfo.name();
                 if (jobName.trim().length() == 0) {
-                    throw new RegisterJobException("无效的任务名。for[" + bean.getClass() +"#" + method.getName() + "]");
+                    throw new RegisterJobException("无效的任务名。for[" + bean.getClass() + "#" + method.getName() + "]");
                 }
 
                 // 校验任务是否重复
@@ -89,19 +89,20 @@ public class JobScanner implements ApplicationContextAware {
                 Method destroyMethod = setMethodAccessible(bean, jobInfo.destroy());
 
                 // 检验方法的参数. 1:只有一个参数; 2:参数必须是String类型的; 3:返回值必须是 ResultT 类型
-                if (method.getParameterTypes().length > 0) {
-                    throw new RegisterJobException("JobHandler的方法入参无效, " +
-                            "for[" + bean.getClass() + "#" + method.getName() + "], " +
-                            "格式如:\" public void execute() \".");
-                }
-                if (!method.getReturnType().isAssignableFrom(Void.class)) {
-                    throw new RegisterJobException("JobHandler的方法返回值无效, " +
-                            "for[" + bean.getClass() + "#" + method.getName() + "], " +
-                            "格式如:\" public void execute() \".");
-                }
+//                if (method.getParameterTypes().length > 0) {
+//                    throw new RegisterJobException("JobHandler的方法入参无效, " +
+//                            "for[" + bean.getClass() + "#" + method.getName() + "], " +
+//                            "格式如:\" public void execute() \".");
+//                }
+//                if (!method.getReturnType().isAssignableFrom(Void.class)) {
+//                    throw new RegisterJobException("JobHandler的方法返回值无效, " +
+//                            "for[" + bean.getClass() + "#" + method.getName() + "], " +
+//                            "格式如:\" public void execute() \".");
+//                }
                 method.setAccessible(true);
 
                 // 注册 JobHandler
+                System.out.println("扫描到任务：" + jobName);
                 HANDLER_REPOSITORY.put(jobName, new MethodJobHandler(bean, method, initMethod, destroyMethod));
             }
         }
@@ -117,7 +118,7 @@ public class JobScanner implements ApplicationContextAware {
                 method.setAccessible(true);
                 return method;
             } catch (NoSuchMethodException e) {
-                throw new RegisterJobException("初始化或销毁方法无效，for[" + bean.getClass() +"#" + methodName + "]");
+                throw new RegisterJobException("初始化或销毁方法无效，for[" + bean.getClass() + "#" + methodName + "]");
             }
         }
         return null;

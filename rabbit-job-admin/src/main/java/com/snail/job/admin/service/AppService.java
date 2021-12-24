@@ -9,7 +9,6 @@ import com.snail.job.admin.mapper.AppMapper;
 import com.snail.job.admin.model.App;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,11 +25,17 @@ public class AppService extends ServiceImpl<AppMapper, App> {
     /**
      * 分页列表
      */
-    public IPage<App> page(String name, Integer pageNum, Integer pageSize) {
+    public IPage<App> page(String name, String title, Integer pageNum, Integer pageSize) {
         IPage<App> page = new Page<>(pageNum, pageSize);
 
         QueryWrapper<App> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like("name", name);
+        if (StrUtil.isNotEmpty(name)) {
+            queryWrapper.like(App.NAME, name);
+        }
+        if (StrUtil.isNotEmpty(title)) {
+            queryWrapper.like(App.TITLE, title);
+        }
+        queryWrapper.eq(App.DELETED, 0);
         return super.page(page, queryWrapper);
     }
 
@@ -43,7 +48,7 @@ public class AppService extends ServiceImpl<AppMapper, App> {
         }
 
         QueryWrapper<App> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", name);
+        queryWrapper.eq(App.NAME, name);
         return super.getOne(queryWrapper);
     }
 
@@ -63,7 +68,7 @@ public class AppService extends ServiceImpl<AppMapper, App> {
      */
     public List<App> findAllNameAndTitle() {
         QueryWrapper<App> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("name", "title");
+        queryWrapper.select(App.NAME, App.TITLE);
         return super.list(queryWrapper);
     }
 

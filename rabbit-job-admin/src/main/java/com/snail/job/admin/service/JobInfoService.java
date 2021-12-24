@@ -2,7 +2,9 @@ package com.snail.job.admin.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.snail.job.admin.bean.request.JobInfoQueryRequest;
@@ -12,12 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.support.CronExpression;
 import org.springframework.stereotype.Service;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.snail.job.admin.constant.AdminConstants.SCAN_JOB_SLEEP_MS;
 import static com.snail.job.common.enums.TriggerStatus.RUNNING;
 import static com.snail.job.common.enums.TriggerStatus.STOPPED;
 
@@ -38,18 +37,18 @@ public class JobInfoService extends ServiceImpl<JobInfoMapper, JobInfo> {
     public IPage<JobInfo> listByPage(JobInfoQueryRequest request) {
         QueryWrapper<JobInfo> queryWrapper = new QueryWrapper<>();
         if (StrUtil.isNotEmpty(request.getName())) {
-            queryWrapper.like("name", request.getName());
+            queryWrapper.like(JobInfo.NAME, request.getName());
         }
         if (StrUtil.isNotEmpty(request.getAppName())) {
-            queryWrapper.like("appName", request.getAppName());
+            queryWrapper.like(JobInfo.APP_NAME, request.getAppName());
         }
         if (StrUtil.isNotEmpty(request.getAuthorName())) {
-            queryWrapper.like("authorName", request.getAuthorName());
+            queryWrapper.like(JobInfo.AUTHOR_NAME, request.getAuthorName());
         }
         if (request.getTriggerStatus() != null) {
-            queryWrapper.eq("triggerStatus", request.getTriggerStatus());
+            queryWrapper.eq(JobInfo.TRIGGER_STATUS, request.getTriggerStatus());
         }
-
+        queryWrapper.eq(JobInfo.DELETED, 0);
         IPage<JobInfo> page = new Page<>(request.getPageNum(), request.getPageSize());
         return super.page(page, queryWrapper);
     }
@@ -68,22 +67,21 @@ public class JobInfoService extends ServiceImpl<JobInfoMapper, JobInfo> {
         CronExpression cronExpression = CronExpression.parse(jobInfo.getCron());
 
         // 计算下次执行时间
-        Instant instant = Instant.now(Clock.systemDefaultZone());
-        instant.plus(SCAN_JOB_SLEEP_MS, ChronoUnit.MILLIS);
-        Instant nextTriggerTime = cronExpression.next(instant);
+        LocalDateTime nextTriggerTime = cronExpression.next(LocalDateTime.now());
 
         // 更新
-        JobInfo updateJobInfo = new JobInfo();
-        updateJobInfo.setId(jobInfo.getId());
+        LambdaUpdateWrapper<JobInfo> wrapper = Wrappers.lambdaUpdate();
+        wrapper.eq(JobInfo::getId, id);
         if (nextTriggerTime != null) {
-            updateJobInfo.setTriggerNextTime(nextTriggerTime.getEpochSecond());
-            updateJobInfo.setTriggerStatus(RUNNING.getValue());
+            wrapper.set(JobInfo::getTriggerNextTime, nextTriggerTime)
+                    .set(JobInfo::getTriggerStatus, RUNNING.getValue());
         } else {
-            updateJobInfo.setTriggerPrevTime(0L);
-            updateJobInfo.setTriggerNextTime(0L);
-            updateJobInfo.setTriggerStatus(STOPPED.getValue());
+            wrapper.set(JobInfo::getTriggerPrevTime, null)
+                    .set(JobInfo::getTriggerNextTime, null)
+                    .set(JobInfo::getTriggerStatus, STOPPED.getValue());
         }
-        super.updateById(updateJobInfo);
+        wrapper.set(JobInfo::getUpdateTime, LocalDateTime.now());
+        super.update(wrapper);
     }
 
     /**
@@ -97,19 +95,22 @@ public class JobInfoService extends ServiceImpl<JobInfoMapper, JobInfo> {
         }
 
         // 更新
-        JobInfo updateJobInfo = new JobInfo();
-        updateJobInfo.setId(jobInfo.getId());
-        updateJobInfo.setTriggerNextTime(0L);
-        updateJobInfo.setTriggerStatus(STOPPED.getValue());
-        super.updateById(updateJobInfo);
+        super.update(Wrappers.<JobInfo>lambdaUpdate()
+                .set(JobInfo::getTriggerNextTime, null)
+                .set(JobInfo::getTriggerStatus, STOPPED.getValue())
+                .set(JobInfo::getUpdateTime, LocalDateTime.now())
+                .eq(JobInfo::getId, id));
     }
 
     /**
      * 删除
-     * TODO 执行软删
      */
     public void delete(Long id) {
-        super.removeById(id);
+        JobInfo jobInfo = new JobInfo()
+                .setId(id)
+                .setDeleted(1)
+                .setUpdateTime(LocalDateTime.now());
+        super.updateById(jobInfo);
     }
 
     /**
@@ -117,7 +118,9 @@ public class JobInfoService extends ServiceImpl<JobInfoMapper, JobInfo> {
      */
     public List<JobInfo> listByAppName(String appName) {
         QueryWrapper<JobInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "name").eq("app_name", appName);
+        queryWrapper.select(JobInfo.ID, JobInfo.NAME)
+                .eq(JobInfo.APP_NAME, appName)
+                .eq(JobInfo.DELETED, 0);
         return super.list(queryWrapper);
     }
 

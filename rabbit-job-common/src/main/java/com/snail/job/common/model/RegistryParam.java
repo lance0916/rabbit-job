@@ -37,4 +37,11 @@ public class RegistryParam {
         this.address = address;
     }
 
+    @Override
+    public String toString() {
+        return "RegistryParam{" +
+                "appName='" + appName + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }
