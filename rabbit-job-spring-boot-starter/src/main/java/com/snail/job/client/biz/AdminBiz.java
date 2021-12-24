@@ -79,7 +79,7 @@ public class AdminBiz {
 
         AdminProxy proxy = getAdminProxy();
         ResultT<String> result = proxy.registry(param);
-        if (ResultT.NETWORK_ERROR == result.getCode()) {
+        if (ResultT.NETWORK_ERROR == result.getCode() || ResultT.SERVICE_DOWN == result.getCode()) {
             // 切换别的调度中心重试
             for (int i = 0; i < 3; i++) {
                 proxy = getAdminProxy();
@@ -113,7 +113,7 @@ public class AdminBiz {
 
         AdminProxy proxy = getAdminProxy();
         ResultT<String> result = proxy.remove(param);
-        if (ResultT.NETWORK_ERROR == result.getCode()) {
+        if (ResultT.NETWORK_ERROR == result.getCode() || ResultT.SERVICE_DOWN == result.getCode()) {
             // 切换别的调度中心重试
             for (int i = 0; i < 3; i++) {
                 proxy = getAdminProxy();
@@ -134,7 +134,7 @@ public class AdminBiz {
     public void callback(List<CallbackParam> callbackParams) {
         AdminProxy proxy = getAdminProxy();
         ResultT<String> result = proxy.callback(callbackParams);
-        if (ResultT.NETWORK_ERROR == result.getCode()) {
+        if (ResultT.NETWORK_ERROR == result.getCode() || ResultT.SERVICE_DOWN == result.getCode()) {
             // 切换别的调度中心重试
             for (int i = 0; i < 3; i++) {
                 proxy = getAdminProxy();

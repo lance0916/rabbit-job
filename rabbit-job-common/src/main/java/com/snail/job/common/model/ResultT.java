@@ -53,9 +53,16 @@ public class ResultT<T> {
      */
     public static final int UNKONW_ERROR = 508;
 
+    /**
+     * 服务已下线
+     */
+    public static final int SERVICE_DOWN = 600;
+
     public static final ResultT<String> SUCCESS = new ResultT<>(null);
 
     public static final ResultT<String> FAIL = new ResultT<>(FAIL_CODE, null);
+
+    public static final ResultT<String> DOWN = new ResultT<>(SERVICE_DOWN, null);
 
     /**
      * 状态码

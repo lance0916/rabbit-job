@@ -1,5 +1,6 @@
 package com.snail.job.admin.config;
 
+import com.snail.job.admin.constant.ServiceStatus;
 import com.snail.job.admin.thread.*;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -35,6 +36,9 @@ public class ThreadLifeListener implements ApplicationRunner {
 
         // 注册停止
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            // 置为服务下线中
+            ServiceStatus.status = ServiceStatus.Status.STOPPING;
+
             executorSweepThread.stop();
             jobLogReportThread.stop();
             jobFailMonitorThread.stop();

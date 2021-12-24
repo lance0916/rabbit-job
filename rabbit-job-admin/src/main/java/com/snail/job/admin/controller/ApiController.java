@@ -2,6 +2,7 @@ package com.snail.job.admin.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.snail.job.admin.constant.ServiceStatus;
 import com.snail.job.admin.model.Executor;
 import com.snail.job.admin.model.JobLog;
 import com.snail.job.admin.service.ExecutorService;
@@ -43,6 +44,9 @@ public class ApiController {
      */
     @PostMapping("/beat")
     public ResultT<String> beat() {
+        if (ServiceStatus.status == ServiceStatus.Status.STOPPING) {
+            return ResultT.DOWN;
+        }
         return ResultT.SUCCESS;
     }
 
@@ -51,6 +55,10 @@ public class ApiController {
      */
     @PostMapping("/registry")
     public ResultT<String> registry(@RequestBody RegistryParam param) {
+        if (ServiceStatus.status == ServiceStatus.Status.STOPPING) {
+            return ResultT.DOWN;
+        }
+
         String address = param.getAddress();
         String appName = param.getAppName();
         if (StrUtil.isBlank(address) || StrUtil.isBlank(appName)) {
@@ -83,6 +91,10 @@ public class ApiController {
      */
     @PostMapping("/remove")
     public ResultT<String> remove(@RequestBody RegistryParam param) {
+        if (ServiceStatus.status == ServiceStatus.Status.STOPPING) {
+            return ResultT.DOWN;
+        }
+
         String appName = param.getAppName();
         String address = param.getAddress();
         if (StrUtil.isBlank(appName) || StrUtil.isBlank(address)) {
@@ -112,6 +124,10 @@ public class ApiController {
      */
     @PostMapping("/callback")
     public ResultT<String> callback(@RequestBody List<CallbackParam> list) {
+        if (ServiceStatus.status == ServiceStatus.Status.STOPPING) {
+            return ResultT.DOWN;
+        }
+
         for (CallbackParam param : list) {
             Long logId = param.getLogId();
             Integer execCode = param.getExecCode();
