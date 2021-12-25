@@ -63,19 +63,7 @@ public class AdminBiz {
      * 注册
      */
     public void register() {
-        JobClientProperties.Executor executor = jobClientProperties.getExecutor();
-        String address = executor.getAddress();
-
-        // 优先使用配置的地址
-        if (address == null || address.isEmpty()) {
-            String ip = executor.getIp();
-            if (ip == null || ip.isEmpty()) {
-                throw new RabbitJobException("address和ip必须配置一个");
-            }
-            address = "http://" + ip + ":" + serverPort;
-        }
-
-        RegistryParam param = new RegistryParam(executor.getAppName(), address);
+        RegistryParam param = getRegistryParam();
 
         AdminProxy proxy = getAdminProxy();
         ResultT<String> result = proxy.registry(param);
@@ -98,18 +86,7 @@ public class AdminBiz {
      * 移除
      */
     public void remove() {
-        JobClientProperties.Executor executor = jobClientProperties.getExecutor();
-        String address = executor.getAddress();
-
-        // 优先使用配置的地址
-        if (address == null || address.isEmpty()) {
-            String ip = executor.getIp();
-            if (ip == null || ip.isEmpty()) {
-                throw new RabbitJobException("address和ip必须配置一个");
-            }
-            address = "http://" + ip + ":" + serverPort;
-        }
-        RegistryParam param = new RegistryParam(executor.getAppName(), address);
+        RegistryParam param = getRegistryParam();
 
         AdminProxy proxy = getAdminProxy();
         ResultT<String> result = proxy.remove(param);
@@ -126,6 +103,22 @@ public class AdminBiz {
         if (ResultT.SUCCESS_CODE != result.getCode()) {
             log.error("注销执行器失败。原因：{}", result.getMsg());
         }
+    }
+
+    private RegistryParam getRegistryParam() {
+        JobClientProperties.Executor executor = jobClientProperties.getExecutor();
+        String address = executor.getAddress();
+
+        // 优先使用配置的地址
+        if (address == null || address.isEmpty()) {
+            String ip = executor.getIp();
+            if (ip == null || ip.isEmpty()) {
+                throw new RabbitJobException("address和ip必须配置一个");
+            }
+            address = "http://" + ip + ":" + serverPort;
+        }
+
+        return new RegistryParam(executor.getAppName(), address);
     }
 
     /**
