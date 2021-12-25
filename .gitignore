@@ -3,3 +3,4 @@ target/
 .jpb/
 *.iml
 .gitconfig
+.DS_Store
