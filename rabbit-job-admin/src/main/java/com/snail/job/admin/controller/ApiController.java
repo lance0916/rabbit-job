@@ -2,7 +2,8 @@ package com.snail.job.admin.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.snail.job.admin.constant.ServiceStatus;
+import com.snail.job.common.annotation.CheckSign;
+import com.snail.job.common.constant.ServiceStatus;
 import com.snail.job.admin.model.Executor;
 import com.snail.job.admin.model.JobLog;
 import com.snail.job.admin.service.ExecutorService;
@@ -30,6 +31,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Slf4j
 @RestController
 @RequestMapping("/api")
+@CheckSign
 public class ApiController {
 
     @Resource(name = "apiThreadPool")
@@ -55,33 +57,31 @@ public class ApiController {
      */
     @PostMapping("/registry")
     public ResultT<String> registry(@RequestBody RegistryParam param) {
-        if (ServiceStatus.status == ServiceStatus.Status.STOPPING) {
-            return ResultT.DOWN;
-        }
-
         String address = param.getAddress();
         String appName = param.getAppName();
         if (StrUtil.isBlank(address) || StrUtil.isBlank(appName)) {
             return new ResultT<>(ResultT.FAIL_CODE, "参数缺失");
         }
 
-        // 查询是否存在
-        QueryWrapper<Executor> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("app_name", appName).eq("address", address);
-        Executor dbExecutor = executorService.getOne(queryWrapper);
-        Executor executor;
-        if (dbExecutor == null) {
-            // 新增
-            executor = new Executor()
-                    .setAppName(appName)
-                    .setAddress(address)
-                    .setCreateTime(LocalDateTime.now());
-        } else {
-            // 更新
-            executor = new Executor().setId(dbExecutor.getId());
-        }
-        executor.setDeleted(0).setUpdateTime(LocalDateTime.now());
-        executorService.saveOrUpdate(executor);
+        apiThreadPool.submit(() -> {
+            // 查询是否存在
+            QueryWrapper<Executor> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq(Executor.APP_NAME, appName).eq(Executor.ADDRESS, address);
+            Executor dbExecutor = executorService.getOne(queryWrapper);
+            Executor executor;
+            if (dbExecutor == null) {
+                // 新增
+                executor = new Executor()
+                        .setAppName(appName)
+                        .setAddress(address)
+                        .setCreateTime(LocalDateTime.now());
+            } else {
+                // 更新
+                executor = new Executor().setId(dbExecutor.getId());
+            }
+            executor.setDeleted(0).setUpdateTime(LocalDateTime.now());
+            executorService.saveOrUpdate(executor);
+        });
         log.info("执行器注册成功。{}", param);
         return ResultT.SUCCESS;
     }
@@ -91,10 +91,6 @@ public class ApiController {
      */
     @PostMapping("/remove")
     public ResultT<String> remove(@RequestBody RegistryParam param) {
-        if (ServiceStatus.status == ServiceStatus.Status.STOPPING) {
-            return ResultT.DOWN;
-        }
-
         String appName = param.getAppName();
         String address = param.getAddress();
         if (StrUtil.isBlank(appName) || StrUtil.isBlank(address)) {
@@ -103,18 +99,20 @@ public class ApiController {
 
         // 查询是否存在
         QueryWrapper<Executor> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("app_name", appName).eq("address", address);
+        queryWrapper.eq(Executor.APP_NAME, appName).eq(Executor.ADDRESS, address);
         Executor dbExecutor = executorService.getOne(queryWrapper);
         if (dbExecutor == null) {
             return new ResultT<>(ResultT.FAIL_CODE, "执行器不存在");
         }
 
-        // 从 executor 表中移除，并从执行地址中移除
-        Executor executor = new Executor()
-                .setId(dbExecutor.getId())
-                .setDeleted(1)
-                .setUpdateTime(LocalDateTime.now());
-        executorService.updateById(executor);
+        apiThreadPool.submit(() -> {
+            // 从 executor 表中移除，并从执行地址中移除
+            Executor executor = new Executor()
+                    .setId(dbExecutor.getId())
+                    .setDeleted(1)
+                    .setUpdateTime(LocalDateTime.now());
+            executorService.updateById(executor);
+        });
         log.info("执行器注销成功。{}", param);
         return ResultT.SUCCESS;
     }
@@ -124,10 +122,6 @@ public class ApiController {
      */
     @PostMapping("/callback")
     public ResultT<String> callback(@RequestBody List<CallbackParam> list) {
-        if (ServiceStatus.status == ServiceStatus.Status.STOPPING) {
-            return ResultT.DOWN;
-        }
-
         for (CallbackParam param : list) {
             Long logId = param.getLogId();
             Integer execCode = param.getExecCode();

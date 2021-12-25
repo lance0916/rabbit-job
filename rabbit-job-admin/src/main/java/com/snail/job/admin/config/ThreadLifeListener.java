@@ -1,6 +1,6 @@
 package com.snail.job.admin.config;
 
-import com.snail.job.admin.constant.ServiceStatus;
+import com.snail.job.common.constant.ServiceStatus;
 import com.snail.job.admin.thread.*;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

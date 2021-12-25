@@ -1,4 +1,4 @@
-package com.snail.job.admin.constant;
+package com.snail.job.common.constant;
 
 /**
  * 服务状态标识

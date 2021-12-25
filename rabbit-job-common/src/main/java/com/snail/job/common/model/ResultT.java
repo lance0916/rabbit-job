@@ -20,7 +20,7 @@ public class ResultT<T> {
     /**
      * 任务执行超时
      */
-    public static final int JOB_TIMEOUT_CODE = 501;
+    public static final int TIMEOUT_CODE = 501;
 
     /**
      * 任务被终止终止

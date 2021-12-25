@@ -243,7 +243,7 @@ public class JobThread extends Thread {
         try {
             futureTask.get(executorTimeout, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
-            JobHelper.setFail(ResultT.JOB_TIMEOUT_CODE, "任务执行超时！！！");
+            JobHelper.setFail(ResultT.TIMEOUT_CODE, "任务执行超时！！！");
 
             // 设置中断
             futureThread.interrupt();

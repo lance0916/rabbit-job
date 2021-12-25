@@ -3,8 +3,11 @@ package com.snail.job.admin.config;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.snail.job.common.web.filter.RepeatReadBodyFilter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -15,6 +18,7 @@ import org.springframework.http.converter.support.AllEncompassingFormHttpMessage
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -48,6 +52,18 @@ public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware {
                 .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
                 .build();
         converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
+    }
+
+    /**
+     * 支持 body 体可重读读
+     */
+    @Bean
+    public FilterRegistrationBean<RepeatReadBodyFilter> repeatReadBodyFilter() {
+        FilterRegistrationBean<RepeatReadBodyFilter> bean = new FilterRegistrationBean<>();
+        bean.setFilter(new RepeatReadBodyFilter());
+        bean.setName("repeatReadBody");
+        bean.setUrlPatterns(Collections.singletonList("/*"));
+        return bean;
     }
 
 }
