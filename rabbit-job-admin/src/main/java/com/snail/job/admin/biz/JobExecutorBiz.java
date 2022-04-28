@@ -13,7 +13,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author WuQinglong
- * @date 2021/9/7 11:29 上午
  */
 @Component
 public class JobExecutorBiz {

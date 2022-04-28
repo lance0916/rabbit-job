@@ -26,7 +26,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 /**
  * 接收 Worker 节点的请求
  * @author 吴庆龙
- * @date 2020/6/3 11:31 上午
  */
 @Slf4j
 @RestController

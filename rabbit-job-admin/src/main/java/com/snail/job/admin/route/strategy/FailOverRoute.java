@@ -10,7 +10,6 @@ import javax.annotation.Resource;
 /**
  * 故障转移
  * @author 吴庆龙
- * @date 2020/6/17 10:11 上午
  */
 @Component
 public class FailOverRoute extends AbstractRoute {

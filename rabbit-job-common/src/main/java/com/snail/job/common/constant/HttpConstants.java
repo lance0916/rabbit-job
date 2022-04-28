@@ -2,7 +2,6 @@ package com.snail.job.common.constant;
 
 /**
  * @author WuQinglong
- * @date 2021/9/11 3:39 下午
  */
 public interface HttpConstants {
 

@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 /**
  * 回调任务执行结果
  * @author 吴庆龙
- * @date 2020/5/25 2:39 下午
  */
 public class CallbackParam {
 

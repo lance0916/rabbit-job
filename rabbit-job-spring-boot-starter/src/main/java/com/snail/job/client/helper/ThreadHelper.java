@@ -14,7 +14,6 @@ import static com.snail.job.client.constant.JobConstants.THREAD_REPOSITORY;
 
 /**
  * @author WuQinglong
- * @date 2021/9/1 2:38 下午
  */
 public class ThreadHelper {
     private static final Logger log = LoggerFactory.getLogger(ThreadHelper.class);

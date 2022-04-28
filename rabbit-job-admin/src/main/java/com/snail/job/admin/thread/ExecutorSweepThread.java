@@ -18,7 +18,6 @@ import static com.snail.job.common.constant.CommonConstants.BEAT_TIME_OUT;
 /**
  * 清理无效的执行器
  * @author 吴庆龙
- * @date 2020/6/4 11:23 上午
  */
 @Component
 public class ExecutorSweepThread extends RabbitJobAbstractThread {

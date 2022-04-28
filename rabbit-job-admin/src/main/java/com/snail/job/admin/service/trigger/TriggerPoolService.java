@@ -13,7 +13,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 /**
  * 将任务的调度放在线程池里进行
  * @author 吴庆龙
- * @date 2020/6/22 11:12 上午
  */
 @Component
 public class TriggerPoolService {

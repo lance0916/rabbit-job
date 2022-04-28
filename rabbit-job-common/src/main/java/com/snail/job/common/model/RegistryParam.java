@@ -2,7 +2,6 @@ package com.snail.job.common.model;
 
 /**
  * @author 吴庆龙
- * @date 2020/5/25 2:41 下午
  */
 public class RegistryParam {
 

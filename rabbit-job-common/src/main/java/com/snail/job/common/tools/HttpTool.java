@@ -25,7 +25,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * @author 吴庆龙
- * @date 2020/5/22 4:38 下午
  */
 public class HttpTool {
     private static final Logger log = LoggerFactory.getLogger(HttpTool.class);

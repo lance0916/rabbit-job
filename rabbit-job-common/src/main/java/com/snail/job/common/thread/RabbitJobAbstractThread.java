@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author WuQinglong
- * @date 2021/9/6 10:25 下午
  */
 public abstract class RabbitJobAbstractThread {
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -104,7 +103,7 @@ public abstract class RabbitJobAbstractThread {
                         log.error("线程被中断。{}", StrTool.stringifyException(e));
                     }
 
-                    // 线程被中断，要退出 while 循环
+                    // 线程被中断，退出 while 循环
                     break;
                 } catch (Exception e) {
                     log.error("执行异常！{}", StrTool.stringifyException(e));

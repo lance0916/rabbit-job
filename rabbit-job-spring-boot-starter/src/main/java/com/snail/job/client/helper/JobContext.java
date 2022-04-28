@@ -5,7 +5,6 @@ import com.snail.job.common.model.ResultT;
 /**
  * 任务上下文对象
  * @author 吴庆龙
- * @date 2020/5/26 10:45 上午
  */
 public class JobContext {
 

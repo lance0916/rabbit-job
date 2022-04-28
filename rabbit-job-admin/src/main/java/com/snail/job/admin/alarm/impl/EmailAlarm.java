@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 /**
  * TODO 邮件报警
  * @author 吴庆龙
- * @date 2020/7/20 5:43 下午
  */
 @Component
 public class EmailAlarm implements JobAlarm {

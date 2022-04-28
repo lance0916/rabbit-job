@@ -21,7 +21,6 @@ import static com.snail.job.client.constant.JobConstants.HANDLER_REPOSITORY;
 /**
  * 扫描任务并注册
  * @author WuQinglong
- * @date 2021/9/1 9:21 上午
  */
 @Component
 public class JobScanner implements ApplicationContextAware {

@@ -2,7 +2,6 @@ package com.snail.job.admin.constant;
 
 /**
  * @author 吴庆龙
- * @date 2020/8/1 2:28 下午
  */
 public interface AdminConstants {
 

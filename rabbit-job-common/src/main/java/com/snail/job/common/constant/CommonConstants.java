@@ -2,7 +2,6 @@ package com.snail.job.common.constant;
 
 /**
  * @author 吴庆龙
- * @date 2020/11/27 上午10:55
  */
 public interface CommonConstants {
 

@@ -11,7 +11,6 @@ import static com.snail.job.common.constant.CommonConstants.URL_SEPARATOR;
 
 /**
  * @author 吴庆龙
- * @date 2020/5/25 2:50 下午
  */
 public class AdminProxy {
 

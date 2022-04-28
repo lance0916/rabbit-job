@@ -3,7 +3,6 @@ package com.snail.job.common.enums;
 /**
  * 任务调度状态
  * @author 吴庆龙
- * @date 2020/7/10 10:23 上午
  */
 public enum TriggerStatus {
 

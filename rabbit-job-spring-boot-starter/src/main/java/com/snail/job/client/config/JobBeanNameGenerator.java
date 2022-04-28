@@ -10,7 +10,7 @@ import org.springframework.util.ClassUtils;
 /**
  * 自定义BeanName
  * 加上 rabbitJob 前缀
- * @author WuQinglong created on 2021/11/27 17:42
+ * @author WuQinglong
  */
 public class JobBeanNameGenerator implements BeanNameGenerator {
 

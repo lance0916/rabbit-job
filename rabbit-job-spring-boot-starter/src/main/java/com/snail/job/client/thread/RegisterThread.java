@@ -11,7 +11,6 @@ import static com.snail.job.common.constant.CommonConstants.BEAT_TIME;
 /**
  * 发送任务执行结果给调度中心
  * @author 吴庆龙
- * @date 2020/5/26 4:43 下午
  */
 @Component
 public class RegisterThread extends RabbitJobAbstractThread {

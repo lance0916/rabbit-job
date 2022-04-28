@@ -21,7 +21,6 @@ import static com.snail.job.common.tools.StrTool.stringifyException;
 /**
  * 每个任务都会对应一个线程
  * @author 吴庆龙
- * @date 2020/5/26 12:22 下午
  */
 public class JobThread extends Thread {
 

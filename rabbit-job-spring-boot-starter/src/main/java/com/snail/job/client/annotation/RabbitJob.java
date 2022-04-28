@@ -1,7 +1,5 @@
 package com.snail.job.client.annotation;
 
-import org.springframework.core.annotation.AliasFor;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -10,7 +8,6 @@ import java.lang.annotation.Target;
 /**
  * 任务注解
  * @author 吴庆龙
- * @date 2020/5/26 11:32 上午
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

@@ -6,7 +6,6 @@ import com.snail.job.common.model.ResultT;
  * 获取参数
  * 设置执行结果
  * @author WuQinglong
- * @date 2021/9/1 10:04 上午
  */
 public class JobHelper {
 

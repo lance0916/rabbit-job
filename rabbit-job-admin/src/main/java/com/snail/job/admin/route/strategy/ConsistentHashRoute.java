@@ -9,7 +9,6 @@ import java.util.TreeMap;
 /**
  * 一致性hash
  * @author 吴庆龙
- * @date 2020/6/17 10:11 上午
  */
 public class ConsistentHashRoute extends AbstractRoute {
 

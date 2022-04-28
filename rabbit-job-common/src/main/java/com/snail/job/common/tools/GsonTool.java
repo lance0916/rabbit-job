@@ -11,7 +11,6 @@ import java.time.format.DateTimeFormatter;
 /**
  * 使用 Gson 进行 JSON 数据的序列化、反序列化
  * @author 吴庆龙
- * @date 2020/5/22 3:11 下午
  */
 public class GsonTool {
 

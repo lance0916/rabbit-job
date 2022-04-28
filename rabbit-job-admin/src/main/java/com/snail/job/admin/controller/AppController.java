@@ -12,7 +12,6 @@ import java.util.List;
 
 /**
  * @author 吴庆龙
- * @date 2020/7/23 10:34 上午
  */
 @RestController
 @RequestMapping("/app")

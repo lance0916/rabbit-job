@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author WuQinglong
- * @date 2021/9/23 10:30 上午
  */
 public class JobUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 

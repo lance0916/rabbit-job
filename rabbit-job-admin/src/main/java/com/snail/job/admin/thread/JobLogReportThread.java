@@ -18,7 +18,6 @@ import static com.snail.job.admin.constant.AdminConstants.JOB_REPORT_INTERVAL;
 /**
  * 统计每天的任务执行结果数量
  * @author 吴庆龙
- * @date 2020/7/21 5:05 下午
  */
 @Component
 public class JobLogReportThread extends RabbitJobAbstractThread {

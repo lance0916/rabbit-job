@@ -23,7 +23,6 @@ import static com.snail.job.common.enums.TriggerType.RETRY;
  * 扫描调度失败的任务，进行重新调度或报警
  * 每秒钟执行一次
  * @author 吴庆龙
- * @date 2020/7/20 10:40 上午
  */
 @Component
 public class JobFailMonitorThread extends RabbitJobAbstractThread {

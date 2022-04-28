@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 控制启动顺序
  * @author 吴庆龙
- * @date 2020/6/8 1:49 下午
  */
 @Component
 public class ThreadPoolConfig {

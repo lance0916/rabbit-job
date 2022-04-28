@@ -18,7 +18,6 @@ import java.util.List;
 /**
  * Controller 发生 Exception 异常时，进行捕捉并返回执行异常信息
  * @author 吴庆龙
- * @date 2020/7/25 8:17
  */
 @RestControllerAdvice(annotations = RestController.class)
 public class GlobalRestExceptionHandler {

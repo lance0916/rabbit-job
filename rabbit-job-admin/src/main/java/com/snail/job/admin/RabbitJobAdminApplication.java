@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * @author WuQinglong
- * @date 2021/9/5 6:19 下午
  */
 @SpringBootApplication
 public class RabbitJobAdminApplication {

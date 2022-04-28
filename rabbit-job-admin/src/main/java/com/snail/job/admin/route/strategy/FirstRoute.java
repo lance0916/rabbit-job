@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 /**
  * 第一个执行
  * @author 吴庆龙
- * @date 2020/6/17 10:11 上午
  */
 @Component
 public class FirstRoute extends AbstractRoute {

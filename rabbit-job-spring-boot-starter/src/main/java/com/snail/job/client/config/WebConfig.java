@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * @author WuQinglong created on 2021/12/19 20:39
+ * @author WuQinglong
  */
 @Configuration
 @ComponentScan(

@@ -13,7 +13,6 @@ import static com.snail.job.common.enums.TriggerType.CRON;
 /**
  * 定时任务调度类
  * @author 吴庆龙
- * @date 2020/7/9 2:40 下午
  */
 @Component
 public class JobTriggerThread extends RabbitJobAbstractThread {

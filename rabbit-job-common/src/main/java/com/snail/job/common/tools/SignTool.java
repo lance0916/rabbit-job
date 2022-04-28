@@ -10,7 +10,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * @author WuQinglong
- * @date 2021/9/11 3:43 下午
  */
 public class SignTool {
 

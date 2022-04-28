@@ -23,7 +23,6 @@ import java.util.List;
 
 /**
  * @author 吴庆龙
- * @date 2020/5/22 1:41 下午
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware {

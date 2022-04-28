@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @author 吴庆龙
- * @date 2020/11/26 下午5:58
  */
 @Controller
 public class StaticController {

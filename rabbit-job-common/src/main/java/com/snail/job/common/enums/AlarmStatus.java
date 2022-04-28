@@ -3,7 +3,6 @@ package com.snail.job.common.enums;
 /**
  * 告警状态
  * @author 吴庆龙
- * @date 2020/6/30 2:31 下午
  */
 public enum AlarmStatus {
 

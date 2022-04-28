@@ -3,7 +3,6 @@ package com.snail.job.common.model;
 /**
  * 响应封装
  * @author 吴庆龙
- * @date 2020/5/22 3:07 下午
  */
 public class ResultT<T> {
 

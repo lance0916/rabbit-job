@@ -3,7 +3,6 @@ package com.snail.job.common.model;
 /**
  * 触发任务参数
  * @author 吴庆龙
- * @date 2020/5/25 12:05 下午
  */
 public class TriggerParam {
 

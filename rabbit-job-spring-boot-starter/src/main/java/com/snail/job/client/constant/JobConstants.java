@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author WuQinglong
- * @date 2021/9/5 5:27 下午
  */
 public interface JobConstants {
 

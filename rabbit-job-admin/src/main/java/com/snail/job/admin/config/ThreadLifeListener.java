@@ -10,7 +10,6 @@ import javax.annotation.Resource;
 
 /**
  * @author WuQinglong
- * @date 2021/9/23 12:30 下午
  */
 @Component
 public class ThreadLifeListener implements ApplicationRunner {

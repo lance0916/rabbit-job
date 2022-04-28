@@ -3,7 +3,6 @@ package com.snail.job.common.enums;
 /**
  * 任务触发类型
  * @author 吴庆龙
- * @date 2020/6/17 1:59 下午
  */
 public enum TriggerType {
 

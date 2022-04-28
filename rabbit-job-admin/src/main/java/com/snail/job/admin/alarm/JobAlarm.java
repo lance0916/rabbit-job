@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 /**
  * 定义报警
  * @author 吴庆龙
- * @date 2020/7/20 5:25 下午
  */
 public interface JobAlarm {
 

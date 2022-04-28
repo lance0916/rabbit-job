@@ -11,7 +11,6 @@ import java.util.List;
 /**
  * 执行器配置
  * @author WuQinglong
- * @date 2021/9/1 9:13 上午
  */
 @ConfigurationProperties(prefix = "rabbit-job")
 @Validated

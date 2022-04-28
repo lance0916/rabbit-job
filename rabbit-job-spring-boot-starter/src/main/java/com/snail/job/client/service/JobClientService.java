@@ -14,7 +14,6 @@ import static com.snail.job.client.constant.JobConstants.THREAD_REPOSITORY;
 /**
  * 执行器接口逻辑的实现
  * @author 吴庆龙
- * @date 2020/5/25 2:24 下午
  */
 @Component
 public class JobClientService {

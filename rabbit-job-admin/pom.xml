@@ -63,7 +63,7 @@
             <version>5.7.16</version>
         </dependency>
 
-        <!-- oshi -->
+        <!-- oshi 获取操作系统信息 -->
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>

@@ -26,7 +26,7 @@ public class ValidSignAspect {
     @Value("${rabbit-job.admin.secret-key}")
     private String secretKey;
 
-    @Around("@within(com.snail.job.common.annotation.CheckSign)")
+    @Around("@annotation(com.snail.job.common.annotation.CheckSign)")
     public Object valid(ProceedingJoinPoint joinPoint) throws Throwable {
         // 验证服务是否可用
         if (ServiceStatus.status == ServiceStatus.Status.STOPPING) {

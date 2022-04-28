@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 
 /**
  * 任务调度接口
- * @author WuQinglong created on 2021/11/30 6:51 下午
+ * @author WuQinglong
  */
 @CheckSign
 @Controller
