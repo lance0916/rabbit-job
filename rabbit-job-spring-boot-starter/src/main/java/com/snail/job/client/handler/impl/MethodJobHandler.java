@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 
 /**
  * 基于Java方法的任务调度
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public class MethodJobHandler extends IJobHandler {
 

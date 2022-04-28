@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 任务路由
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public abstract class AbstractRoute {
     protected final Logger log = LoggerFactory.getLogger(AbstractRoute.class);

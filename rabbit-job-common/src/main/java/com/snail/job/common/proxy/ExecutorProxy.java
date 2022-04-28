@@ -8,7 +8,7 @@ import com.snail.job.common.tools.HttpTool;
 import static com.snail.job.common.constant.CommonConstants.URL_SEPARATOR;
 
 /**
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public class ExecutorProxy {
 

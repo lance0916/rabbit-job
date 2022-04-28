@@ -6,7 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * @author 吴庆龙
+ * @author WuQinglong
  */
 @Getter
 @Setter

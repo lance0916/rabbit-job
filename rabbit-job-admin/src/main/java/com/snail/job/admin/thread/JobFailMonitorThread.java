@@ -7,14 +7,11 @@ import com.snail.job.admin.model.JobLog;
 import com.snail.job.admin.service.JobInfoService;
 import com.snail.job.admin.service.JobLogService;
 import com.snail.job.admin.service.trigger.TriggerPoolService;
-import com.snail.job.common.enums.TriggerStatus;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-
+import javax.annotation.Resource;
+import org.springframework.stereotype.Component;
 import static com.snail.job.admin.constant.AdminConstants.FAIL_MONITOR_INTERVAL;
 import static com.snail.job.common.enums.AlarmStatus.ALARM_FINISH;
 import static com.snail.job.common.enums.TriggerType.RETRY;
@@ -22,7 +19,7 @@ import static com.snail.job.common.enums.TriggerType.RETRY;
 /**
  * 扫描调度失败的任务，进行重新调度或报警
  * 每秒钟执行一次
- * @author 吴庆龙
+ * @author WuQinglong
  */
 @Component
 public class JobFailMonitorThread extends RabbitJobAbstractThread {
@@ -42,7 +39,7 @@ public class JobFailMonitorThread extends RabbitJobAbstractThread {
     private List<JobAlarm> jobAlarmList;
 
     @Override
-    protected void doRun() throws InterruptedException {
+    protected void execute() throws InterruptedException {
         long startMillis = System.currentTimeMillis();
 
         /*

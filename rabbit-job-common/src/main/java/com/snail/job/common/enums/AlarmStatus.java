@@ -2,7 +2,7 @@ package com.snail.job.common.enums;
 
 /**
  * 告警状态
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public enum AlarmStatus {
 

@@ -1,7 +1,7 @@
 package com.snail.job.common.exception;
 
 /**
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public class RabbitJobException extends RuntimeException {
 

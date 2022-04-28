@@ -1,11 +1,9 @@
-package com.snail.job.admin.bean.request;
+package com.snail.job.admin.bean.req;
 
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.time.LocalDate;
-import java.util.Date;
 
 /**
  * @author WuQinglong
@@ -14,7 +12,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-public class JobLogQueryRequest extends BaseQueryRequest {
+public class JobLogQueryReq extends BaseQueryReq {
 
     /**
      * 应用名

@@ -20,7 +20,7 @@ import static com.snail.job.common.tools.StrTool.stringifyException;
 
 /**
  * 每个任务都会对应一个线程
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public class JobThread extends Thread {
 
@@ -238,6 +238,7 @@ public class JobThread extends Thread {
             jobHandler.execute();
             return null;
         });
+        // 单独开启线程进行执行
         Thread futureThread = ThreadHelper.startJobFeatureThread(futureTask);
         try {
             futureTask.get(executorTimeout, TimeUnit.SECONDS);

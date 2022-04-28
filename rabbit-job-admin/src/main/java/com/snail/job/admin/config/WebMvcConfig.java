@@ -3,7 +3,9 @@ package com.snail.job.admin.config;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.snail.job.common.web.filter.RepeatReadBodyFilter;
+import com.snail.job.common.filter.RepeatReadBodyFilter;
+import java.util.Collections;
+import java.util.List;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -18,11 +20,8 @@ import org.springframework.http.converter.support.AllEncompassingFormHttpMessage
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
- * @author 吴庆龙
+ * @author WuQinglong
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware {

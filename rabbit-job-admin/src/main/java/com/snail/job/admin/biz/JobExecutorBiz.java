@@ -4,12 +4,11 @@ import com.snail.job.common.model.IdleBeatParam;
 import com.snail.job.common.model.ResultT;
 import com.snail.job.common.model.TriggerParam;
 import com.snail.job.common.proxy.ExecutorProxy;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * @author WuQinglong

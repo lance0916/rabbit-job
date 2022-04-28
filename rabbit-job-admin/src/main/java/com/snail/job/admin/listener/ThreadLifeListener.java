@@ -1,14 +1,18 @@
-package com.snail.job.admin.config;
+package com.snail.job.admin.listener;
 
+import com.snail.job.admin.thread.ExecutorSweepThread;
+import com.snail.job.admin.thread.JobFailMonitorThread;
+import com.snail.job.admin.thread.JobLogReportThread;
+import com.snail.job.admin.thread.JobScheduleThread;
+import com.snail.job.admin.thread.JobTriggerThread;
 import com.snail.job.common.constant.ServiceStatus;
-import com.snail.job.admin.thread.*;
+import javax.annotation.Resource;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-
 /**
+ * 控制启动顺序
  * @author WuQinglong
  */
 @Component

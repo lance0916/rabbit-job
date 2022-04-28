@@ -5,14 +5,12 @@ import com.snail.job.admin.model.JobInfo;
 import com.snail.job.admin.service.JobInfoService;
 import com.snail.job.admin.service.trigger.TriggerPoolService;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
-import org.springframework.scheduling.support.CronExpression;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+import javax.annotation.Resource;
+import org.springframework.scheduling.support.CronExpression;
+import org.springframework.stereotype.Component;
 import static com.snail.job.admin.constant.AdminConstants.JOB_PRE_SCAN_TIME;
 import static com.snail.job.admin.constant.AdminConstants.JOB_SCHEDULE_INTERVAL;
 import static com.snail.job.common.enums.TriggerStatus.RUNNING;
@@ -21,7 +19,7 @@ import static com.snail.job.common.enums.TriggerType.CRON;
 
 /**
  * 定时任务调度类
- * @author 吴庆龙
+ * @author WuQinglong
  */
 @Component
 public class JobScheduleThread extends RabbitJobAbstractThread {
@@ -32,7 +30,7 @@ public class JobScheduleThread extends RabbitJobAbstractThread {
     private JobInfoService jobInfoService;
 
     @Override
-    protected void doRun() throws InterruptedException {
+    protected void execute() throws InterruptedException {
         long startMillis = System.currentTimeMillis();
 
         // 当前时间
@@ -105,7 +103,7 @@ public class JobScheduleThread extends RabbitJobAbstractThread {
     }
 
     @Override
-    protected void afterDoRun() {
+    protected void afterExecute() {
     }
 
     @Override

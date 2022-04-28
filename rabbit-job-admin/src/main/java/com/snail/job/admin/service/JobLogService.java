@@ -3,7 +3,7 @@ package com.snail.job.admin.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.snail.job.admin.bean.request.JobLogQueryRequest;
+import com.snail.job.admin.bean.req.JobLogQueryReq;
 import com.snail.job.admin.bean.vo.JobLogVO;
 import com.snail.job.admin.mapper.JobLogMapper;
 import com.snail.job.admin.model.JobLog;
@@ -22,7 +22,7 @@ public class JobLogService extends ServiceImpl<JobLogMapper, JobLog> {
     /**
      * 分页查询
      */
-    public IPage<JobLogVO> listByPage(JobLogQueryRequest request) {
+    public IPage<JobLogVO> listByPage(JobLogQueryReq request) {
         IPage<JobLogVO> pageParam = new Page<>(request.getPageNum(), request.getPageSize());
         return getBaseMapper().listByPage(pageParam, request);
     }

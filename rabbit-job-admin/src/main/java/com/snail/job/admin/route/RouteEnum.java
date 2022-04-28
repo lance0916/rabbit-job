@@ -1,13 +1,17 @@
 package com.snail.job.admin.route;
 
-import com.snail.job.admin.route.strategy.*;
-
+import com.snail.job.admin.route.strategy.BusyOverRoute;
+import com.snail.job.admin.route.strategy.ConsistentHashRoute;
+import com.snail.job.admin.route.strategy.FailOverRoute;
+import com.snail.job.admin.route.strategy.FirstRoute;
+import com.snail.job.admin.route.strategy.LastRoute;
+import com.snail.job.admin.route.strategy.RoundRobinRoute;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * 任务路由策略
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public enum RouteEnum {
 

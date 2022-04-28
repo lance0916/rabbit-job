@@ -1,4 +1,4 @@
-package com.snail.job.admin.bean.request;
+package com.snail.job.admin.bean.req;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class JobInfoQueryRequest extends BaseQueryRequest {
+public class JobInfoQueryReq extends BaseQueryReq {
 
     /**
      * 任务名

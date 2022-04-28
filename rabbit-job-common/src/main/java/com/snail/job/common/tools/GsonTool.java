@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * 使用 Gson 进行 JSON 数据的序列化、反序列化
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public class GsonTool {
 

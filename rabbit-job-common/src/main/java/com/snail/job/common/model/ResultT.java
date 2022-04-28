@@ -2,7 +2,7 @@ package com.snail.job.common.model;
 
 /**
  * 响应封装
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public class ResultT<T> {
 

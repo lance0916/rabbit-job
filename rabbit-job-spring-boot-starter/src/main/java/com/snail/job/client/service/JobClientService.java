@@ -8,12 +8,12 @@ import com.snail.job.client.helper.ThreadHelper;
 import com.snail.job.client.thread.JobThread;
 import org.springframework.stereotype.Component;
 
-import static com.snail.job.client.constant.JobConstants.HANDLER_REPOSITORY;
-import static com.snail.job.client.constant.JobConstants.THREAD_REPOSITORY;
+import static com.snail.job.client.constant.JobConstants.handlerRepository;
+import static com.snail.job.client.constant.JobConstants.threadRepository;
 
 /**
  * 执行器接口逻辑的实现
- * @author 吴庆龙
+ * @author WuQinglong
  */
 @Component
 public class JobClientService {
@@ -29,7 +29,7 @@ public class JobClientService {
      * 忙碌检测
      */
     public ResultT<String> idleBeat(IdleBeatParam idleBeatParam) {
-        JobThread jobThread = THREAD_REPOSITORY.get(idleBeatParam.getJobId());
+        JobThread jobThread = threadRepository.get(idleBeatParam.getJobId());
         if (jobThread != null && jobThread.isRunningOrHasQueue()) {
             return new ResultT<>(ResultT.EXECUTOR_BUSY, "执行器忙碌");
         }
@@ -42,14 +42,14 @@ public class JobClientService {
     public ResultT<String> run(TriggerParam triggerParam) {
         // 获取任务指定的处理器
         String jobName = triggerParam.getExecHandler();
-        IJobHandler jobHandler = HANDLER_REPOSITORY.get(jobName);
+        IJobHandler jobHandler = handlerRepository.get(jobName);
         if (jobHandler == null) {
             return new ResultT<>(ResultT.FAIL_CODE, "没有对应的任务方法，jobName=" + jobName);
         }
 
         // 获取执行线程
         Long jobId = triggerParam.getJobId();
-        JobThread jobThread = THREAD_REPOSITORY.get(jobId);
+        JobThread jobThread = threadRepository.get(jobId);
 
         // 没有线程，创建并启动一个
         if (jobThread == null) {

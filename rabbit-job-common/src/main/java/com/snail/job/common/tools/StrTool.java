@@ -19,4 +19,18 @@ public class StrTool {
         return stm.toString();
     }
 
+    /**
+     * 判空
+     */
+    public static boolean isEmpty(String str) {
+        return str == null || str.isEmpty();
+    }
+
+    /**
+     * 判非空
+     */
+    public static boolean isNotEmpty(String str) {
+        return !isEmpty(str);
+    }
+
 }

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 /**
  * 回调任务执行结果
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public class CallbackParam {
 

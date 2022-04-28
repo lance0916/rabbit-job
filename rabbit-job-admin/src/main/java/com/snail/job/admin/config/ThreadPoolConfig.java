@@ -1,18 +1,17 @@
 package com.snail.job.admin.config;
 
 import com.snail.job.common.thread.JobUncaughtExceptionHandler;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
-
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 /**
- * 控制启动顺序
- * @author 吴庆龙
+ * 线程池配置
+ * @author WuQinglong
  */
 @Component
 public class ThreadPoolConfig {

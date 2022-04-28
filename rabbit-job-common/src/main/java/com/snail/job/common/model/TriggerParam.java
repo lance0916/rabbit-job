@@ -2,7 +2,7 @@ package com.snail.job.common.model;
 
 /**
  * 触发任务参数
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public class TriggerParam {
 

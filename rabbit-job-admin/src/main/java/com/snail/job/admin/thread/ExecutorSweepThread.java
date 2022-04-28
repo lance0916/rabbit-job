@@ -5,19 +5,22 @@ import com.snail.job.admin.model.Executor;
 import com.snail.job.admin.service.AppService;
 import com.snail.job.admin.service.ExecutorService;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
-
+import javax.annotation.Resource;
+import org.springframework.stereotype.Component;
 import static com.snail.job.common.constant.CommonConstants.BEAT_TIME;
 import static com.snail.job.common.constant.CommonConstants.BEAT_TIME_OUT;
 
 /**
  * 清理无效的执行器
- * @author 吴庆龙
+ * @author WuQinglong
  */
 @Component
 public class ExecutorSweepThread extends RabbitJobAbstractThread {
@@ -28,7 +31,7 @@ public class ExecutorSweepThread extends RabbitJobAbstractThread {
     private AppService appService;
 
     @Override
-    public void doRun() throws InterruptedException {
+    public void execute() throws InterruptedException {
         long startMillis = System.currentTimeMillis();
 
         // 获取所有的执行器

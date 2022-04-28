@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * TODO 邮件报警
- * @author 吴庆龙
+ * @author WuQinglong
  */
 @Component
 public class EmailAlarm implements JobAlarm {

@@ -54,28 +54,28 @@ public abstract class RabbitJobAbstractThread {
     }
 
     /**
-     * while 开始前的工作
+     * 执行前
      */
-    protected void init() throws Exception {
+    protected void before() throws Exception {
     }
 
     /**
      * 线程具体执行的方法
      * @throws InterruptedException 被中断时抛异常
      */
-    protected abstract void doRun() throws InterruptedException;
+    protected abstract void execute() throws InterruptedException;
 
     /**
      * 每次 run 之后执行
      * 在 finally 中执行，不受异常影响
      */
-    protected void afterDoRun() {
+    protected void afterExecute() {
     }
 
     /**
-     * while 退出后的工作
+     * 后置方法
      */
-    protected void destroy() throws Exception {
+    protected void after() throws Exception {
     }
 
     /**
@@ -88,7 +88,7 @@ public abstract class RabbitJobAbstractThread {
 
             // 执行前置操作
             try {
-                init();
+                before();
             } catch (Exception e) {
                 log.error("执行前置操作异常！{}", StrTool.stringifyException(e));
                 return;
@@ -97,10 +97,10 @@ public abstract class RabbitJobAbstractThread {
             // 执行逻辑
             while (running) {
                 try {
-                    doRun();
+                    execute();
                 } catch (InterruptedException e) {
                     if (running) {
-                        log.error("线程被中断。{}", StrTool.stringifyException(e));
+                        log.warn("线程被中断。{}", StrTool.stringifyException(e));
                     }
 
                     // 线程被中断，退出 while 循环
@@ -108,13 +108,13 @@ public abstract class RabbitJobAbstractThread {
                 } catch (Exception e) {
                     log.error("执行异常！{}", StrTool.stringifyException(e));
                 } finally {
-                    afterDoRun();
+                    afterExecute();
                 }
             }
 
             // 执行后置操作
             try {
-                destroy();
+                after();
             } catch (Exception e) {
                 log.error("执行后置操作异常！{}", StrTool.stringifyException(e));
             }

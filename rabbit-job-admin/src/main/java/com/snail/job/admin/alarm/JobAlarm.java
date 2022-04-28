@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 定义报警
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public interface JobAlarm {
 

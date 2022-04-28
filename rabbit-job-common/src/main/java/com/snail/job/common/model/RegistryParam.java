@@ -1,7 +1,7 @@
 package com.snail.job.common.model;
 
 /**
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public class RegistryParam {
 

@@ -6,18 +6,16 @@ import com.snail.job.admin.model.JobLogReport;
 import com.snail.job.admin.service.JobLogReportService;
 import com.snail.job.admin.service.JobLogService;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
+import javax.annotation.Resource;
+import org.springframework.stereotype.Component;
 import static com.snail.job.admin.constant.AdminConstants.JOB_REPORT_INTERVAL;
 
 /**
  * 统计每天的任务执行结果数量
- * @author 吴庆龙
+ * @author WuQinglong
  */
 @Component
 public class JobLogReportThread extends RabbitJobAbstractThread {
@@ -28,7 +26,7 @@ public class JobLogReportThread extends RabbitJobAbstractThread {
     private JobLogReportService jobLogReportService;
 
     @Override
-    protected void doRun() throws InterruptedException {
+    protected void execute() throws InterruptedException {
         long startMillis = System.currentTimeMillis();
 
         // 当前日期

@@ -3,13 +3,12 @@ package com.snail.job.admin.route.strategy;
 import com.snail.job.admin.biz.JobExecutorBiz;
 import com.snail.job.admin.route.AbstractRoute;
 import com.snail.job.common.model.ResultT;
-import org.springframework.stereotype.Component;
-
 import javax.annotation.Resource;
+import org.springframework.stereotype.Component;
 
 /**
  * 故障转移
- * @author 吴庆龙
+ * @author WuQinglong
  */
 @Component
 public class FailOverRoute extends AbstractRoute {

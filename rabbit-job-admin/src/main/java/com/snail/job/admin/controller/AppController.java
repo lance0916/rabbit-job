@@ -4,14 +4,21 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.snail.job.admin.model.App;
 import com.snail.job.admin.service.AppService;
 import com.snail.job.common.model.ResultT;
-import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
 import java.util.List;
+import javax.annotation.Resource;
+import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author 吴庆龙
+ * @author WuQinglong
  */
 @RestController
 @RequestMapping("/app")

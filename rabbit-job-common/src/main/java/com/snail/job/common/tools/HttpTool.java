@@ -24,16 +24,16 @@ import java.util.concurrent.TimeUnit;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public class HttpTool {
     private static final Logger log = LoggerFactory.getLogger(HttpTool.class);
 
-    private static final HttpClient CLIENT;
+    private static final HttpClient httpClient;
 
     static {
-        CLIENT = HttpClientBuilder.create()
-                .setMaxConnTotal(50)
+        httpClient = HttpClientBuilder.create()
+                .setMaxConnTotal(100)
                 .setMaxConnPerRoute(50)
                 .setDefaultRequestConfig(
                         RequestConfig.custom()
@@ -48,6 +48,7 @@ public class HttpTool {
                 .disableCookieManagement()
                 .disableAutomaticRetries()
                 .disableAuthCaching()
+                .evictExpiredConnections()
                 .evictIdleConnections(10, TimeUnit.MINUTES)
                 .setDefaultConnectionConfig(
                         ConnectionConfig.custom()
@@ -80,7 +81,7 @@ public class HttpTool {
             post.setHeader(HttpConstants.TIMESTAMP, timestamp);
 
             // 执行请求
-            HttpResponse httpResponse = CLIENT.execute(post);
+            HttpResponse httpResponse = httpClient.execute(post);
             int statusCode = httpResponse.getStatusLine().getStatusCode();
             if (statusCode != HttpConstants.SUCCESS_CODE) {
                 return new ResultT<>(ResultT.FAIL_CODE, "请求接口错误，响应码:" + statusCode);

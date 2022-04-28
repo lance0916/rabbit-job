@@ -10,7 +10,7 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.snail.job.common.tools.StrTool.stringifyException;
-import static com.snail.job.client.constant.JobConstants.THREAD_REPOSITORY;
+import static com.snail.job.client.constant.JobConstants.threadRepository;
 
 /**
  * @author WuQinglong
@@ -38,7 +38,7 @@ public class ThreadHelper {
         if (reason != null && reason.length() > 0) {
             log.info("停止线程。jobId={} reason:{}", jobId, reason);
         }
-        JobThread thread = THREAD_REPOSITORY.remove(jobId);
+        JobThread thread = threadRepository.remove(jobId);
         if (thread == null) {
             return;
         }

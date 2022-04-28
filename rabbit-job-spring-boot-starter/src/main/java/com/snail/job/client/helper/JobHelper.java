@@ -9,18 +9,18 @@ import com.snail.job.common.model.ResultT;
  */
 public class JobHelper {
 
-    private static final InheritableThreadLocal<JobContext> CONTEXT_HOLDER = new InheritableThreadLocal<>();
+    private static final InheritableThreadLocal<JobContext> contextHolder = new InheritableThreadLocal<>();
 
     public static String getJobParam() {
-        return CONTEXT_HOLDER.get().getJobParam();
+        return contextHolder.get().getJobParam();
     }
 
     public static Integer getShardIndex() {
-        return CONTEXT_HOLDER.get().getShardIndex();
+        return contextHolder.get().getShardIndex();
     }
 
     public static Integer getShardTotal() {
-        return CONTEXT_HOLDER.get().getShardTotal();
+        return contextHolder.get().getShardTotal();
     }
 
     public static void success() {
@@ -40,21 +40,21 @@ public class JobHelper {
     }
 
     public static void setRetCode(int retCode, String retMsg) {
-        JobContext context = CONTEXT_HOLDER.get();
+        JobContext context = contextHolder.get();
         context.setHandleCode(retCode);
         context.setHandleMsg(retMsg);
     }
 
     public static void setContext(JobContext context) {
-        CONTEXT_HOLDER.set(context);
+        contextHolder.set(context);
     }
 
     public static JobContext getContext() {
-        return CONTEXT_HOLDER.get();
+        return contextHolder.get();
     }
 
     public static void removeContent() {
-        CONTEXT_HOLDER.remove();
+        contextHolder.remove();
     }
 
 }

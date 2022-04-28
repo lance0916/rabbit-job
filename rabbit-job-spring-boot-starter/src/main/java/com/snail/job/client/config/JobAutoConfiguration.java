@@ -20,23 +20,23 @@ import java.util.List;
                 "com.snail.job.client.service",
                 "com.snail.job.client.thread",
         },
-        basePackageClasses = JobAutoConfiguration.class
-        , nameGenerator = JobBeanNameGenerator.class
+        basePackageClasses = JobAutoConfiguration.class,
+        nameGenerator = JobBeanNameGenerator.class
 )
-@EnableConfigurationProperties(JobClientProperties.class)
+@EnableConfigurationProperties(RabbitJobProperties.class)
 public class JobAutoConfiguration {
 
     /**
      * 调度中心配置
      */
     @Bean(name = "adminProxies")
-    public List<AdminProxy> adminBizClients(JobClientProperties jobClientProperties) {
-        List<String> addresses = jobClientProperties.getAdminAddresses();
+    public List<AdminProxy> adminBizClients(RabbitJobProperties rabbitJobProperties) {
+        List<String> addresses = rabbitJobProperties.getAdminAddresses();
         if (addresses == null || addresses.isEmpty()) {
             throw new NoAdminAddressException("未配置调度中心");
         }
 
-        String secretKey = jobClientProperties.getSecretKey();
+        String secretKey = rabbitJobProperties.getSecretKey();
 
         List<AdminProxy> proxies = new ArrayList<>(addresses.size());
         for (String address : addresses) {

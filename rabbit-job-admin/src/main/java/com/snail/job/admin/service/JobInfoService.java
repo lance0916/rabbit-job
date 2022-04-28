@@ -7,16 +7,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.snail.job.admin.bean.request.JobInfoQueryRequest;
+import com.snail.job.admin.bean.req.JobInfoQueryReq;
 import com.snail.job.admin.mapper.JobInfoMapper;
 import com.snail.job.admin.model.JobInfo;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.support.CronExpression;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
 import static com.snail.job.common.enums.TriggerStatus.RUNNING;
 import static com.snail.job.common.enums.TriggerStatus.STOPPED;
 
@@ -34,7 +32,7 @@ public class JobInfoService extends ServiceImpl<JobInfoMapper, JobInfo> {
     /**
      * 分页查询
      */
-    public IPage<JobInfo> listByPage(JobInfoQueryRequest request) {
+    public IPage<JobInfo> listByPage(JobInfoQueryReq request) {
         QueryWrapper<JobInfo> queryWrapper = new QueryWrapper<>();
         if (StrUtil.isNotEmpty(request.getName())) {
             queryWrapper.like(JobInfo.NAME, request.getName());

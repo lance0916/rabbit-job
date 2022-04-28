@@ -1,11 +1,10 @@
-package com.snail.job.admin.bean.request;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+package com.snail.job.admin.bean.req;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author WuQinglong created on 2021/12/13 07:54
@@ -13,7 +12,7 @@ import javax.validation.constraints.Positive;
 @Getter
 @Setter
 @ToString
-public abstract class BaseQueryRequest {
+public abstract class BaseQueryReq {
 
     /**
      * 当前页码

@@ -1,11 +1,11 @@
-package com.snail.job.common.web.aop;
+package com.snail.job.common.aspect;
 
 import com.snail.job.common.constant.HttpConstants;
 import com.snail.job.common.constant.ServiceStatus;
 import com.snail.job.common.model.ResultT;
 import com.snail.job.common.tools.SignTool;
 import com.snail.job.common.tools.SpringMVCTool;
-import com.snail.job.common.web.filter.ServletRequestWrapper;
+import com.snail.job.common.filter.ServletRequestWrapper;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * API 接口验签
- * @author WuQinglong created on 2021/12/25 19:03
+ * @author WuQinglong
  */
 @Aspect
 @Component

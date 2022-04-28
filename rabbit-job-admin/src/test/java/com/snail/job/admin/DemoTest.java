@@ -1,13 +1,9 @@
 package com.snail.job.admin;
 
-import cn.hutool.system.*;
-import cn.hutool.system.oshi.OshiUtil;
 import com.snail.job.common.model.CallbackParam;
 import com.snail.job.common.tools.GsonTool;
-import org.junit.jupiter.api.Test;
-import oshi.software.os.OSProcess;
-
 import java.time.LocalDateTime;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author WuQinglong created on 2021/12/18 16:23

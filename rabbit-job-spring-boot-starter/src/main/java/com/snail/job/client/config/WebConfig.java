@@ -9,8 +9,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 @ComponentScan(
-        basePackages = "com.snail.job.client.controller"
-        , nameGenerator = JobBeanNameGenerator.class
+        basePackages = "com.snail.job.client.controller",
+        nameGenerator = JobBeanNameGenerator.class
 )
 public class WebConfig implements WebMvcConfigurer {
 }

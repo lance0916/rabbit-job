@@ -2,7 +2,7 @@ package com.snail.job.common.enums;
 
 /**
  * 执行器注册类型
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public enum RegistryType {
 

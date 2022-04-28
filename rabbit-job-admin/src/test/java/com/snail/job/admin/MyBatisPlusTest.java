@@ -2,11 +2,10 @@ package com.snail.job.admin;
 
 import com.snail.job.admin.model.App;
 import com.snail.job.admin.service.AppService;
+import java.time.LocalDateTime;
+import javax.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import javax.annotation.Resource;
-import java.time.LocalDateTime;
 
 /**
  * @author WuQinglong created on 2021/12/18 14:57

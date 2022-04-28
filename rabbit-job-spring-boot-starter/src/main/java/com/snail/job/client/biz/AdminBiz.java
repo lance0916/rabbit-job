@@ -5,7 +5,8 @@ import com.snail.job.common.model.CallbackParam;
 import com.snail.job.common.model.RegistryParam;
 import com.snail.job.common.model.ResultT;
 import com.snail.job.common.proxy.AdminProxy;
-import com.snail.job.client.config.JobClientProperties;
+import com.snail.job.client.config.RabbitJobProperties;
+import com.snail.job.common.tools.StrTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +19,7 @@ import java.util.List;
  * 与调度中心进行通信
  * 采用轮训算法
  *
- * @author 吴庆龙
+ * @author WuQinglong
  */
 @Component
 public class AdminBiz {
@@ -34,7 +35,7 @@ public class AdminBiz {
      * 配置文件
      */
     @Resource
-    private JobClientProperties jobClientProperties;
+    private RabbitJobProperties rabbitJobProperties;
 
     /**
      * 调度中心
@@ -67,12 +68,15 @@ public class AdminBiz {
         AdminProxy proxy = getAdminProxy();
         ResultT<String> result = proxy.registry(param);
         if (ResultT.NETWORK_ERROR == result.getCode() || ResultT.SERVICE_DOWN == result.getCode()) {
-            // 切换别的调度中心重试
+            log.error("注册执行器失败，进行重试。原因：{}", result.getMsg());
+            // 切换别的调度中心重试，最多重试 3 次
             for (int i = 0; i < 3; i++) {
                 proxy = getAdminProxy();
                 result = proxy.registry(param);
                 if (ResultT.SUCCESS_CODE == result.getCode()) {
                     break;
+                } else {
+                    log.error("注册执行器失败。重试:{}次，原因：{}", i, result.getMsg());
                 }
             }
         }
@@ -104,14 +108,17 @@ public class AdminBiz {
         }
     }
 
+    /**
+     * 获取注册参数
+     */
     private RegistryParam getRegistryParam() {
-        JobClientProperties.Executor executor = jobClientProperties.getExecutor();
+        RabbitJobProperties.Executor executor = rabbitJobProperties.getExecutor();
         String address = executor.getAddress();
 
         // 优先使用配置的地址
-        if (address == null || address.isEmpty()) {
+        if (StrTool.isEmpty(address)) {
             String ip = executor.getIp();
-            if (ip == null || ip.isEmpty()) {
+            if (StrTool.isEmpty(ip)) {
                 throw new RabbitJobException("address和ip必须配置一个");
             }
             address = "http://" + ip + ":" + serverPort;

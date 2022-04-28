@@ -1,9 +1,13 @@
 package com.snail.job.admin.bean.vo;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
- * @author 吴庆龙
+ * @author WuQinglong
  */
 @Getter
 @Setter

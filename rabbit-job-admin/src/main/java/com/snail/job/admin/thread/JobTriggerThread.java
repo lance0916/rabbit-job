@@ -2,17 +2,15 @@ package com.snail.job.admin.thread;
 
 import com.snail.job.admin.service.trigger.TriggerPoolService;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 import java.util.Set;
-
+import javax.annotation.Resource;
+import org.springframework.stereotype.Component;
 import static com.snail.job.admin.constant.AdminConstants.JOB_TRIGGER_INTERVAL;
 import static com.snail.job.common.enums.TriggerType.CRON;
 
 /**
  * 定时任务调度类
- * @author 吴庆龙
+ * @author WuQinglong
  */
 @Component
 public class JobTriggerThread extends RabbitJobAbstractThread {
@@ -21,7 +19,7 @@ public class JobTriggerThread extends RabbitJobAbstractThread {
     private TriggerPoolService triggerPoolService;
 
     @Override
-    protected void doRun() throws InterruptedException {
+    protected void execute() throws InterruptedException {
         long startMillis = System.currentTimeMillis();
 
         // 当前的秒

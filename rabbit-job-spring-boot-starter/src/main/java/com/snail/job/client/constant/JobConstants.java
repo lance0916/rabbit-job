@@ -15,13 +15,13 @@ public interface JobConstants {
      * key: 任务名
      * value: 处理器
      */
-    ConcurrentHashMap<String, IJobHandler> HANDLER_REPOSITORY = new ConcurrentHashMap<>();
+    ConcurrentHashMap<String, IJobHandler> handlerRepository = new ConcurrentHashMap<>();
 
     /**
      * 任务对应的线程
      * key: 任务id
      * value: 线程
      */
-    ConcurrentHashMap<Long, JobThread> THREAD_REPOSITORY = new ConcurrentHashMap<>();
+    ConcurrentHashMap<Long, JobThread> threadRepository = new ConcurrentHashMap<>();
 
 }

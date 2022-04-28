@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author WuQinglong created on 2021/12/12 15:33
+ * @author WuQinglong
  */
 @Configuration
 @MapperScan(

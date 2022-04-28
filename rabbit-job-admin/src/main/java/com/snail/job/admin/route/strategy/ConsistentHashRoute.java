@@ -2,13 +2,12 @@ package com.snail.job.admin.route.strategy;
 
 import cn.hutool.core.util.HashUtil;
 import com.snail.job.admin.route.AbstractRoute;
-
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
  * 一致性hash
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public class ConsistentHashRoute extends AbstractRoute {
 

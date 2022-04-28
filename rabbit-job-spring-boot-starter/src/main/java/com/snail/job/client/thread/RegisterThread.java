@@ -9,8 +9,8 @@ import javax.annotation.Resource;
 import static com.snail.job.common.constant.CommonConstants.BEAT_TIME;
 
 /**
- * 发送任务执行结果给调度中心
- * @author 吴庆龙
+ * 注册客户端线程
+ * @author WuQinglong
  */
 @Component
 public class RegisterThread extends RabbitJobAbstractThread {
@@ -19,7 +19,7 @@ public class RegisterThread extends RabbitJobAbstractThread {
     private AdminBiz adminBiz;
 
     @Override
-    protected void doRun() throws InterruptedException {
+    protected void execute() throws InterruptedException {
         long startMillis = System.currentTimeMillis();
         adminBiz.register();
         long costMillis = System.currentTimeMillis() - startMillis;
@@ -29,7 +29,7 @@ public class RegisterThread extends RabbitJobAbstractThread {
     }
 
     @Override
-    protected void destroy() {
+    protected void after() {
         adminBiz.remove();
     }
 

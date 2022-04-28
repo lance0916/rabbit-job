@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import static com.snail.job.client.constant.JobConstants.HANDLER_REPOSITORY;
+import static com.snail.job.client.constant.JobConstants.handlerRepository;
 
 /**
  * 扫描任务并注册
@@ -78,7 +78,7 @@ public class JobScanner implements ApplicationContextAware {
                 }
 
                 // 校验任务是否重复
-                if (HANDLER_REPOSITORY.get(jobName) != null) {
+                if (handlerRepository.get(jobName) != null) {
                     throw new RegisterJobException("任务名存在冲突, for[" + jobName + "]");
                 }
 
@@ -102,7 +102,7 @@ public class JobScanner implements ApplicationContextAware {
 
                 // 注册 JobHandler
                 System.out.println("扫描到任务：" + jobName);
-                HANDLER_REPOSITORY.put(jobName, new MethodJobHandler(bean, method, initMethod, destroyMethod));
+                handlerRepository.put(jobName, new MethodJobHandler(bean, method, initMethod, destroyMethod));
             }
         }
     }

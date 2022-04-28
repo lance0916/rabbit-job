@@ -14,15 +14,14 @@ import com.snail.job.admin.service.AppService;
 import com.snail.job.admin.service.JobInfoService;
 import com.snail.job.admin.service.JobLogReportService;
 import com.snail.job.common.model.ResultT;
+import java.time.LocalDate;
+import java.util.List;
+import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import oshi.hardware.GlobalMemory;
 import oshi.software.os.OSProcess;
-
-import javax.annotation.Resource;
-import java.time.LocalDate;
-import java.util.List;
 
 /**
  * @author WuQinglong created on 2021/12/18 16:10

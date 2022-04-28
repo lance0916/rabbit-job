@@ -4,7 +4,7 @@ import com.snail.job.common.model.ResultT;
 
 /**
  * 任务上下文对象
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public class JobContext {
 

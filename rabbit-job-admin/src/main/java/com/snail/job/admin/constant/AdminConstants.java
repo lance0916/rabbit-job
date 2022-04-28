@@ -1,7 +1,7 @@
 package com.snail.job.admin.constant;
 
 /**
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public interface AdminConstants {
 

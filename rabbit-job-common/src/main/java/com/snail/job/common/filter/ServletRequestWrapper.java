@@ -1,4 +1,4 @@
-package com.snail.job.common.web.filter;
+package com.snail.job.common.filter;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletException;
@@ -9,12 +9,15 @@ import javax.servlet.http.Part;
 import java.io.*;
 import java.util.Collection;
 import java.util.Collections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 封装 ServletRequest 以支持可重复读请求体
  * @author WuQinglong
  */
 public class ServletRequestWrapper extends HttpServletRequestWrapper {
+    private static Logger log = LoggerFactory.getLogger(ServletRequestWrapper.class);
 
     /**
      * 存储上传的文件
@@ -37,7 +40,7 @@ public class ServletRequestWrapper extends HttpServletRequestWrapper {
             }
         } catch (IOException | ServletException e) {
             parts = Collections.emptyList();
-            e.printStackTrace();
+            log.error("发生异常", e);
         }
 
         // 请求体数据
@@ -49,7 +52,7 @@ public class ServletRequestWrapper extends HttpServletRequestWrapper {
                 bodyBytes.write(buffer, 0, hasRead);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("发生异常", e);
         }
     }
 

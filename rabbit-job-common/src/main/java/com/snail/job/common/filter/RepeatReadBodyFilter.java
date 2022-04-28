@@ -1,4 +1,4 @@
-package com.snail.job.common.web.filter;
+package com.snail.job.common.filter;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * @author WuQinglong created on 2021/12/25 18:47
+ * @author WuQinglong
  */
 public class RepeatReadBodyFilter extends OncePerRequestFilter {
     @Override

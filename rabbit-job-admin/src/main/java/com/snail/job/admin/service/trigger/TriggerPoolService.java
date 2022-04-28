@@ -1,18 +1,17 @@
 package com.snail.job.admin.service.trigger;
 
 import com.snail.job.common.enums.TriggerType;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Component;
 
 /**
  * 将任务的调度放在线程池里进行
- * @author 吴庆龙
+ * @author WuQinglong
  */
 @Component
 public class TriggerPoolService {

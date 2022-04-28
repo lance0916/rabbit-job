@@ -15,15 +15,14 @@ import com.snail.job.common.enums.AlarmStatus;
 import com.snail.job.common.enums.TriggerType;
 import com.snail.job.common.model.ResultT;
 import com.snail.job.common.model.TriggerParam;
+import java.time.LocalDateTime;
+import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import java.time.LocalDateTime;
-
 /**
  * 进行任务的调度
- * @author 吴庆龙
+ * @author WuQinglong
  */
 @Slf4j
 @Component
@@ -66,7 +65,7 @@ public class JobTriggerService {
 
         // 获取执行器地址列表
         QueryWrapper<App> appQueryWrapper = new QueryWrapper<>();
-        appQueryWrapper.eq("name", jobInfo.getAppName());
+        appQueryWrapper.eq(App.NAME, jobInfo.getAppName());
         App app = appService.getOne(appQueryWrapper);
         String addresses = app.getAddresses();
         String[] addressArray = addresses.split(",");

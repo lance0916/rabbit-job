@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * 任务注解
- * @author 吴庆龙
+ * @author WuQinglong
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

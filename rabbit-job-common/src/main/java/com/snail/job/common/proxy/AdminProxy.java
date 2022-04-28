@@ -10,7 +10,7 @@ import java.util.List;
 import static com.snail.job.common.constant.CommonConstants.URL_SEPARATOR;
 
 /**
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public class AdminProxy {
 

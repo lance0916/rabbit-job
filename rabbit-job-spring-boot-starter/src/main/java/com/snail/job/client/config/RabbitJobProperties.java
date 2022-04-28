@@ -5,16 +5,15 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
  * 执行器配置
  * @author WuQinglong
  */
-@ConfigurationProperties(prefix = "rabbit-job")
 @Validated
-public class JobClientProperties {
+@ConfigurationProperties(prefix = "rabbit-job")
+public class RabbitJobProperties {
 
     /**
      * 执行器配置

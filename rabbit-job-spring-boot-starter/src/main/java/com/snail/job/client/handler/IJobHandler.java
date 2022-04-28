@@ -2,7 +2,7 @@ package com.snail.job.client.handler;
 
 /**
  * 任务调度接口
- * @author 吴庆龙
+ * @author WuQinglong
  */
 public abstract class IJobHandler {
 
