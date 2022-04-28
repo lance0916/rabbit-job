@@ -32,10 +32,10 @@ public class ThreadLifeListener implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         executorSweepThread.start();
-        jobLogReportThread.start();
-        jobFailMonitorThread.start();
-        jobScheduleThread.start();
-        jobTriggerThread.start();
+//        jobLogReportThread.start();
+//        jobFailMonitorThread.start();
+//        jobScheduleThread.start();
+//        jobTriggerThread.start();
 
         // 注册停止
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -43,10 +43,10 @@ public class ThreadLifeListener implements ApplicationRunner {
             ServiceStatus.status = ServiceStatus.Status.STOPPING;
 
             executorSweepThread.stop();
-            jobLogReportThread.stop();
-            jobFailMonitorThread.stop();
-            jobScheduleThread.stop();
-            jobTriggerThread.stop();
+//            jobLogReportThread.stop();
+//            jobFailMonitorThread.stop();
+//            jobScheduleThread.stop();
+//            jobTriggerThread.stop();
         }));
     }
 }

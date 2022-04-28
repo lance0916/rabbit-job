@@ -1,4 +1,4 @@
-package com.snail.job.client.config;
+package com.snail.job.client.listener;
 
 import com.snail.job.client.thread.CallbackThread;
 import com.snail.job.client.thread.RegisterThread;
@@ -31,11 +31,11 @@ public class JobListener implements ApplicationRunner {
 
         // 启动守护线程
         registerThread.start();
-        callbackThread.start();
+//        callbackThread.start();
 
         // 注册关闭钩子
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            callbackThread.stop();
+//            callbackThread.stop();
             registerThread.stop();
         }, "JobClientCloseThread"));
     }

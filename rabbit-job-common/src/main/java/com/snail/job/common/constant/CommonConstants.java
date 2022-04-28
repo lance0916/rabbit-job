@@ -13,10 +13,10 @@ public interface CommonConstants {
     /**
      * 执行器注册间隔时间
      */
-    int BEAT_TIME = 30 * 1000;
+    int REGISTER_INTERVAL_TIME = 10 * 1000;
 
     /**
      * 执行器心跳死亡时间
      */
-    int BEAT_TIME_OUT = 3 * BEAT_TIME;
+    int EXECUTOR_TIME_OUT = 3 * REGISTER_INTERVAL_TIME / 1000;
 }

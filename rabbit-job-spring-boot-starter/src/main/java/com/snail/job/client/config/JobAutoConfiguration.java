@@ -19,6 +19,7 @@ import java.util.List;
                 "com.snail.job.client.biz",
                 "com.snail.job.client.service",
                 "com.snail.job.client.thread",
+                "com.snail.job.client.listener",
         },
         basePackageClasses = JobAutoConfiguration.class,
         nameGenerator = JobBeanNameGenerator.class

@@ -2,8 +2,10 @@ package com.snail.job.admin.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.snail.job.admin.model.App;
 import com.snail.job.admin.model.Executor;
 import com.snail.job.admin.model.JobLog;
+import com.snail.job.admin.service.AppService;
 import com.snail.job.admin.service.ExecutorService;
 import com.snail.job.admin.service.JobLogService;
 import com.snail.job.common.annotation.CheckSign;
@@ -38,6 +40,8 @@ public class ApiController {
     private ExecutorService executorService;
     @Resource
     private JobLogService jobLogService;
+    @Resource
+    private AppService appService;
 
     /**
      * 心跳
@@ -55,10 +59,17 @@ public class ApiController {
      */
     @PostMapping("/registry")
     public ResultT<String> registry(@RequestBody RegistryParam param) {
-        String address = param.getAddress();
         String appName = param.getAppName();
-        if (StrUtil.isBlank(address) || StrUtil.isBlank(appName)) {
+        String address = param.getAddress();
+        if (StrUtil.isBlank(appName) || StrUtil.isBlank(address)) {
             return new ResultT<>(ResultT.FAIL_CODE, "参数缺失");
+        }
+
+        // 关联应用是否存在
+        long count = appService.count(Wrappers.<App>query()
+                .eq(App.NAME, appName));
+        if (count == 0) {
+            return new ResultT<>(ResultT.FAIL_CODE, "应用不存在");
         }
 
         apiThreadPool.submit(() -> {
@@ -78,7 +89,6 @@ public class ApiController {
             }
             executorService.saveOrUpdate(executor);
         });
-        log.info("执行器注册成功。{}", param);
         return ResultT.SUCCESS;
     }
 
@@ -108,7 +118,6 @@ public class ApiController {
                     .setUpdateTime(LocalDateTime.now());
             executorService.updateById(executor);
         });
-        log.info("执行器注销成功。{}", param);
         return ResultT.SUCCESS;
     }
 

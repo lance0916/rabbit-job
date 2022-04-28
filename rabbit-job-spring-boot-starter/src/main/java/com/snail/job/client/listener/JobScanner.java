@@ -1,4 +1,4 @@
-package com.snail.job.client.config;
+package com.snail.job.client.listener;
 
 import com.snail.job.client.annotation.RabbitJob;
 import com.snail.job.client.handler.impl.MethodJobHandler;
@@ -101,7 +101,7 @@ public class JobScanner implements ApplicationContextAware {
                 method.setAccessible(true);
 
                 // 注册 JobHandler
-                System.out.println("扫描到任务：" + jobName);
+                log.info("注册任务:{}", jobName);
                 handlerRepository.put(jobName, new MethodJobHandler(bean, method, initMethod, destroyMethod));
             }
         }

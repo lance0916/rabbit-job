@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
-import static com.snail.job.common.constant.CommonConstants.BEAT_TIME;
+import static com.snail.job.common.constant.CommonConstants.REGISTER_INTERVAL_TIME;
 
 /**
  * 注册客户端线程
@@ -24,7 +24,7 @@ public class RegisterThread extends RabbitJobAbstractThread {
         adminBiz.register();
         long costMillis = System.currentTimeMillis() - startMillis;
         if (running) {
-            Thread.sleep(BEAT_TIME - costMillis);
+            Thread.sleep(REGISTER_INTERVAL_TIME - costMillis);
         }
     }
 

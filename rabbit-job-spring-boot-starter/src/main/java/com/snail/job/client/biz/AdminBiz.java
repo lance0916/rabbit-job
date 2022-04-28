@@ -6,6 +6,7 @@ import com.snail.job.common.model.RegistryParam;
 import com.snail.job.common.model.ResultT;
 import com.snail.job.common.proxy.AdminProxy;
 import com.snail.job.client.config.RabbitJobProperties;
+import com.snail.job.common.tools.GsonTool;
 import com.snail.job.common.tools.StrTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,6 +83,8 @@ public class AdminBiz {
         }
         if (ResultT.SUCCESS_CODE != result.getCode()) {
             log.error("注册执行器失败。原因：{}", result.getMsg());
+        } else {
+            log.info("注册执行器成功，注册信息:{}", GsonTool.toJson(param));
         }
     }
 
@@ -105,6 +108,8 @@ public class AdminBiz {
         }
         if (ResultT.SUCCESS_CODE != result.getCode()) {
             log.error("注销执行器失败。原因：{}", result.getMsg());
+        } else {
+            log.error("注销执行器成功！！！");
         }
     }
 
