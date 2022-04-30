@@ -115,9 +115,9 @@ public class JobScheduleThread extends RabbitJobAbstractThread {
             long nextTime = nextDate.getTime();
 
             // 刷新下次调用时间
-            info.setTriggerPrevTime(info.getTriggerNextTime());
-            info.setTriggerNextTime(nextTime / 1000 * 1000);
-            info.setTriggerStatus(RUNNING.getValue());
+            info.setTriggerPrevTime(info.getTriggerNextTime())
+                    .setTriggerNextTime(nextTime / 1000 * 1000)
+                    .setTriggerStatus(RUNNING.getValue());
         }
     }
 

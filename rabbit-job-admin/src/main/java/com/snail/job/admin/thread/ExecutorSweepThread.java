@@ -75,22 +75,21 @@ public class ExecutorSweepThread extends RabbitJobAbstractThread {
         List<App> apps = appService.list();
 
         // 整理执行器地址
-        List<App> updateApps = apps.stream()
-                .peek(app -> {
-                    Set<String> addresses = appNameAddressMap.get(app.getName());
-                    if (addresses == null) {
-                        app.setAddresses(StrUtil.EMPTY);
-                    } else {
-                        app.setAddresses(StrUtil.join(",", addresses));
-                    }
-                }).collect(Collectors.toList());
-        appService.updateBatchById(updateApps);
+        for (App app : apps) {
+            Set<String> addresses = appNameAddressMap.get(app.getName());
+            if (addresses == null) {
+                app.setAddresses(StrUtil.EMPTY);
+            } else {
+                app.setAddresses(StrUtil.join(",", addresses));
+            }
+        }
+        appService.updateBatchById(apps);
 
         // 休眠
         long costMillis = System.currentTimeMillis() - startMillis;
-        if (running && costMillis < REGISTER_INTERVAL_TIME) {
+        if (running && costMillis < EXECUTOR_TIME_OUT) {
             // 30 秒 - 耗时，每次扫描间隔差不多为 30 秒
-            Thread.sleep(REGISTER_INTERVAL_TIME - costMillis);
+            Thread.sleep(EXECUTOR_TIME_OUT - costMillis);
         }
     }
 

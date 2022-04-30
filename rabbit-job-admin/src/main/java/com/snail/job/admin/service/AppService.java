@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.snail.job.admin.mapper.AppMapper;
 import com.snail.job.admin.model.App;
+import java.util.Date;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +57,9 @@ public class AppService extends ServiceImpl<AppMapper, App> {
     public void delete(Long id) {
         App app = new App()
                 .setId(id)
-                .setDeleted(1);
+                .setDeleted(1)
+                .setUpdateTime(new Date())
+                ;
         super.updateById(app);
     }
 

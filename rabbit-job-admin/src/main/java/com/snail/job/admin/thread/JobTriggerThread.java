@@ -19,7 +19,7 @@ public class JobTriggerThread extends RabbitJobAbstractThread {
     private TriggerPoolService triggerPoolService;
 
     @Override
-    protected void execute() throws InterruptedException {
+    protected void execute() {
         long startMillis = System.currentTimeMillis();
 
         // 当前的秒
@@ -41,13 +41,6 @@ public class JobTriggerThread extends RabbitJobAbstractThread {
         long costMillis = System.currentTimeMillis() - startMillis;
         if (costMillis >= JOB_TRIGGER_INTERVAL) {
             log.warn("执行任务调度耗时过长：{}毫秒！！！", costMillis);
-            // 直接进行下一次调度
-            return;
-        }
-
-        // 对齐到整秒
-        if (running) {
-            Thread.sleep(JOB_TRIGGER_INTERVAL - costMillis);
         }
     }
 

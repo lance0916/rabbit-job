@@ -8,8 +8,8 @@ import com.snail.job.admin.model.JobLog;
 import com.snail.job.admin.service.AppService;
 import com.snail.job.admin.service.ExecutorService;
 import com.snail.job.admin.service.JobLogService;
+import com.snail.job.common.annotation.CheckServiceAvailable;
 import com.snail.job.common.annotation.CheckSign;
-import com.snail.job.common.constant.ServiceStatus;
 import com.snail.job.common.model.CallbackParam;
 import com.snail.job.common.model.RegistryParam;
 import com.snail.job.common.model.ResultT;
@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 @CheckSign
+@CheckServiceAvailable
 public class ApiController {
 
     @Resource(name = "apiThreadPool")
@@ -46,29 +48,26 @@ public class ApiController {
      * 心跳
      */
     @PostMapping("/beat")
-    public ResultT<String> beat() {
-        if (ServiceStatus.status == ServiceStatus.Status.STOPPING) {
-            return ResultT.DOWN;
-        }
-        return ResultT.SUCCESS;
+    public ResponseEntity<?> beat() {
+        return ResponseEntity.ok(ResultT.SUCCESS);
     }
 
     /**
      * 注册执行器
      */
     @PostMapping("/registry")
-    public ResultT<String> registry(@RequestBody RegistryParam param) {
+    public ResponseEntity<?> registry(@RequestBody RegistryParam param) {
         String appName = param.getAppName();
         String address = param.getAddress();
         if (StrUtil.isBlank(appName) || StrUtil.isBlank(address)) {
-            return new ResultT<>(ResultT.FAIL_CODE, "参数缺失");
+            return ResponseEntity.ok(new ResultT<>(ResultT.FAIL_CODE, "参数缺失"));
         }
 
         // 关联应用是否存在
         long count = appService.count(Wrappers.<App>query()
                 .eq(App.NAME, appName));
         if (count == 0) {
-            return new ResultT<>(ResultT.FAIL_CODE, "应用不存在");
+            return ResponseEntity.ok(new ResultT<>(ResultT.FAIL_CODE, "应用不存在"));
         }
 
         apiThreadPool.submit(() -> {
@@ -82,22 +81,23 @@ public class ApiController {
                         .setAppName(appName)
                         .setAddress(address);
             } else {
-                executor.setDeleted(0);
+                executor.setDeleted(0)
+                        .setUpdateTime(new Date());
             }
             executorService.saveOrUpdate(executor);
         });
-        return ResultT.SUCCESS;
+        return ResponseEntity.ok(ResultT.SUCCESS);
     }
 
     /**
      * 移除执行器
      */
     @PostMapping("/remove")
-    public ResultT<String> remove(@RequestBody RegistryParam param) {
+    public ResponseEntity<?> remove(@RequestBody RegistryParam param) {
         String appName = param.getAppName();
         String address = param.getAddress();
         if (StrUtil.isBlank(appName) || StrUtil.isBlank(address)) {
-            return new ResultT<>(ResultT.FAIL_CODE, "参数缺失");
+            return ResponseEntity.ok(new ResultT<>(ResultT.FAIL_CODE, "参数缺失"));
         }
 
         // 查询是否存在
@@ -106,27 +106,28 @@ public class ApiController {
                 .eq(Executor.ADDRESS, address)
         );
         if (executor == null) {
-            return new ResultT<>(ResultT.FAIL_CODE, "执行器不存在");
+            return ResponseEntity.ok(new ResultT<>(ResultT.FAIL_CODE, "执行器不存在"));
         }
 
         apiThreadPool.submit(() -> {
             // 从 executor 表中移除，并从执行地址中移除
-            executor.setDeleted(1);
+            executor.setDeleted(1)
+                    .setUpdateTime(new Date());
             executorService.updateById(executor);
         });
-        return ResultT.SUCCESS;
+        return ResponseEntity.ok(ResultT.SUCCESS);
     }
 
     /**
      * 任务回调
      */
     @PostMapping("/callback")
-    public ResultT<String> callback(@RequestBody List<CallbackParam> list) {
+    public ResponseEntity<?> callback(@RequestBody List<CallbackParam> list) {
         for (CallbackParam param : list) {
             Long logId = param.getLogId();
             Integer execCode = param.getExecCode();
             if (logId == null || execCode == null) {
-                return new ResultT<>(ResultT.FAIL_CODE, "参数缺失");
+                return ResponseEntity.ok(new ResultT<>(ResultT.FAIL_CODE, "参数缺失"));
             }
         }
         apiThreadPool.submit(() -> {
@@ -159,7 +160,7 @@ public class ApiController {
                 jobLogService.updateById(updateLog);
             }
         });
-        return ResultT.SUCCESS;
+        return ResponseEntity.ok(ResultT.SUCCESS);
     }
 
 }

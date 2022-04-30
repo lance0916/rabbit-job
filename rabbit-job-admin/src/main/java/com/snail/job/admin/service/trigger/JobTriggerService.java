@@ -3,6 +3,7 @@ package com.snail.job.admin.service.trigger;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.snail.job.admin.biz.JobExecutorBiz;
 import com.snail.job.admin.model.App;
 import com.snail.job.admin.model.JobInfo;
@@ -63,9 +64,7 @@ public class JobTriggerService {
         }
 
         // 获取执行器地址列表
-        QueryWrapper<App> appQueryWrapper = new QueryWrapper<>();
-        appQueryWrapper.eq(App.NAME, jobInfo.getAppName());
-        App app = appService.getOne(appQueryWrapper);
+        App app = appService.getOne(Wrappers.<App>query().eq(App.NAME, jobInfo.getAppName()));
         String addresses = app.getAddresses();
         String[] addressArray = addresses.split(StrUtil.COMMA);
 

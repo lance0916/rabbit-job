@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `executor`
     `address`     VARCHAR(30) NOT NULL COMMENT '执行器地址',
     `deleted`     INT         NOT NULL DEFAULT 0 COMMENT '是否删除',
     `create_time` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+    `update_time` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `app`
     `addresses`   VARCHAR(100) NOT NULL DEFAULT '' COMMENT '执行器地址',
     `deleted`     INT          NOT NULL DEFAULT 0 COMMENT '是否删除',
     `create_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+    `update_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `job_info`
     `cron`                  VARCHAR(20)  NOT NULL COMMENT 'CRON表达式',
     `deleted`               INT          NOT NULL DEFAULT 0 COMMENT '是否删除',
     `create_time`           TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`           TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `update_time`           TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
 
     `author_name`           VARCHAR(20)  NOT NULL DEFAULT '' COMMENT '负责人姓名',
     `author_email`          VARCHAR(50)  NOT NULL DEFAULT '' COMMENT '负责人邮箱',

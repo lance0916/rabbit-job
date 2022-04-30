@@ -1,11 +1,14 @@
 package com.snail.job.client.controller;
 
 import com.snail.job.client.service.JobClientService;
+import com.snail.job.common.annotation.CheckServiceAvailable;
 import com.snail.job.common.annotation.CheckSign;
+import com.snail.job.common.constant.ServiceStatus;
 import com.snail.job.common.model.IdleBeatParam;
 import com.snail.job.common.model.ResultT;
 import com.snail.job.common.model.TriggerParam;
 import com.snail.job.common.tools.GsonTool;
+import javax.annotation.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,15 +16,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.annotation.Resource;
-
 /**
  * 任务调度接口
  * @author WuQinglong
  */
-@CheckSign
 @Controller
 @RequestMapping("/rabbit-job")
+@CheckSign
+@CheckServiceAvailable
 public class RabbitJobController {
 
     /**
@@ -35,6 +37,9 @@ public class RabbitJobController {
      */
     @PostMapping("/beat")
     public ResponseEntity<?> beat() {
+        if (ServiceStatus.status == ServiceStatus.Status.STOPPING) {
+            return ResponseEntity.ok(new ResultT<>(ResultT.SERVICE_DOWN, "服务准备下线"));
+        }
         return convertToResponseEntity(ResultT.SUCCESS);
     }
 

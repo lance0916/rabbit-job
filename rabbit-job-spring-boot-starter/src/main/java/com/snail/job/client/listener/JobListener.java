@@ -2,6 +2,8 @@ package com.snail.job.client.listener;
 
 import com.snail.job.client.thread.CallbackThread;
 import com.snail.job.client.thread.RegisterThread;
+import com.snail.job.common.constant.ServiceStatus;
+import java.util.concurrent.TimeUnit;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -35,6 +37,14 @@ public class JobListener implements ApplicationRunner {
 
         // 注册关闭钩子
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            // 置为服务下线中
+            ServiceStatus.status = ServiceStatus.Status.STOPPING;
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                // ignore
+            }
+
 //            callbackThread.stop();
             registerThread.stop();
         }, "JobClientCloseThread"));
