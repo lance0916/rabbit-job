@@ -1,25 +1,16 @@
 package com.snail.job.admin.thread;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.snail.job.admin.model.App;
 import com.snail.job.admin.model.Executor;
-import com.snail.job.admin.service.AppService;
 import com.snail.job.admin.service.ExecutorService;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
 import com.snail.job.common.tools.GsonTool;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 import static com.snail.job.common.constant.CommonConstants.EXECUTOR_TIME_OUT;
-import static com.snail.job.common.constant.CommonConstants.REGISTER_INTERVAL_TIME;
 
 /**
  * 清理无效的执行器
@@ -30,8 +21,6 @@ public class ExecutorSweepThread extends RabbitJobAbstractThread {
 
     @Resource
     private ExecutorService executorService;
-    @Resource
-    private AppService appService;
 
     @Override
     public void execute() throws InterruptedException {
@@ -45,45 +34,17 @@ public class ExecutorSweepThread extends RabbitJobAbstractThread {
 
         // 过期的执行器集合
         List<Executor> invalidExecutors = new ArrayList<>();
-        List<Executor> validExecutors = new ArrayList<>();
         for (Executor executor : executors) {
             Date updateTime = executor.getUpdateTime();
             if (timeOutDate.after(updateTime)) {
                 executor.setDeleted(1);
                 invalidExecutors.add(executor);
-            } else {
-                validExecutors.add(executor);
             }
         }
 
         // 批量软删
         executorService.saveOrUpdateBatch(invalidExecutors);
         log.info("清理执行器:{}", GsonTool.toJson(invalidExecutors));
-
-        // 汇总有效执行的执行地址到应用表中
-
-        // 加入更新本地缓存
-        Map<String, Set<String>> appNameAddressMap = new HashMap<>();
-        for (Executor executor : validExecutors) {
-            String appName = executor.getAppName();
-            String address = executor.getAddress();
-            Set<String> addresses = appNameAddressMap.computeIfAbsent(appName, k -> new HashSet<>());
-            addresses.add(address);
-        }
-
-        // 查询所有应用集合
-        List<App> apps = appService.list();
-
-        // 整理执行器地址
-        for (App app : apps) {
-            Set<String> addresses = appNameAddressMap.get(app.getName());
-            if (addresses == null) {
-                app.setAddresses(StrUtil.EMPTY);
-            } else {
-                app.setAddresses(StrUtil.join(",", addresses));
-            }
-        }
-        appService.updateBatchById(apps);
 
         // 休眠
         long costMillis = System.currentTimeMillis() - startMillis;

@@ -2,6 +2,7 @@ package com.snail.job.admin.route.strategy;
 
 import cn.hutool.core.util.HashUtil;
 import com.snail.job.admin.route.AbstractRoute;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -17,11 +18,11 @@ public class ConsistentHashRoute extends AbstractRoute {
     private final static int V_NODE_NUM = 1000;
 
     @Override
-    public String getExecutorAddress(Long appId, Long jobId, String[] addresses) {
+    public String getExecutorAddress(Long jobId, List<String> addresses) {
         return hashJob(jobId, addresses);
     }
 
-    public String hashJob(Long jobId, String[] addressList) {
+    public String hashJob(Long jobId, List<String> addressList) {
         TreeMap<Integer, String> addressRing = new TreeMap<>();
         for (String address : addressList) {
             for (int i = 0; i < V_NODE_NUM; i++) {

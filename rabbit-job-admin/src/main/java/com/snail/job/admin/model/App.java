@@ -46,12 +46,6 @@ public class App extends Model<App> {
     private Integer type;
 
     /**
-     * 执行器地址
-     */
-    @TableField("addresses")
-    private String addresses;
-
-    /**
      * 是否删除
      */
     @TableField("deleted")
@@ -76,8 +70,6 @@ public class App extends Model<App> {
     public static final String TITLE = "title";
 
     public static final String TYPE = "type";
-
-    public static final String ADDRESSES = "addresses";
 
     public static final String DELETED = "deleted";
 

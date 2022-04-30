@@ -70,22 +70,20 @@ public class ApiController {
             return ResponseEntity.ok(new ResultT<>(ResultT.FAIL_CODE, "应用不存在"));
         }
 
-        apiThreadPool.submit(() -> {
-            // 查询是否存在
-            Executor executor = executorService.getOne(Wrappers.<Executor>query()
-                    .eq(Executor.APP_NAME, appName)
-                    .eq(Executor.ADDRESS, address)
-            );
-            if (executor == null) {
-                executor = new Executor()
-                        .setAppName(appName)
-                        .setAddress(address);
-            } else {
-                executor.setDeleted(0)
-                        .setUpdateTime(new Date());
-            }
-            executorService.saveOrUpdate(executor);
-        });
+        // 查询是否存在
+        Executor executor = executorService.getOne(Wrappers.<Executor>query()
+                .eq(Executor.APP_NAME, appName)
+                .eq(Executor.ADDRESS, address)
+        );
+        if (executor == null) {
+            executor = new Executor()
+                    .setAppName(appName)
+                    .setAddress(address);
+        } else {
+            executor.setDeleted(0)
+                    .setUpdateTime(new Date());
+        }
+        executorService.saveOrUpdate(executor);
         return ResponseEntity.ok(ResultT.SUCCESS);
     }
 
@@ -109,12 +107,10 @@ public class ApiController {
             return ResponseEntity.ok(new ResultT<>(ResultT.FAIL_CODE, "执行器不存在"));
         }
 
-        apiThreadPool.submit(() -> {
-            // 从 executor 表中移除，并从执行地址中移除
-            executor.setDeleted(1)
-                    .setUpdateTime(new Date());
-            executorService.updateById(executor);
-        });
+        // 从 executor 表中移除，并从执行地址中移除
+        executor.setDeleted(1)
+                .setUpdateTime(new Date());
+        executorService.updateById(executor);
         return ResponseEntity.ok(ResultT.SUCCESS);
     }
 

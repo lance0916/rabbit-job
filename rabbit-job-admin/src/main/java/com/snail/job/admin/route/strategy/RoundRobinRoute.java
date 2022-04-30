@@ -1,7 +1,9 @@
 package com.snail.job.admin.route.strategy;
 
+import cn.hutool.core.collection.CollUtil;
 import com.snail.job.admin.route.AbstractRoute;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,18 +19,20 @@ public class RoundRobinRoute extends AbstractRoute {
     private static final Map<Long, Integer> executorLastIndex = new HashMap<>();
 
     @Override
-    public String getExecutorAddress(Long appId, Long jobId, String[] addresses) {
-        Integer lastIndex = executorLastIndex.getOrDefault(appId, 0);
+    public String getExecutorAddress(Long jobId, List<String> addresses) {
+        if (CollUtil.isEmpty(addresses)) {
+            return null;
+        }
+        Integer lastIndex = executorLastIndex.getOrDefault(jobId, 0);
 
         // 回到 0，形成循环
-        if (lastIndex >= addresses.length) {
+        if (lastIndex >= addresses.size()) {
             lastIndex = 0;
         }
-        String address = addresses[lastIndex];
+        String address = addresses.get(lastIndex);
 
         // 轮训更新
-        executorLastIndex.put(appId, lastIndex + 1);
-
+        executorLastIndex.put(jobId, lastIndex + 1);
         return address;
     }
 }

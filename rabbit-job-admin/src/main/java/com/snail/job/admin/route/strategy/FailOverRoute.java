@@ -3,6 +3,7 @@ package com.snail.job.admin.route.strategy;
 import com.snail.job.admin.biz.JobExecutorBiz;
 import com.snail.job.admin.route.AbstractRoute;
 import com.snail.job.common.model.ResultT;
+import java.util.List;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ public class FailOverRoute extends AbstractRoute {
     private JobExecutorBiz jobExecutorBiz;
 
     @Override
-    public String getExecutorAddress(Long appId, Long jobId, String[] addresses) {
+    public String getExecutorAddress(Long jobId, List<String> addresses) {
         for (String address : addresses) {
             ResultT<String> result;
             try {

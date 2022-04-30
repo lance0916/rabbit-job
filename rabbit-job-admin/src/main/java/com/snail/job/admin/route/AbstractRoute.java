@@ -1,5 +1,6 @@
 package com.snail.job.admin.route;
 
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,12 +13,10 @@ public abstract class AbstractRoute {
 
     /**
      * route address
-     *
-     * @param appId
      * @param jobId     触发参数
      * @param addresses 地址列表
      * @return 地址
      */
-    public abstract String getExecutorAddress(Long appId, Long jobId, String[] addresses);
+    public abstract String getExecutorAddress(Long jobId, List<String> addresses);
 
 }

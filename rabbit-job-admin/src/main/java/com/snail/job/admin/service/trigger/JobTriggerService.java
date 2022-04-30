@@ -2,21 +2,23 @@ package com.snail.job.admin.service.trigger;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.snail.job.admin.biz.JobExecutorBiz;
-import com.snail.job.admin.model.App;
+import com.snail.job.admin.model.Executor;
 import com.snail.job.admin.model.JobInfo;
 import com.snail.job.admin.model.JobLog;
 import com.snail.job.admin.route.AbstractRoute;
 import com.snail.job.admin.route.RouteEnum;
 import com.snail.job.admin.service.AppService;
+import com.snail.job.admin.service.ExecutorService;
 import com.snail.job.admin.service.JobInfoService;
 import com.snail.job.admin.service.JobLogService;
 import com.snail.job.common.enums.AlarmStatus;
 import com.snail.job.common.enums.TriggerType;
 import com.snail.job.common.model.ResultT;
 import com.snail.job.common.model.TriggerParam;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -37,6 +39,8 @@ public class JobTriggerService {
     private AppService appService;
     @Resource
     private JobLogService jobLogService;
+    @Resource
+    private ExecutorService executorService;
 
     /**
      * 触发 Job
@@ -64,24 +68,25 @@ public class JobTriggerService {
         }
 
         // 获取执行器地址列表
-        App app = appService.getOne(Wrappers.<App>query().eq(App.NAME, jobInfo.getAppName()));
-        String addresses = app.getAddresses();
-        String[] addressArray = addresses.split(StrUtil.COMMA);
+        List<String> addressList = executorService.list(Wrappers.<Executor>query()
+                .select(Executor.ADDRESS)
+                .eq(Executor.DELETED, 0)
+                .eq(Executor.APP_NAME, jobInfo.getAppName())
+        ).stream().map(Executor::getAddress).collect(Collectors.toList());
 
         // 执行调度
         if (RouteEnum.BROADCAST.getName().equals(jobInfo.getExecRouteStrategy())) {
             // 广播执行
-            int shardTotal = addressArray.length;
-            for (int i = 0; i < addressArray.length; i++) {
-                String executorAddress = addressArray[i];
-
+            int shardTotal = addressList.size();
+            for (int i = 0; i < shardTotal; i++) {
+                String executorAddress = addressList.get(i);
                 // 进行调度
                 doTrigger(jobInfo, executorAddress, triggerType, i, shardTotal);
             }
         } else {
             // 非广播执行，选择一个执行器执行
             AbstractRoute route = RouteEnum.match(jobInfo.getExecRouteStrategy());
-            String executorAddress = route.getExecutorAddress(app.getId(), jobId, addressArray);
+            String executorAddress = route.getExecutorAddress(jobId, addressList);
 
             // 进行调度
             doTrigger(jobInfo, executorAddress, triggerType, 1, 1);
@@ -110,8 +115,6 @@ public class JobTriggerService {
         tp.setShardIndex(shareIndex);
         tp.setShardIndex(shareTotal);
 
-        log.info("调度任务 id={} handler={}", jobInfo.getId(), jobInfo.getExecHandler());
-
         // 触发远程执行器
         ResultT<String> triggerResult;
         if (StrUtil.isEmpty(executorAddress)) {
@@ -120,6 +123,8 @@ public class JobTriggerService {
             // 执行器那边的调度是异步的
             triggerResult = jobExecutorBiz.run(executorAddress, tp);
         }
+
+        log.info("调度任务 id={} handler={} retMsg:{}", jobInfo.getId(), jobInfo.getExecHandler(), triggerResult.getMsg());
 
         // 更新日志的调度信息
         JobLog updateLog = new JobLog()

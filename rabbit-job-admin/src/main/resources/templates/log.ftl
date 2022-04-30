@@ -215,7 +215,7 @@
                 resize: false,
                 content: $('#logDetailLayer')
             })
-        } else if(obj.event === 'log') {
+        } else if (obj.event === 'log') {
             layer.msg('查看日志')
         }
     });

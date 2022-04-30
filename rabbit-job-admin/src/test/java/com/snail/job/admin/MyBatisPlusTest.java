@@ -2,13 +2,10 @@ package com.snail.job.admin;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.snail.job.admin.model.App;
 import com.snail.job.admin.model.Executor;
-import com.snail.job.admin.model.JobInfo;
 import com.snail.job.admin.service.AppService;
 import com.snail.job.admin.service.ExecutorService;
 import com.snail.job.admin.service.JobInfoService;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

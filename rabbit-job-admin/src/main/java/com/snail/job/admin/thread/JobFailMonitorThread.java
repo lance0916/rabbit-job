@@ -25,7 +25,6 @@ public class JobFailMonitorThread extends RabbitJobAbstractThread {
 
     @Resource
     private TriggerPoolService triggerPoolService;
-
     @Resource
     private JobLogService jobLogService;
     @Resource

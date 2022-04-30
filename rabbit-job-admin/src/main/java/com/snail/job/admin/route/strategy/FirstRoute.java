@@ -1,6 +1,7 @@
 package com.snail.job.admin.route.strategy;
 
 import com.snail.job.admin.route.AbstractRoute;
+import java.util.List;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,11 +12,11 @@ import org.springframework.stereotype.Component;
 public class FirstRoute extends AbstractRoute {
 
     @Override
-    public String getExecutorAddress(Long appId, Long jobId, String[] addresses) {
-        if (addresses.length == 0) {
+    public String getExecutorAddress(Long jobId, List<String> addresses) {
+        if (addresses.size() == 0) {
             return null;
         }
-        return addresses[0];
+        return addresses.get(0);
     }
 
 }

@@ -191,7 +191,7 @@
                 layer.open({
                     type: 1,
                     title: '编辑应用信息',
-                    area:  ['600px', '430px'],
+                    area: ['600px', '430px'],
                     offset: '50px',
                     content: $('#editLayer')
                 })
@@ -228,7 +228,7 @@
         layer.open({
             type: 1,
             title: '新增应用',
-            area:  ['600px', '430px'],
+            area: ['600px', '430px'],
             offset: '50px',
             content: $('#editLayer')
         })
