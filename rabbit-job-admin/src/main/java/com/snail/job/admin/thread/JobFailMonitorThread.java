@@ -1,6 +1,6 @@
 package com.snail.job.admin.thread;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.snail.job.admin.alarm.JobAlarm;
 import com.snail.job.admin.model.JobInfo;
 import com.snail.job.admin.model.JobLog;
@@ -8,7 +8,6 @@ import com.snail.job.admin.service.JobInfoService;
 import com.snail.job.admin.service.JobLogService;
 import com.snail.job.admin.service.trigger.TriggerPoolService;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
@@ -50,16 +49,14 @@ public class JobFailMonitorThread extends RabbitJobAbstractThread {
          */
 
         // 查询所有需要告警的任务日志
-        QueryWrapper<JobLog> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "job_id", "fail_retry_count")
-                .eq("alarm_status", 1)
-                .notIn("trigger_code", 0, 200)
-                .notIn("exec_code", 0, 200);
-        List<JobLog> failJobLogList = jobLogService.list(queryWrapper);
-        for (JobLog jobLog : failJobLogList) {
+        List<JobLog> failJobLogs = jobLogService.list(Wrappers.<JobLog>query()
+                .select(JobLog.ID, JobLog.JOB_ID, JobLog.FAIL_RETRY_COUNT)
+                .eq(JobLog.ALARM_STATUS, 1)
+                .notIn(JobLog.TRIGGER_CODE, 0, 200)
+                .notIn(JobLog.EXEC_CODE, 0, 200));
+        for (JobLog jobLog : failJobLogs) {
             JobInfo jobInfo = jobInfoService.getById(jobLog.getJobId());
             if (jobInfo == null) {
-                // 将任务设置为失败
                 log.error("任务日志中的jobId没有对应的记录。jobLogId:{}", jobLog.getId());
                 continue;
             }
@@ -81,15 +78,10 @@ public class JobFailMonitorThread extends RabbitJobAbstractThread {
         }
 
         // 批量更新告警状态
-        List<JobLog> updateJobLogList = new ArrayList<>(failJobLogList.size());
-        for (JobLog jobLog : failJobLogList) {
-            JobLog updateJobLog = new JobLog()
-                    .setId(jobLog.getId())
-                    .setAlarmStatus(ALARM_FINISH.getValue());
-            updateJobLogList.add(updateJobLog);
+        for (JobLog jobLog : failJobLogs) {
+            jobLog.setAlarmStatus(ALARM_FINISH.getValue());
         }
-        // TODO 测试是否会更新其它字段
-        jobLogService.updateBatchById(updateJobLogList);
+        jobLogService.updateBatchById(failJobLogs);
 
         // 休眠
         long costMillis = System.currentTimeMillis() - startMillis;

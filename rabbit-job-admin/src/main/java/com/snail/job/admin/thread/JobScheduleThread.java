@@ -35,12 +35,11 @@ public class JobScheduleThread extends RabbitJobAbstractThread {
 
         // 计算本次的结束时间
         long scanStopMillis = startMillis + JOB_PRE_SCAN_TIME;
-        Date scanStopDate = new Date(scanStopMillis);
 
         // 扫描将要待执行的任务，根据任务的执行时间从近到远排序
         List<JobInfo> waitTriggerJobs = jobInfoService.list(Wrappers.<JobInfo>query()
                 .eq(JobInfo.TRIGGER_STATUS, RUNNING.getValue())
-                .le(JobInfo.TRIGGER_NEXT_TIME, scanStopDate)
+                .le(JobInfo.TRIGGER_NEXT_TIME, scanStopMillis)
                 .orderByDesc(JobInfo.TRIGGER_NEXT_TIME)
         );
         if (CollUtil.isEmpty(waitTriggerJobs)) {
@@ -74,7 +73,7 @@ public class JobScheduleThread extends RabbitJobAbstractThread {
             // 3、在 [当前秒+1秒，当前时间 + xxx秒) 时间内要调度
             while (nextMillis < scanStopMillis) {
                 // 放入执行队列
-                triggerPoolService.push(info.getId(), nextMillis / 1000);
+                triggerPoolService.push(info.getId(), (nextMillis / 1000 % 60));
 
                 // 刷新下次调度时间
                 refreshNextValidTime(info, nextMillis);

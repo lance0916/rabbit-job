@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/log")
-public class LogController {
+public class JobLogController {
 
     @Resource
     private JobLogService jobLogService;

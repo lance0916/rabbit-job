@@ -12,10 +12,7 @@ import com.snail.job.admin.service.trigger.CronExpression;
 import com.snail.job.admin.service.trigger.TriggerPoolService;
 import com.snail.job.common.enums.TriggerType;
 import com.snail.job.common.model.ResultT;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
@@ -33,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/job")
-public class JobController {
+public class JobInfoController {
 
     @Resource
     private JobInfoService jobInfoService;

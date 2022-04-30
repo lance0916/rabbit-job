@@ -7,12 +7,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
  * 将任务的调度放在线程池里进行
  * @author WuQinglong
  */
+@Slf4j
 @Component
 public class TriggerPoolService {
     // ---------------------------------- 调度缓存 BEGIN

@@ -1,5 +1,6 @@
 package com.snail.job.admin.thread;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.snail.job.admin.model.App;
 import com.snail.job.admin.model.Executor;
@@ -75,10 +76,13 @@ public class ExecutorSweepThread extends RabbitJobAbstractThread {
 
         // 整理执行器地址
         List<App> updateApps = apps.stream()
-                .filter(app -> appNameAddressMap.containsKey(app.getName()))
                 .peek(app -> {
                     Set<String> addresses = appNameAddressMap.get(app.getName());
-                    app.setAddresses(String.join(",", addresses));
+                    if (addresses == null) {
+                        app.setAddresses(StrUtil.EMPTY);
+                    } else {
+                        app.setAddresses(StrUtil.join(",", addresses));
+                    }
                 }).collect(Collectors.toList());
         appService.updateBatchById(updateApps);
 

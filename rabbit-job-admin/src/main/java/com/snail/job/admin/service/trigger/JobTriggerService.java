@@ -51,7 +51,6 @@ public class JobTriggerService {
             log.error("任务不存在，jobId={}", jobId);
             return;
         }
-        System.out.println("执行任务：" + jobId);
 
         // 优先使用传入的调度参数
         if (overrideExecParam != null) {
@@ -100,7 +99,7 @@ public class JobTriggerService {
                 .setJobId(jobInfo.getId())
                 .setAppName(jobInfo.getAppName())
                 .setTriggerType(triggerType.name());
-        jobLog.updateById();
+        jobLogService.save(jobLog);
 
         // 初始化触发参数
         TriggerParam tp = new TriggerParam();
@@ -112,7 +111,7 @@ public class JobTriggerService {
         tp.setShardIndex(shareIndex);
         tp.setShardIndex(shareTotal);
 
-        log.info("调度任务:{} {}", jobInfo.getId(), jobInfo.getExecHandler());
+        log.info("调度任务 id={} handler={}", jobInfo.getId(), jobInfo.getExecHandler());
 
         // 触发远程执行器
         ResultT<String> triggerResult;

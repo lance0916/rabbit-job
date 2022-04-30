@@ -10,10 +10,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.snail.job.admin.bean.req.JobInfoQueryReq;
 import com.snail.job.admin.mapper.JobInfoMapper;
 import com.snail.job.admin.model.JobInfo;
+import com.snail.job.admin.service.trigger.CronExpression;
+import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.support.CronExpression;
 import org.springframework.stereotype.Service;
 import static com.snail.job.common.enums.TriggerStatus.RUNNING;
 import static com.snail.job.common.enums.TriggerStatus.STOPPED;
@@ -62,23 +64,20 @@ public class JobInfoService extends ServiceImpl<JobInfoMapper, JobInfo> {
         }
 
         // 计算任务的下次执行时间
-        CronExpression cronExpression = CronExpression.parse(jobInfo.getCron());
+        CronExpression cronExpression;
+        try {
+            cronExpression = new CronExpression(jobInfo.getCron());
+        } catch (ParseException e) {
+            log.error("Cron表达式错误");
+            return;
+        }
 
         // 计算下次执行时间
-        LocalDateTime nextTriggerTime = cronExpression.next(LocalDateTime.now());
-
-        // 更新
-        LambdaUpdateWrapper<JobInfo> wrapper = Wrappers.lambdaUpdate();
-        wrapper.eq(JobInfo::getId, id);
-        if (nextTriggerTime != null) {
-            wrapper.set(JobInfo::getTriggerNextTime, nextTriggerTime)
-                    .set(JobInfo::getTriggerStatus, RUNNING.getValue());
-        } else {
-            wrapper.set(JobInfo::getTriggerPrevTime, null)
-                    .set(JobInfo::getTriggerNextTime, null)
-                    .set(JobInfo::getTriggerStatus, STOPPED.getValue());
-        }
-        wrapper.set(JobInfo::getUpdateTime, LocalDateTime.now());
+        Date nextExecDateTime = cronExpression.getNextValidTimeAfter(new Date());
+        LambdaUpdateWrapper<JobInfo> wrapper = Wrappers.<JobInfo>lambdaUpdate()
+                .set(JobInfo::getTriggerNextTime, nextExecDateTime.getTime())
+                .set(JobInfo::getTriggerStatus, RUNNING.getValue())
+                .eq(JobInfo::getId, id);
         super.update(wrapper);
     }
 

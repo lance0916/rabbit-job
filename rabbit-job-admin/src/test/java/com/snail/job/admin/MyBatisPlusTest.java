@@ -19,7 +19,7 @@ public class MyBatisPlusTest {
     @Test
     public void testUpdate() {
         App app = new App()
-                .setId(1L)
+                .setId(2L)
                 .setDeleted(1);
         appService.updateById(app);
     }
