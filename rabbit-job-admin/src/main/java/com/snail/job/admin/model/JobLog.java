@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -74,7 +73,7 @@ public class JobLog extends Model<JobLog> {
      * 调度-时间
      */
     @TableField("trigger_time")
-    private LocalDateTime triggerTime;
+    private Date triggerTime;
 
     /**
      * 调度-类型
@@ -110,19 +109,19 @@ public class JobLog extends Model<JobLog> {
      * 执行-开始时间
      */
     @TableField("exec_begin_time")
-    private LocalDateTime execBeginTime;
+    private Date execBeginTime;
 
     /**
      * 执行-结束时间
      */
     @TableField("exec_end_time")
-    private LocalDateTime execEndTime;
+    private Date execEndTime;
 
     /**
      * 执行-耗时
      */
     @TableField("exec_cost_time")
-    private Integer execCostTime;
+    private Long execCostTime;
 
     /**
      * 告警状态：0-默认、1-无需告警、2-告警成功、3-告警失败

@@ -7,8 +7,8 @@ import com.snail.job.admin.service.AppService;
 import com.snail.job.admin.service.ExecutorService;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
 import com.snail.job.common.tools.GsonTool;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,8 +17,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
-import static com.snail.job.common.constant.CommonConstants.REGISTER_INTERVAL_TIME;
 import static com.snail.job.common.constant.CommonConstants.EXECUTOR_TIME_OUT;
+import static com.snail.job.common.constant.CommonConstants.REGISTER_INTERVAL_TIME;
 
 /**
  * 清理无效的执行器
@@ -40,15 +40,14 @@ public class ExecutorSweepThread extends RabbitJobAbstractThread {
         List<Executor> executors = executorService.list(Wrappers.<Executor>query().eq(Executor.DELETED, 0));
 
         // 判断执行器的更新时间，是否超过了三个注册间隔时间
-        LocalDateTime timeOutDateTime = LocalDateTime.now().minusSeconds(EXECUTOR_TIME_OUT);
+        Date timeOutDate = new Date(startMillis - EXECUTOR_TIME_OUT);
 
         // 过期的执行器集合
         List<Executor> invalidExecutors = new ArrayList<>();
         List<Executor> validExecutors = new ArrayList<>();
         for (Executor executor : executors) {
-            LocalDateTime updateTime = executor.getUpdateTime();
-            if (timeOutDateTime.isAfter(updateTime)) {
-                // 软删除
+            Date updateTime = executor.getUpdateTime();
+            if (timeOutDate.after(updateTime)) {
                 executor.setDeleted(1);
                 invalidExecutors.add(executor);
             } else {
@@ -59,6 +58,8 @@ public class ExecutorSweepThread extends RabbitJobAbstractThread {
         // 批量软删
         executorService.saveOrUpdateBatch(invalidExecutors);
         log.info("清理执行器:{}", GsonTool.toJson(invalidExecutors));
+
+        // 汇总有效执行的执行地址到应用表中
 
         // 加入更新本地缓存
         Map<String, Set<String>> appNameAddressMap = new HashMap<>();

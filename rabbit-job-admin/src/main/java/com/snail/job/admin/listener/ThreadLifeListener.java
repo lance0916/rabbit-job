@@ -34,8 +34,8 @@ public class ThreadLifeListener implements ApplicationRunner {
         executorSweepThread.start();
 //        jobLogReportThread.start();
 //        jobFailMonitorThread.start();
-//        jobScheduleThread.start();
-//        jobTriggerThread.start();
+        jobScheduleThread.start();
+        jobTriggerThread.start();
 
         // 注册停止
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -45,8 +45,8 @@ public class ThreadLifeListener implements ApplicationRunner {
             executorSweepThread.stop();
 //            jobLogReportThread.stop();
 //            jobFailMonitorThread.stop();
-//            jobScheduleThread.stop();
-//            jobTriggerThread.stop();
+            jobScheduleThread.stop();
+            jobTriggerThread.stop();
         }));
     }
 }

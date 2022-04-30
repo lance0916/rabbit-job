@@ -57,8 +57,7 @@ public class AppService extends ServiceImpl<AppMapper, App> {
     public void delete(Long id) {
         App app = new App()
                 .setId(id)
-                .setDeleted(1)
-                .setUpdateTime(LocalDateTime.now());
+                .setDeleted(1);
         super.updateById(app);
     }
 

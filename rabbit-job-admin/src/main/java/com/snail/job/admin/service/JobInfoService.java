@@ -106,8 +106,7 @@ public class JobInfoService extends ServiceImpl<JobInfoMapper, JobInfo> {
     public void delete(Long id) {
         JobInfo jobInfo = new JobInfo()
                 .setId(id)
-                .setDeleted(1)
-                .setUpdateTime(LocalDateTime.now());
+                .setDeleted(1);
         super.updateById(jobInfo);
     }
 

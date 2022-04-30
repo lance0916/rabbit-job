@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `app`
     `addresses`   VARCHAR(100) NOT NULL DEFAULT '' COMMENT '执行器地址',
     `deleted`     INT          NOT NULL DEFAULT 0 COMMENT '是否删除',
     `create_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+    `update_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `job_info`
     `cron`                  VARCHAR(20)  NOT NULL COMMENT 'CRON表达式',
     `deleted`               INT          NOT NULL DEFAULT 0 COMMENT '是否删除',
     `create_time`           TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `update_time`           TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 
     `author_name`           VARCHAR(20)  NOT NULL DEFAULT '' COMMENT '负责人姓名',
     `author_email`          VARCHAR(50)  NOT NULL DEFAULT '' COMMENT '负责人邮箱',
@@ -51,8 +51,8 @@ CREATE TABLE IF NOT EXISTS `job_info`
     `exec_fail_retry_count` INT          NOT NULL DEFAULT 0 COMMENT '失败重试次数',
 
     `trigger_status`        INT          NOT NULL DEFAULT 0 COMMENT '调度状态。0-停止，1-运行',
-    `trigger_prev_time`     TIMESTAMP    NULL COMMENT '上次调度时间',
-    `trigger_next_time`     TIMESTAMP    NULL COMMENT '下次调度时间'
+    `trigger_prev_time`     BIGINT       NULL COMMENT '上次调度时间',
+    `trigger_next_time`     BIGINT       NULL COMMENT '下次调度时间'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 

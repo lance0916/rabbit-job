@@ -1,5 +1,6 @@
 package com.snail.job.admin.controller;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.snail.job.admin.bean.req.JobInfoQueryReq;
@@ -7,15 +8,17 @@ import com.snail.job.admin.bean.vo.RouteVO;
 import com.snail.job.admin.model.JobInfo;
 import com.snail.job.admin.route.RouteEnum;
 import com.snail.job.admin.service.JobInfoService;
+import com.snail.job.admin.service.trigger.CronExpression;
 import com.snail.job.admin.service.trigger.TriggerPoolService;
 import com.snail.job.common.enums.TriggerType;
 import com.snail.job.common.model.ResultT;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
-import org.springframework.scheduling.support.CronExpression;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,8 +56,6 @@ public class JobController {
     public ResultT<?> save(@RequestBody JobInfo jobInfo) {
         // Cron 表达式是否正确
         Assert.isTrue(CronExpression.isValidExpression(jobInfo.getCron()), "Cron表达式不正确");
-
-        jobInfo.setCreateTime(LocalDateTime.now());
         jobInfoService.save(jobInfo);
         return ResultT.SUCCESS;
     }
@@ -66,8 +67,6 @@ public class JobController {
     public ResultT<String> update(@RequestBody JobInfo jobInfo) {
         // Cron 表达式是否正确
         Assert.isTrue(CronExpression.isValidExpression(jobInfo.getCron()), "Cron表达式不正确");
-
-        jobInfo.setUpdateTime(LocalDateTime.now());
         jobInfoService.updateById(jobInfo);
         return ResultT.SUCCESS;
     }
@@ -126,16 +125,21 @@ public class JobController {
      */
     @GetMapping("/nextTriggerTime")
     public ResultT<?> triggerNextTime(String cron) {
+        CronExpression cronExpression;
+        try {
+            cronExpression = new CronExpression(cron);
+        } catch (Exception e) {
+            return new ResultT<>(ResultT.FAIL_CODE, "Cron表达式有误");
+        }
+
+        Date curDate = new Date();
         List<String> list = new ArrayList<>();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        CronExpression cronExpression = CronExpression.parse(cron);
-        LocalDateTime dateTime = LocalDateTime.now();
         for (int i = 0; i < 5; i++) {
-            LocalDateTime next = cronExpression.next(dateTime);
+            Date next = cronExpression.getTimeAfter(curDate);
             if (next != null) {
-                list.add(dateTimeFormatter.format(next));
+                list.add(DateUtil.formatDateTime(next));
             }
-            dateTime = next;
+            curDate = next;
         }
         return new ResultT<>(list);
     }

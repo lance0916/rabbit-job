@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -31,7 +31,7 @@ public class JobLogReport extends Model<JobLogReport> {
      * 调度日期
      */
     @TableField("trigger_date")
-    private LocalDate triggerDate;
+    private Date triggerDate;
 
     /**
      * 运行中-日志数量

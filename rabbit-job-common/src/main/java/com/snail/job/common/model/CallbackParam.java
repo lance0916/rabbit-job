@@ -1,6 +1,6 @@
 package com.snail.job.common.model;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 回调任务执行结果
@@ -26,17 +26,17 @@ public class CallbackParam {
     /**
      * 开始执行时间
      */
-    private LocalDateTime beginExecTime;
+    private Date beginExecTime;
 
     /**
      * 结束执行时间
      */
-    private LocalDateTime endExecTime;
+    private Date endExecTime;
 
     public CallbackParam() {
     }
 
-    public CallbackParam(Long logId, Integer execCode, String execMsg, LocalDateTime beginExecTime, LocalDateTime endExecTime) {
+    public CallbackParam(Long logId, Integer execCode, String execMsg, Date beginExecTime, Date endExecTime) {
         this.logId = logId;
         this.execCode = execCode;
         this.execMsg = execMsg;
@@ -68,19 +68,19 @@ public class CallbackParam {
         this.execMsg = execMsg;
     }
 
-    public LocalDateTime getBeginExecTime() {
+    public Date getBeginExecTime() {
         return beginExecTime;
     }
 
-    public void setBeginExecTime(LocalDateTime beginExecTime) {
+    public void setBeginExecTime(Date beginExecTime) {
         this.beginExecTime = beginExecTime;
     }
 
-    public LocalDateTime getEndExecTime() {
+    public Date getEndExecTime() {
         return endExecTime;
     }
 
-    public void setEndExecTime(LocalDateTime endExecTime) {
+    public void setEndExecTime(Date endExecTime) {
         this.endExecTime = endExecTime;
     }
 }

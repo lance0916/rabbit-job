@@ -20,8 +20,7 @@ public class MyBatisPlusTest {
     public void testUpdate() {
         App app = new App()
                 .setId(1L)
-                .setDeleted(1)
-                .setUpdateTime(LocalDateTime.now());
+                .setDeleted(1);
         appService.updateById(app);
     }
 

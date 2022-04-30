@@ -28,7 +28,7 @@ public interface AdminConstants {
     /**
      * 任务扫描预扫描时间
      */
-    int JOB_PRE_SCAN_TIME = 5;
+    int JOB_PRE_SCAN_TIME = 5000;
 
     /**
      * 任务调度线程执行间隔时间

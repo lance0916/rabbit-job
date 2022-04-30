@@ -7,6 +7,7 @@ import com.snail.job.client.handler.IJobHandler;
 import com.snail.job.client.helper.ThreadHelper;
 import com.snail.job.client.helper.JobContext;
 import com.snail.job.client.helper.JobHelper;
+import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,7 +164,7 @@ public class JobThread extends Thread {
                 JobHelper.setContext(context);
 
                 // 执行任务方法
-                LocalDateTime startInvokeTime = LocalDateTime.now();
+                Date startInvokeDateTime = new Date();
                 try {
                     doInvoke(triggerParam);
                 } catch (Exception e) {
@@ -174,15 +175,15 @@ public class JobThread extends Thread {
                     context.setHandleCode(ResultT.FAIL_CODE);
                     context.setHandleMsg(errorMsg);
                 }
-                LocalDateTime stopInvokeTime = LocalDateTime.now();
+                Date stopInvokeDateTime = new Date();
 
                 // 进行任务执行结果的回调
                 CallbackParam callbackParam = new CallbackParam(
                         triggerParam.getLogId(),
                         context.getHandleCode(),
                         context.getHandleMsg(),
-                        startInvokeTime,
-                        stopInvokeTime
+                        startInvokeDateTime,
+                        stopInvokeDateTime
                 );
                 CallbackThread.addCallbackQueue(callbackParam);
 

@@ -1,13 +1,15 @@
 package com.snail.job.admin.thread;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import cn.hutool.core.date.DateField;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.snail.job.admin.model.JobLog;
 import com.snail.job.admin.model.JobLogReport;
 import com.snail.job.admin.service.JobLogReportService;
 import com.snail.job.admin.service.JobLogService;
 import com.snail.job.common.thread.RabbitJobAbstractThread;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
@@ -30,14 +32,14 @@ public class JobLogReportThread extends RabbitJobAbstractThread {
         long startMillis = System.currentTimeMillis();
 
         // 当前日期
-        LocalDate todayDate = LocalDate.now();
-        LocalDateTime beginTime = todayDate.atStartOfDay();
-        LocalDateTime endTime = beginTime.plusDays(1);
+        Date curDateTime = new Date();
+        DateTime beginDate = DateUtil.beginOfDay(curDateTime);
+        DateTime endDate = DateUtil.endOfDay(curDateTime);
 
         // 统计当天的任务执行情况
-        QueryWrapper<JobLog> logQueryWrapper = new QueryWrapper<>();
-        logQueryWrapper.between("trigger_time", beginTime, endTime);
-        List<JobLog> todayJobLogs = jobLogService.list(logQueryWrapper);
+        List<JobLog> todayJobLogs = jobLogService.list(
+                Wrappers.<JobLog>query().between(JobLog.TRIGGER_TIME, beginDate, endDate)
+        );
 
         int successCount = 0, failCount = 0, runningCount = 0;
         for (JobLog log : todayJobLogs) {
@@ -53,13 +55,13 @@ public class JobLogReportThread extends RabbitJobAbstractThread {
         }
 
         // 更新 job_log_report
-        QueryWrapper<JobLogReport> reportQueryWrapper = new QueryWrapper<>();
-        reportQueryWrapper.eq("trigger_date", todayDate);
-        JobLogReport jobLogReport = jobLogReportService.getOne(reportQueryWrapper);
+        JobLogReport jobLogReport = jobLogReportService.getOne(
+                Wrappers.<JobLogReport>query().eq(JobLogReport.TRIGGER_DATE, beginDate)
+        );
         if (jobLogReport == null) {
             jobLogReport = new JobLogReport();
         }
-        jobLogReport.setTriggerDate(todayDate);
+        jobLogReport.setTriggerDate(beginDate);
         jobLogReport.setRunningCount(runningCount);
         jobLogReport.setSuccessCount(successCount);
         jobLogReport.setFailCount(failCount);

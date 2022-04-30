@@ -1,5 +1,7 @@
 package com.snail.job.admin.controller;
 
+import cn.hutool.core.date.BetweenFormatter;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.snail.job.admin.model.App;
@@ -15,6 +17,7 @@ import com.snail.job.common.model.RegistryParam;
 import com.snail.job.common.model.ResultT;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Resource;
@@ -81,11 +84,9 @@ public class ApiController {
             if (executor == null) {
                 executor = new Executor()
                         .setAppName(appName)
-                        .setAddress(address)
-                        .setCreateTime(LocalDateTime.now());
+                        .setAddress(address);
             } else {
-                executor.setDeleted(0)
-                        .setUpdateTime(LocalDateTime.now());
+                executor.setDeleted(0);
             }
             executorService.saveOrUpdate(executor);
         });
@@ -114,8 +115,7 @@ public class ApiController {
 
         apiThreadPool.submit(() -> {
             // 从 executor 表中移除，并从执行地址中移除
-            executor.setDeleted(1)
-                    .setUpdateTime(LocalDateTime.now());
+            executor.setDeleted(1);
             executorService.updateById(executor);
         });
         return ResultT.SUCCESS;
@@ -148,19 +148,17 @@ public class ApiController {
                     continue;
                 }
 
-                LocalDateTime beginExecTime = param.getBeginExecTime();
-                LocalDateTime endExecTime = param.getEndExecTime();
-
                 // 更新 JobLog 执行结果
                 JobLog updateLog = new JobLog()
                         .setId(logId)
-                        .setExecCostTime(param.getExecCode())
+                        .setExecCode(param.getExecCode())
                         .setExecMsg(param.getExecMsg())
                         .setExecBeginTime(param.getBeginExecTime())
                         .setExecEndTime(param.getEndExecTime());
+                Date beginExecTime = param.getBeginExecTime();
+                Date endExecTime = param.getEndExecTime();
                 if (beginExecTime != null && endExecTime != null) {
-                    Duration duration = Duration.between(beginExecTime, endExecTime);
-                    updateLog.setExecCostTime((int) duration.toMillis());
+                    updateLog.setExecCostTime(endExecTime.getTime() - beginExecTime.getTime());
                 }
                 jobLogService.updateById(updateLog);
             }

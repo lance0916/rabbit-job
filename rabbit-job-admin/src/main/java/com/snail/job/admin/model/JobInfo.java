@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -55,13 +55,13 @@ public class JobInfo extends Model<JobInfo> {
      * 创建时间
      */
     @TableField("create_time")
-    private LocalDateTime createTime;
+    private Date createTime;
 
     /**
      * 更新时间
      */
     @TableField("update_time")
-    private LocalDateTime updateTime;
+    private Date updateTime;
 
     /**
      * 负责人姓名
@@ -115,13 +115,13 @@ public class JobInfo extends Model<JobInfo> {
      * 上次调度时间
      */
     @TableField("trigger_prev_time")
-    private LocalDateTime triggerPrevTime;
+    private Long triggerPrevTime;
 
     /**
      * 下次调度时间
      */
     @TableField("trigger_next_time")
-    private LocalDateTime triggerNextTime;
+    private Long triggerNextTime;
 
     public static final String ID = "id";
 

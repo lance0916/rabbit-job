@@ -1,5 +1,6 @@
 package com.snail.job.admin.service.trigger;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.snail.job.admin.biz.JobExecutorBiz;
@@ -15,7 +16,6 @@ import com.snail.job.common.enums.AlarmStatus;
 import com.snail.job.common.enums.TriggerType;
 import com.snail.job.common.model.ResultT;
 import com.snail.job.common.model.TriggerParam;
-import java.time.LocalDateTime;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -68,7 +68,7 @@ public class JobTriggerService {
         appQueryWrapper.eq(App.NAME, jobInfo.getAppName());
         App app = appService.getOne(appQueryWrapper);
         String addresses = app.getAddresses();
-        String[] addressArray = addresses.split(",");
+        String[] addressArray = addresses.split(StrUtil.COMMA);
 
         // 执行调度
         if (RouteEnum.BROADCAST.getName().equals(jobInfo.getExecRouteStrategy())) {
@@ -100,7 +100,7 @@ public class JobTriggerService {
                 .setJobId(jobInfo.getId())
                 .setAppName(jobInfo.getAppName())
                 .setTriggerType(triggerType.name());
-        jobLogService.save(jobLog);
+        jobLog.updateById();
 
         // 初始化触发参数
         TriggerParam tp = new TriggerParam();
@@ -132,7 +132,7 @@ public class JobTriggerService {
                 .setExecParam(jobInfo.getExecParam())
                 .setFailRetryCount(jobInfo.getExecFailRetryCount())
                 // 调度信息
-                .setTriggerTime(LocalDateTime.now())
+                .setTriggerTime(DateUtil.dateSecond())
                 .setTriggerCode(triggerResult.getCode())
                 .setTriggerMsg(triggerResult.getMsg())
                 // 告警状态
